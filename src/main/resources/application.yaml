@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: order-service
+  profiles:
+    active: local
+    include:
+      - redis
+      - toss
+logback:
+  log-path: ./logs
+
+
