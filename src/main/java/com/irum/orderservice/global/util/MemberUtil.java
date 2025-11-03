@@ -1,4 +1,4 @@
-package com.irum.come2us.global.util;
+package com.irum.orderservice.global.util;
 
 import com.irum.come2us.domain.member.domain.entity.Member;
 import com.irum.come2us.domain.member.domain.repository.MemberRepository;

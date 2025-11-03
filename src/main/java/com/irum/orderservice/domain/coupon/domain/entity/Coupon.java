@@ -1,4 +1,4 @@
-package com.irum.come2us.domain.coupon.domain.entity;
+package com.irum.orderservice.domain.coupon.domain.entity;
 
 import com.irum.come2us.domain.member.domain.entity.Member;
 import com.irum.come2us.global.domain.BaseEntity;

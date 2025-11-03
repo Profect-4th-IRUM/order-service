@@ -1,4 +1,4 @@
-package com.irum.come2us.domain.deliveryaddress.domain.entity;
+package com.irum.orderservice.domain.deliveryaddress.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

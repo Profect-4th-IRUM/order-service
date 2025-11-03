@@ -1,4 +1,4 @@
-package com.irum.come2us.global.config;
+package com.irum.orderservice.global.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

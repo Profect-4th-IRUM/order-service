@@ -1,4 +1,4 @@
-package com.irum.come2us.domain.deliveryaddress.domain.entity;
+package com.irum.orderservice.domain.deliveryaddress.domain;
 
 import com.irum.come2us.domain.member.domain.entity.Member;
 import com.irum.come2us.global.domain.BaseEntity;

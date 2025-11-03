@@ -1,4 +1,4 @@
-package com.irum.come2us.global.infrastructure.config.jpa;
+package com.irum.orderservice.global.infrastructure.config.jpa;
 
 import com.irum.come2us.global.domain.BaseEntity;
 import com.irum.come2us.global.security.MemberDetails;

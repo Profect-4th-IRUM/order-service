@@ -1,4 +1,4 @@
-package com.irum.come2us.domain.order.domain.entity;
+package com.irum.orderservice.domain.order.domain.entity;
 
 import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.come2us.domain.product.domain.entity.Product;

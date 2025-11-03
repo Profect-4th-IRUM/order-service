@@ -1,4 +1,4 @@
-package com.irum.come2us.global.security;
+package com.irum.orderservice.global.security;
 
 import static com.irum.come2us.global.constants.SecurityConstants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.irum.come2us.global.constants.SecurityConstants.TOKEN_PREFIX;

@@ -1,4 +1,4 @@
-package com.irum.come2us.global.infrastructure.config.security;
+package com.irum.orderservice.global.infrastructure.config.security;
 
 import com.irum.come2us.domain.auth.application.service.JwtTokenService;
 import com.irum.come2us.domain.member.domain.entity.enums.Role;

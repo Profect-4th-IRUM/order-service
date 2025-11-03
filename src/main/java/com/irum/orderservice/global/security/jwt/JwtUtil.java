@@ -1,4 +1,4 @@
-package com.irum.come2us.global.security.jwt;
+package com.irum.orderservice.global.security.jwt;
 
 import static com.irum.come2us.global.constants.SecurityConstants.TOKEN_ROLE_NAME;
 

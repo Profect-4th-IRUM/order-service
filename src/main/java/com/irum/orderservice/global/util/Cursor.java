@@ -1,4 +1,4 @@
-package com.irum.come2us.global.util;
+package com.irum.orderservice.global.util;
 
 import java.time.LocalDateTime;
 import java.util.Base64;

@@ -1,4 +1,4 @@
-package com.irum.come2us.domain.refund.domain.repository;
+package com.irum.orderservice.domain.refund.domain.repository;
 
 import com.irum.come2us.domain.order.domain.entity.Order;
 import com.irum.come2us.domain.refund.domain.entity.Refund;

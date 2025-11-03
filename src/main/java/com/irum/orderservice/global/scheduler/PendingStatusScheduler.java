@@ -1,4 +1,4 @@
-package com.irum.come2us.global.scheduler;
+package com.irum.orderservice.global.scheduler;
 
 import com.irum.come2us.domain.order.application.service.OrderBatchService;
 import lombok.RequiredArgsConstructor;

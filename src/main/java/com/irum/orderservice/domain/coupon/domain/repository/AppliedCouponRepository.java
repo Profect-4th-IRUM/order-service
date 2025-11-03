@@ -1,4 +1,4 @@
-package com.irum.come2us.domain.coupon.domain.repository;
+package com.irum.orderservice.domain.coupon.repository;
 
 import com.irum.come2us.domain.coupon.domain.entity.AppliedCoupon;
 import com.irum.come2us.domain.payment.domain.entity.Payment;

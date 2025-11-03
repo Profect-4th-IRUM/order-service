@@ -1,4 +1,4 @@
-package com.irum.come2us.global.config;
+package com.irum.orderservice.global.config;
 
 import com.irum.come2us.domain.auth.application.service.AuthService;
 import com.irum.come2us.domain.auth.application.service.JwtTokenService;

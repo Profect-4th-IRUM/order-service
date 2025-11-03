@@ -1,4 +1,4 @@
-package com.irum.come2us.global.infrastructure.config.jpa;
+package com.irum.orderservice.global.infrastructure.config.jpa;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
