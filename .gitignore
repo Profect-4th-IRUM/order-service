@@ -39,6 +39,3 @@ out/
 
 ### logs ###
 /logs
-
-### mac ###
-.DS_Store
