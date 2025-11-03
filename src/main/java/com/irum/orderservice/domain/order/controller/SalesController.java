@@ -1,8 +1,8 @@
 package com.irum.orderservice.domain.order.controller;
 
-import com.irum.come2us.domain.order.application.service.SalesService;
-import com.irum.come2us.domain.order.presentation.dto.response.BalanceResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.SalesResponse;
+import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
+import com.irum.orderservice.domain.order.dto.response.SalesResponse;
+import com.irum.orderservice.domain.order.service.SalesService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

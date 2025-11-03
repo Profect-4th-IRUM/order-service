@@ -1,7 +1,6 @@
 package com.irum.orderservice.domain.coupon.repository;
 
-import com.irum.come2us.domain.coupon.domain.entity.AppliedCoupon;
-import com.irum.come2us.domain.payment.domain.entity.Payment;
+import com.irum.orderservice.domain.coupon.domain.entity.AppliedCoupon;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,11 +1,8 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
-import com.irum.come2us.domain.deliveryaddress.domain.entity.DeliveryAddress;
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.come2us.domain.payment.domain.entity.Payment;
-import com.irum.come2us.domain.store.domain.entity.Store;
-import com.irum.come2us.global.domain.BaseEntity;
+import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
+import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

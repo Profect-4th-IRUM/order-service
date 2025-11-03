@@ -1,12 +1,14 @@
 package com.irum.orderservice.domain.coupon.domain.entity;
 
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.global.domain.BaseEntity;
+import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.Where;
 

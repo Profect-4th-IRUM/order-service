@@ -1,7 +1,7 @@
 package com.irum.orderservice.global.infrastructure.config.jpa;
 
-import com.irum.come2us.global.domain.BaseEntity;
-import com.irum.come2us.global.security.MemberDetails;
+import com.irum.orderservice.global.domain.BaseEntity;
+import com.irum.orderservice.global.security.MemberDetails;
 import jakarta.persistence.PreRemove;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;

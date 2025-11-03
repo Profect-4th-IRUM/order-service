@@ -1,7 +1,6 @@
 package com.irum.orderservice.domain.deliveryaddress.domain;
 
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.global.domain.BaseEntity;
+import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.AccessLevel;

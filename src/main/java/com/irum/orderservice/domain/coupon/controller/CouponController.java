@@ -1,9 +1,9 @@
 package com.irum.orderservice.domain.coupon.controller;
 
-import com.irum.come2us.domain.coupon.application.service.CouponService;
-import com.irum.come2us.domain.coupon.presentation.dto.request.CouponGenerateRequest;
-import com.irum.come2us.domain.coupon.presentation.dto.response.CouponResponse;
-import com.irum.come2us.global.util.MemberUtil;
+import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
+import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
+import com.irum.orderservice.domain.coupon.service.CouponService;
+import com.irum.orderservice.global.util.MemberUtil;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;

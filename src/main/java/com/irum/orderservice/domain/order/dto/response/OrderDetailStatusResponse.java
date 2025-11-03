@@ -1,7 +1,7 @@
 package com.irum.orderservice.domain.order.dto.response;
 
-import com.irum.come2us.domain.order.domain.entity.OrderDetail;
-import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
+import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 
 public record OrderDetailStatusResponse(
         String productName,

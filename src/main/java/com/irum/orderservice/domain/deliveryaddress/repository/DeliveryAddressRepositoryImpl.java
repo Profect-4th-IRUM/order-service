@@ -1,8 +1,6 @@
 package com.irum.orderservice.domain.deliveryaddress.repository;
 
-import com.irum.come2us.domain.deliveryaddress.domain.entity.QDeliveryAddress;
-import com.irum.come2us.domain.deliveryaddress.domain.repository.DeliveryAddressRepositoryCustom;
-import com.irum.come2us.domain.deliveryaddress.presentation.dto.response.DeliveryAddressInfoResponse;
+import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class DeliveryAddressRepositoryImpl implements DeliveryAddressRepositoryCustom {
+public class DeliveryAddressRepositoryImpl
+        implements com.irum.orderservice.domain.deliveryaddress.repository
+                .DeliveryAddressRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     private BooleanExpression belongsToMember(Long memberId, QDeliveryAddress deliveryAddress) {

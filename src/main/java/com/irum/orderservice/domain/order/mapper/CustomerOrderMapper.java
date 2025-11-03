@@ -1,15 +1,14 @@
 package com.irum.orderservice.domain.order.mapper;
 
-import com.irum.come2us.domain.order.domain.entity.Order;
-import com.irum.come2us.domain.order.domain.entity.OrderDetail;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.CustomerOrderDetailRow;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.CustomerOrderSummaryRow;
-import com.irum.come2us.domain.order.presentation.dto.response.AddressResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.CustomerOrderListResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.CustomerOrderResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.OrderDetailResponse;
-import com.irum.come2us.domain.refund.domain.entity.Refund;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
+import com.irum.orderservice.domain.order.dto.response.AddressResponse;
+import com.irum.orderservice.domain.order.dto.response.CustomerOrderListResponse;
+import com.irum.orderservice.domain.order.dto.response.CustomerOrderResponse;
+import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
+import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
+import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
+import com.irum.orderservice.domain.refund.domain.entity.Refund;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

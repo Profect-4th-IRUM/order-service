@@ -1,17 +1,8 @@
 package com.irum.orderservice.global.security;
 
-import static com.irum.come2us.global.constants.SecurityConstants.REFRESH_TOKEN_COOKIE_NAME;
-import static com.irum.come2us.global.constants.SecurityConstants.TOKEN_PREFIX;
-
-import com.irum.come2us.domain.auth.application.service.JwtTokenService;
-import com.irum.come2us.domain.auth.presentation.dto.request.AccessTokenDto;
-import com.irum.come2us.domain.auth.presentation.dto.request.RefreshTokenDto;
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.domain.member.domain.entity.enums.Role;
-import com.irum.come2us.domain.member.domain.repository.MemberRepository;
-import com.irum.come2us.global.presentation.advice.exception.CommonException;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.MemberErrorCode;
-import com.irum.come2us.global.util.CookieUtil;
+import com.irum.orderservice.global.presentation.advice.exception.CommonException;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.MemberErrorCode;
+import com.irum.orderservice.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

@@ -1,11 +1,9 @@
 package com.irum.orderservice.global.util;
 
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.domain.member.domain.repository.MemberRepository;
-import com.irum.come2us.global.presentation.advice.exception.CommonException;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.AuthErrorCode;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.MemberErrorCode;
-import com.irum.come2us.global.security.MemberDetails;
+import com.irum.orderservice.global.presentation.advice.exception.CommonException;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.AuthErrorCode;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.MemberErrorCode;
+import com.irum.orderservice.global.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

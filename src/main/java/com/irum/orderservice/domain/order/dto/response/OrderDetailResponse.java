@@ -1,9 +1,7 @@
 package com.irum.orderservice.domain.order.dto.response;
 
-import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.come2us.domain.payment.domain.entity.enums.PaymentMethod;
-import com.irum.come2us.domain.payment.domain.entity.enums.PaymentStatus;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

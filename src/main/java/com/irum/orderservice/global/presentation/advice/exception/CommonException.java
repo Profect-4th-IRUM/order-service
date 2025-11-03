@@ -1,6 +1,6 @@
 package com.irum.orderservice.global.presentation.advice.exception;
 
-import com.irum.come2us.global.presentation.advice.exception.errorcode.BaseErrorCode;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.BaseErrorCode;
 import lombok.Getter;
 
 @Getter

@@ -1,16 +1,12 @@
 package com.irum.orderservice.domain.coupon.service;
 
-import com.irum.come2us.domain.coupon.domain.entity.Coupon;
-import com.irum.come2us.domain.coupon.domain.repository.AppliedCouponRepository;
-import com.irum.come2us.domain.coupon.domain.repository.CouponRepository;
-import com.irum.come2us.domain.coupon.presentation.dto.request.CouponGenerateRequest;
-import com.irum.come2us.domain.coupon.presentation.dto.response.CouponResponse;
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.domain.member.domain.repository.MemberRepository;
-import com.irum.come2us.global.presentation.advice.exception.CommonException;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.CouponErrorCode;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.MemberErrorCode;
-import com.irum.come2us.global.util.MemberUtil;
+import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
+import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
+import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
+import com.irum.orderservice.global.presentation.advice.exception.CommonException;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.CouponErrorCode;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.MemberErrorCode;
+import com.irum.orderservice.global.util.MemberUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -22,9 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CouponService {
-    private final CouponRepository couponRepository;
+    private final com.irum.orderservice.domain.coupon.repository.CouponRepository couponRepository;
     private final MemberRepository memberRepository;
-    private final AppliedCouponRepository appliedCouponRepository;
+    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
+            appliedCouponRepository;
     private final MemberUtil memberUtil;
 
     public void createCoupon(CouponGenerateRequest request, Long memberId) {

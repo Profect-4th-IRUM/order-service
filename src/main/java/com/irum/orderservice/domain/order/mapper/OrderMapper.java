@@ -1,8 +1,8 @@
 package com.irum.orderservice.domain.order.mapper;
 
-import com.irum.come2us.domain.order.infrastructure.repository.dto.OrderDetailRow;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.OrderSummaryRow;
-import com.irum.come2us.domain.order.presentation.dto.response.OwnerOrderListResponse;
+import com.irum.orderservice.domain.order.dto.response.OwnerOrderListResponse;
+import com.irum.orderservice.domain.order.repository.dto.OrderDetailRow;
+import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

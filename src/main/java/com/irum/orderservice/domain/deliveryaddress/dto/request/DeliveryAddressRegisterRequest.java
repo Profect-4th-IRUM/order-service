@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.deliveryaddress.dto.request;
 
-import com.irum.come2us.domain.deliveryaddress.domain.entity.Address;
+import com.irum.orderservice.domain.deliveryaddress.domain.Address;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 

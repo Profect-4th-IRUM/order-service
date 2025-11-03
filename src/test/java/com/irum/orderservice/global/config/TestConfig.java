@@ -1,20 +1,11 @@
 package com.irum.orderservice.global.config;
 
-import com.irum.come2us.domain.auth.application.service.AuthService;
-import com.irum.come2us.domain.auth.application.service.JwtTokenService;
-import com.irum.come2us.domain.cart.application.service.CartService;
-import com.irum.come2us.domain.category.application.service.CategoryService;
-import com.irum.come2us.domain.deliveryaddress.application.service.DeliveryAddressService;
-import com.irum.come2us.domain.discount.application.service.DiscountService;
-import com.irum.come2us.domain.member.application.service.ManagerService;
-import com.irum.come2us.domain.member.application.service.MemberService;
-import com.irum.come2us.domain.order.application.service.CustomerOrderService;
-import com.irum.come2us.domain.order.application.service.OwnerOrderService;
-import com.irum.come2us.domain.order.application.service.SalesService;
-import com.irum.come2us.domain.product.application.service.ProductImageService;
-import com.irum.come2us.domain.refund.application.service.RefundService;
-import com.irum.come2us.domain.review.application.service.ReviewService;
-import com.irum.come2us.global.util.CookieUtil;
+import com.irum.orderservice.domain.deliveryaddress.service.DeliveryAddressService;
+import com.irum.orderservice.domain.order.service.CustomerOrderService;
+import com.irum.orderservice.domain.order.service.OwnerOrderService;
+import com.irum.orderservice.domain.order.service.SalesService;
+import com.irum.orderservice.domain.refund.service.RefundService;
+import com.irum.orderservice.global.util.CookieUtil;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

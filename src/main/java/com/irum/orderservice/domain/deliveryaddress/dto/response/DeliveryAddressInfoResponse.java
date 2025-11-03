@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.deliveryaddress.dto.response;
 
-import com.irum.come2us.domain.deliveryaddress.domain.entity.Address;
+import com.irum.orderservice.domain.deliveryaddress.domain.Address;
 import java.util.UUID;
 
 public record DeliveryAddressInfoResponse(

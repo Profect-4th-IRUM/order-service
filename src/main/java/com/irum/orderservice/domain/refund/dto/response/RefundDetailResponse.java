@@ -1,11 +1,10 @@
 package com.irum.orderservice.domain.refund.dto.response;
 
-import com.irum.come2us.domain.deliveryaddress.domain.entity.DeliveryAddress;
-import com.irum.come2us.domain.order.domain.entity.Order;
-import com.irum.come2us.domain.order.domain.entity.OrderDetail;
-import com.irum.come2us.domain.refund.domain.entity.Refund;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundReason;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
+import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
+import com.irum.orderservice.domain.refund.domain.entity.Refund;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

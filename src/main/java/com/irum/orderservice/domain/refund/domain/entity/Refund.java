@@ -1,16 +1,11 @@
 package com.irum.orderservice.domain.refund.domain.entity;
 
-import com.irum.come2us.domain.order.domain.entity.Order;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundReason;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.come2us.global.domain.BaseEntity;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 

@@ -1,6 +1,6 @@
 package com.irum.orderservice.global.scheduler;
 
-import com.irum.come2us.domain.order.application.service.OrderBatchService;
+import com.irum.orderservice.domain.order.service.OrderBatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,7 +1,7 @@
 package com.irum.orderservice.domain.coupon.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.irum.come2us.domain.coupon.domain.entity.Coupon;
+import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.order.repository.dto;
 
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

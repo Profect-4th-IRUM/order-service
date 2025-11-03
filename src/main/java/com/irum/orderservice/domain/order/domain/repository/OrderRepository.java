@@ -1,7 +1,5 @@
 package com.irum.orderservice.domain.order.domain.repository;
 
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.domain.order.domain.entity.Order;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

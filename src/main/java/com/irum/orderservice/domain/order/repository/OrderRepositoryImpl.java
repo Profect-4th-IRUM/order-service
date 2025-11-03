@@ -1,19 +1,11 @@
 package com.irum.orderservice.domain.order.repository;
 
-import static com.querydsl.core.group.GroupBy.*;
-import static java.util.Collections.*;
-
-import com.irum.come2us.domain.member.domain.entity.Member;
-import com.irum.come2us.domain.member.domain.entity.QMember;
-import com.irum.come2us.domain.order.domain.entity.QOrder;
-import com.irum.come2us.domain.order.domain.entity.QOrderDetail;
-import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.come2us.domain.order.domain.repository.OrderRepositoryCustom;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.CustomerOrderDetailRow;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.CustomerOrderSummaryRow;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.OrderDetailRow;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.OrderSummaryRow;
-import com.irum.come2us.domain.refund.domain.entity.QRefund;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
+import com.irum.orderservice.domain.order.domain.repository.OrderRepositoryCustom;
+import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
+import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
+import com.irum.orderservice.domain.order.repository.dto.OrderDetailRow;
+import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

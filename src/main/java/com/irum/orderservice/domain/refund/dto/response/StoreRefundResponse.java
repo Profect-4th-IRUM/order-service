@@ -1,8 +1,8 @@
 package com.irum.orderservice.domain.refund.dto.response;
 
-import com.irum.come2us.domain.refund.domain.entity.Refund;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundReason;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.refund.domain.entity.Refund;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import java.util.UUID;
 
 public record StoreRefundResponse(

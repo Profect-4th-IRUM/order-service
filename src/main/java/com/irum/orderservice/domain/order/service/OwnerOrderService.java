@@ -1,24 +1,22 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.come2us.domain.coupon.domain.repository.AppliedCouponRepository;
-import com.irum.come2us.domain.order.application.mapper.OrderMapper;
-import com.irum.come2us.domain.order.domain.entity.Order;
-import com.irum.come2us.domain.order.domain.entity.OrderDetail;
-import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.come2us.domain.order.domain.repository.OrderDetailRepository;
-import com.irum.come2us.domain.order.domain.repository.OrderRepository;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.OrderDetailRow;
-import com.irum.come2us.domain.order.infrastructure.repository.dto.OrderSummaryRow;
-import com.irum.come2us.domain.order.presentation.dto.request.OwnerOrderShippedRequest;
-import com.irum.come2us.domain.order.presentation.dto.response.AddressResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.OrderDetailResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.OwnerOrderListResponse;
-import com.irum.come2us.domain.payment.domain.repository.PaymentRepository;
-import com.irum.come2us.domain.refund.domain.entity.Refund;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.come2us.domain.refund.domain.repository.RefundRepository;
-import com.irum.come2us.global.presentation.advice.exception.CommonException;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.OrderErrorCode;
+import com.irum.orderservice.domain.order.domain.entity.Order;
+import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
+import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
+import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
+import com.irum.orderservice.domain.order.dto.request.OwnerOrderShippedRequest;
+import com.irum.orderservice.domain.order.dto.response.AddressResponse;
+import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
+import com.irum.orderservice.domain.order.dto.response.OwnerOrderListResponse;
+import com.irum.orderservice.domain.order.mapper.OrderMapper;
+import com.irum.orderservice.domain.order.repository.dto.OrderDetailRow;
+import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
+import com.irum.orderservice.domain.refund.domain.entity.Refund;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
+import com.irum.orderservice.global.presentation.advice.exception.CommonException;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.OrderErrorCode;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +37,8 @@ public class OwnerOrderService {
     private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;
     private final OrderMapper orderMapper;
-    private final AppliedCouponRepository appliedCouponRepository;
+    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
+            appliedCouponRepository;
 
     @Transactional(readOnly = true)
     public OwnerOrderListResponse getPreparingOrderList(UUID storeId, UUID cursor, Integer size) {

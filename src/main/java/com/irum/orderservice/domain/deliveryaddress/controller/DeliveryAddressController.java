@@ -1,11 +1,11 @@
 package com.irum.orderservice.domain.deliveryaddress.controller;
 
-import com.irum.come2us.domain.deliveryaddress.application.service.DeliveryAddressService;
-import com.irum.come2us.domain.deliveryaddress.presentation.dto.request.AddressDetailUpdateRequest;
-import com.irum.come2us.domain.deliveryaddress.presentation.dto.request.DeliveryAddressRegisterRequest;
-import com.irum.come2us.domain.deliveryaddress.presentation.dto.request.RecipientUpdateRequest;
-import com.irum.come2us.domain.deliveryaddress.presentation.dto.response.DeliveryAddressInfoListResponse;
-import com.irum.come2us.domain.deliveryaddress.presentation.dto.response.DeliveryAddressInfoResponse;
+import com.irum.orderservice.domain.deliveryaddress.dto.request.AddressDetailUpdateRequest;
+import com.irum.orderservice.domain.deliveryaddress.dto.request.DeliveryAddressRegisterRequest;
+import com.irum.orderservice.domain.deliveryaddress.dto.request.RecipientUpdateRequest;
+import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoListResponse;
+import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoResponse;
+import com.irum.orderservice.domain.deliveryaddress.service.DeliveryAddressService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import java.util.UUID;

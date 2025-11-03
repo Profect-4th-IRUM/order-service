@@ -1,15 +1,15 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
-import com.irum.come2us.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.come2us.domain.product.domain.entity.Product;
-import com.irum.come2us.domain.product.domain.entity.ProductOptionValue;
-import com.irum.come2us.global.domain.BaseEntity;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
+import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.*;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Builder

@@ -1,10 +1,10 @@
 package com.irum.orderservice.domain.order.controller;
 
-import com.irum.come2us.domain.order.application.service.OwnerOrderService;
-import com.irum.come2us.domain.order.application.service.SalesService;
-import com.irum.come2us.domain.order.presentation.dto.request.OwnerOrderShippedRequest;
-import com.irum.come2us.domain.order.presentation.dto.response.OrderDetailResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.OwnerOrderListResponse;
+import com.irum.orderservice.domain.order.dto.request.OwnerOrderShippedRequest;
+import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
+import com.irum.orderservice.domain.order.dto.response.OwnerOrderListResponse;
+import com.irum.orderservice.domain.order.service.OwnerOrderService;
+import com.irum.orderservice.domain.order.service.SalesService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

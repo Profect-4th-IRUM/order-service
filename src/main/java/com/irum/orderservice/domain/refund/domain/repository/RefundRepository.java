@@ -1,8 +1,7 @@
 package com.irum.orderservice.domain.refund.domain.repository;
 
-import com.irum.come2us.domain.order.domain.entity.Order;
-import com.irum.come2us.domain.refund.domain.entity.Refund;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.refund.domain.entity.Refund;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

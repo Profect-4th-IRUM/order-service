@@ -1,9 +1,8 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.come2us.domain.order.domain.entity.Order;
-import com.irum.come2us.domain.order.domain.repository.OrderDetailRepository;
-import com.irum.come2us.domain.order.domain.repository.OrderRepository;
-import com.irum.come2us.domain.payment.domain.repository.PaymentRepository;
+import com.irum.orderservice.domain.order.domain.entity.Order;
+import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
+import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

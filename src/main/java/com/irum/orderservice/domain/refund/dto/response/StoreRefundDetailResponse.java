@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.refund.dto.response;
 
-import com.irum.come2us.domain.deliveryaddress.domain.entity.DeliveryAddress;
+import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
 import java.util.List;
 import java.util.UUID;
 

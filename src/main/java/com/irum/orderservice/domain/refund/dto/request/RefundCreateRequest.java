@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.refund.dto.request;
 
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundReason;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 

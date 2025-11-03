@@ -1,11 +1,11 @@
 package com.irum.orderservice.domain.order.controller;
 
-import com.irum.come2us.domain.order.application.service.CustomerOrderService;
-import com.irum.come2us.domain.order.presentation.dto.request.CustomerOrderRequest;
-import com.irum.come2us.domain.order.presentation.dto.response.CustomerOrderListResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.CustomerOrderResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.OrderDetailResponse;
-import com.irum.come2us.domain.order.presentation.dto.response.OrderDetailStatusResponse;
+import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
+import com.irum.orderservice.domain.order.dto.response.CustomerOrderListResponse;
+import com.irum.orderservice.domain.order.dto.response.CustomerOrderResponse;
+import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
+import com.irum.orderservice.domain.order.dto.response.OrderDetailStatusResponse;
+import com.irum.orderservice.domain.order.service.CustomerOrderService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.UUID;

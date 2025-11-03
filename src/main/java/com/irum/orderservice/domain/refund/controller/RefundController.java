@@ -1,11 +1,11 @@
 package com.irum.orderservice.domain.refund.controller;
 
-import com.irum.come2us.domain.refund.application.service.RefundService;
-import com.irum.come2us.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.come2us.domain.refund.presentation.dto.request.RefundCreateRequest;
-import com.irum.come2us.domain.refund.presentation.dto.request.StoreRefundStatusRequest;
-import com.irum.come2us.domain.refund.presentation.dto.response.RefundDetailResponse;
-import com.irum.come2us.domain.refund.presentation.dto.response.StoreRefundListResponse;
+import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.domain.refund.dto.request.RefundCreateRequest;
+import com.irum.orderservice.domain.refund.dto.request.StoreRefundStatusRequest;
+import com.irum.orderservice.domain.refund.dto.response.RefundDetailResponse;
+import com.irum.orderservice.domain.refund.dto.response.StoreRefundListResponse;
+import com.irum.orderservice.domain.refund.service.RefundService;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.irum.orderservice.global.presentation.advice.exception;
 
-import com.irum.come2us.global.presentation.advice.exception.errorcode.BaseErrorCode;
-import com.irum.come2us.global.presentation.advice.exception.errorcode.GlobalErrorCode;
-import com.irum.come2us.global.presentation.advice.response.CommonResponse;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.BaseErrorCode;
+import com.irum.orderservice.global.presentation.advice.exception.errorcode.GlobalErrorCode;
+import com.irum.orderservice.global.presentation.advice.response.CommonResponse;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
