@@ -54,8 +54,21 @@ public class Order extends BaseEntity {
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
     // 한 주문당 여러 상품이 담겨있기 때문에 List 추가
-
     public void updateOrderStatus(OrderStatus os) {
         this.orderStatusAll = os;
+    }
+
+    public static Order from(String orderNum, int calculatedTotalPrice, Integer deliveryFee, String deliveryRequest, Long memberId, UUID storeId, UUID paymentId, DeliveryAddress deliveryAddress) {
+        return Order.builder()
+                .orderNum(orderNum)
+                .totalPrice(calculatedTotalPrice)
+                .deliveryFee(deliveryFee)
+                .deliveryRequest(deliveryRequest)
+                .orderStatusAll(OrderStatus.PENDING)
+                .memberId(memberId)
+                .storeId(storeId)
+                .paymentId(paymentId)
+                .deliveryAddress(deliveryAddress)
+                .build();
     }
 }

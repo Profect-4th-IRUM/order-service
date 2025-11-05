@@ -197,16 +197,7 @@ public class CustomerOrderService {
             calculatedTotalPrice += productPrice;
             productCount += productReq.quantity();
 
-            OrderDetail orderDetail =
-                    OrderDetail.builder()
-                            .productId(product.productId())
-                            .price(productPrice)
-                            .quantity(productReq.quantity())
-                            .orderStatusIndi(OrderStatus.PENDING)
-                            .optionName(product.optionName())
-                            .productName(product.productName())
-                            .productOptionValueId(product.optionValueId())
-                            .build();
+            OrderDetail orderDetail = OrderDetail.from(product, productPrice, productReq.quantity());
             orderDetails.add(orderDetail);
         }
         log.info("상품 확인, 재고 확인, 재고 차감, 가격 계산 완료");
@@ -237,18 +228,7 @@ public class CustomerOrderService {
         // 주문 엔티티 생성 PENDING 상태  8 자리 랜덤값
         String orderNum = "ORD-" + (int) ((Math.random() * 100000000));
 
-        Order order =
-                Order.builder()
-                        .orderNum(orderNum)
-                        .totalPrice(calculatedTotalPrice)
-                        .deliveryFee(deliveryFee)
-                        .deliveryRequest(request.deliveryRequest())
-                        .orderStatusAll(OrderStatus.PENDING)
-                        .memberId(currentMemberId)
-                        .storeId(request.storeId())
-                        .paymentId(paymentId)
-                        .deliveryAddress(deliveryAddress)
-                        .build();
+        Order order = Order.from(orderNum, calculatedTotalPrice, deliveryFee, request.deliveryRequest(), currentMemberId, request.storeId(), paymentId, deliveryAddress);
         orderRepository.save(order);
 
         /** 주문 상세 저장* */
