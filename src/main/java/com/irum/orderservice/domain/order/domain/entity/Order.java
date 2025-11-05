@@ -1,15 +1,16 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
+import com.irum.global.domain.BaseEntity;
 import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Builder

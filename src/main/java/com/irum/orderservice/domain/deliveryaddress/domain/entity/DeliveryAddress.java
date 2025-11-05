@@ -1,14 +1,15 @@
-package com.irum.orderservice.domain.deliveryaddress.domain;
+package com.irum.orderservice.domain.deliveryaddress.domain.entity;
 
-import com.irum.orderservice.global.domain.BaseEntity;
+import com.irum.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.Where;
+
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -23,7 +24,7 @@ public class DeliveryAddress extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    private Long member;
 
     @Embedded private Address address;
 
@@ -38,7 +39,7 @@ public class DeliveryAddress extends BaseEntity {
 
     @Builder
     private DeliveryAddress(
-            Member member,
+            Long member,
             Address address,
             String recipientName,
             String recipientContact,
@@ -51,7 +52,7 @@ public class DeliveryAddress extends BaseEntity {
     }
 
     public static DeliveryAddress create(
-            Member member, Address address, String recipientName, String recipientContact) {
+            Long member, Address address, String recipientName, String recipientContact) {
         return DeliveryAddress.builder()
                 .member(member)
                 .address(address)

@@ -1,13 +1,12 @@
 package com.irum.orderservice.global.util;
 
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.AuthErrorCode;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.MemberErrorCode;
-import com.irum.orderservice.global.security.MemberDetails;
+import com.irum.global.advice.exception.CommonException;
+import com.irum.global.advice.exception.errorcode.GlobalErrorCode;
+import com.irum.global.context.MemberAuthContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import openfeign.member.client.MemberClient;
+import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,33 +14,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MemberUtil {
 
-    private final MemberRepository memberRepository;
+    private final MemberClient memberClient;
 
-    public Member getCurrentMember() {
-        return memberRepository
-                .findByMemberId(getCurrentMemberId())
-                .orElseThrow(() -> new CommonException(AuthErrorCode.AUTHENTICATION_NOT_FOUND));
+    public MemberDto getCurrentMember() {
+        return memberClient.getMember(getCurrentMemberId());
     } // 로그인 된 유저 정보 조회
 
-    public void assertMemberResourceAccess(Member member) {
-        if (!member.getMemberId().equals(getCurrentMember().getMemberId()))
-            throw new CommonException(MemberErrorCode.UNAUTHORIZED_ACCESS);
+    public void assertMemberResourceAccess(Long memberId) {
+        if (!memberId.equals(getCurrentMember().memberId()))
+            throw new CommonException(GlobalErrorCode.EMPTY_REQUEST);
     }
 
     private Long getCurrentMemberId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == null) {
-            throw new CommonException(AuthErrorCode.AUTHENTICATION_NOT_FOUND);
-        }
-        try {
-            MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
-            return memberDetails.getUserId();
-        } catch (ClassCastException e) {
-            log.warn(e.getMessage());
-            throw new CommonException(AuthErrorCode.AUTHENTICATION_NOT_FOUND);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            throw new CommonException(AuthErrorCode.AUTHENTICATION_NOT_FOUND);
-        }
+        return MemberAuthContext.getMemberId();
     } // 로그인 된 아이디 반환
 }

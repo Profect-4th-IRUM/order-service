@@ -3,21 +3,20 @@ package com.irum.orderservice.domain.coupon.controller;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
 import com.irum.orderservice.domain.coupon.service.CouponService;
-import com.irum.orderservice.global.util.MemberUtil;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/coupons")
 @RequiredArgsConstructor
 public class CouponController {
     private final CouponService couponService;
-    private final MemberUtil memberUtil;
 
     @PostMapping
     public ResponseEntity<Void> createCoupon(@Valid @RequestBody CouponGenerateRequest request) {

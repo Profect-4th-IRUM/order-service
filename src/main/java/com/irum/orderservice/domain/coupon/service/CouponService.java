@@ -3,44 +3,51 @@ package com.irum.orderservice.domain.coupon.service;
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.CouponErrorCode;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.MemberErrorCode;
-import com.irum.orderservice.global.util.MemberUtil;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import com.irum.orderservice.openfeign.client.MemberClient;
+import com.irum.orderservice.global.exception.errorcode.CouponErrorCode;
+import com.irum.orderservice.global.exception.errorcode.MemberErrorCode;
+import com.irum.orderservice.openfeign.dto.response.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CouponService {
-    private final com.irum.orderservice.domain.coupon.repository.CouponRepository couponRepository;
-    private final MemberRepository memberRepository;
+    private final com.irum.orderservice.domain.coupon.domain.repository.CouponRepository couponRepository;
     private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
             appliedCouponRepository;
-    private final MemberUtil memberUtil;
+    private final MemberClient memberClient;
 
-    public void createCoupon(CouponGenerateRequest request, Long memberId) {
+    public void createCoupon(CouponGenerateRequest request) {
+        private final MemberContextHolder holder;
 
-        Member member =
-                memberRepository
-                        .findByMemberId(memberId)
-                        .orElseThrow(() -> new CommonException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member response = memberClient.getMember(holder.getMemberId());
+
+        if (response != null) {
+            throw new CommonException(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
+
+
 
         Coupon coupon =
                 Coupon.createCoupon(
-                        request.name(), request.discountAmount(), request.expiration(), member);
+                        request.name(),
+                        request.discountAmount(),
+                        request.expiration(),
+                        response.memberId());
 
         couponRepository.save(coupon);
     }
 
     @Transactional(readOnly = true)
     public List<CouponResponse> getCouponByMember(Long memberId) {
-        return couponRepository.findByMember_MemberId(memberId).stream()
+        return couponRepository.findByMemberId(memberClient.getMemberId().memberId()).stream()
                 .map(CouponResponse::from)
                 .toList();
     }
@@ -51,15 +58,15 @@ public class CouponService {
                 couponRepository
                         .findById(couponId)
                         .orElseThrow(() -> new CommonException(CouponErrorCode.COUPON_NOT_FOUND));
-        if (!coupon.getMember().getMemberId().equals(memberId)) {
+        if (!memberClient.getMemberId().memberId().equals(memberId)) {
             throw new CommonException(CouponErrorCode.ONLY_OWNER_CAN_DELETE);
         }
-        memberUtil.assertMemberResourceAccess(coupon.getMember());
+        memberUtil.assertMemberResourceAccess(memberClient.getCurrentMemberId());
         coupon.softDelete(memberUtil.getCurrentMember().getMemberId());
     }
 
     /** 쿠폰 유효성 검증 및 할인 금액 계산 */
-    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, Member member) {
+    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, UUID memberId) {
         if (couponIdList.isEmpty()) {
             return 0;
         }
@@ -69,7 +76,7 @@ public class CouponService {
 
         for (Coupon coupon : couponList) {
             // 권한 검사
-            if (!coupon.getMember().getMemberId().equals(member.getMemberId())) {
+            if (!memberClient.validateCurrentMember()) {
                 throw new CommonException(CouponErrorCode.COUPON_NO_PERMISSION);
             }
             // 만료일 검사

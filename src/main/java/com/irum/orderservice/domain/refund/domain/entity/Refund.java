@@ -1,13 +1,14 @@
 package com.irum.orderservice.domain.refund.domain.entity;
 
+import com.irum.global.domain.BaseEntity;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
