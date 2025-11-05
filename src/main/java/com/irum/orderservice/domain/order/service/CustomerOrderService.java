@@ -1,6 +1,7 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentCorp;
 import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
@@ -251,11 +252,11 @@ public class CustomerOrderService {
         log.info("할인 {}, 할인 후 가격 {}", discountAmount, finalPaymentAmount);
 
         /** 결재 생성 PENDING 상태* */
-        Payment payment =
-                paymentService.preparePayment(
-                        currentMemberId, finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
+        UUID paymentId =
+                paymentClient.createPaymentPending(
+                        finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
         // 쿠폰 미리 차감
-        appliedCouponService.createAppliedCouponList(payment, request.couponIdList());
+        appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());
 
         // 주문 엔티티 생성 PENDING 상태  8 자리 랜덤값
         String orderNum = "ORD-" + (int) ((Math.random() * 100000000));
@@ -269,7 +270,7 @@ public class CustomerOrderService {
                         .orderStatusAll(OrderStatus.PENDING)
                         .memberId(currentMemberId)
                         .storeId(request.storeId())
-                        .payment(payment)
+                        .paymentId(paymentId)
                         .deliveryAddress(deliveryAddress)
                         .build();
         orderRepository.save(order);
@@ -280,6 +281,6 @@ public class CustomerOrderService {
             orderDetailRepository.save(orderDetail);
         }
 
-        return CustomerOrderMapper.toCustomerOrderResponse(order, orderDetails);
+        return CustomerOrderMapper.toCustomerOrderResponse(order, orderDetails, discountAmount, finalPaymentAmount);
     }
 }

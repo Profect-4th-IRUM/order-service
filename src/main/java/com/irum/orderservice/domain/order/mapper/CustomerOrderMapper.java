@@ -59,7 +59,7 @@ public class CustomerOrderMapper {
     }
 
     public static CustomerOrderResponse toCustomerOrderResponse(
-            Order order, List<OrderDetail> orderDetailList) {
+            Order order, List<OrderDetail> orderDetailList, int discountAmount, int finalPaymentAmount) {
         List<CustomerOrderResponse.ProductSummary> productSummaryList =
                 orderDetailList.stream().map(CustomerOrderMapper::toProductSummary).toList();
 
@@ -67,8 +67,8 @@ public class CustomerOrderMapper {
                 .orderId(order.getOrderId())
                 .address(AddressResponse.from(order.getDeliveryAddress().getAddress()))
                 .totalProductPrice(order.getTotalPrice())
-                .totalDiscountAmount(order.getPayment().getTotalDiscountAmount())
-                .totalPaymentAmount(order.getPayment().getAmount())
+                .totalDiscountAmount(discountAmount)
+                .totalPaymentAmount(finalPaymentAmount)
                 .productList(productSummaryList)
                 .build();
     }
