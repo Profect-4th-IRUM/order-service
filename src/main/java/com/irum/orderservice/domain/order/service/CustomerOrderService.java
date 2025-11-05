@@ -53,7 +53,7 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
-        Member member = memberUtil.getCurrentMember();
+        Long currentMemberId = 0L; //TODO
 
         OrderDetail orderDetail =
                 orderDetailRepository
@@ -61,7 +61,7 @@ public class CustomerOrderService {
                         .orElseThrow(
                                 () -> new CommonException(OrderErrorCode.ORDER_DETAIL_NOT_FOUND));
 
-        if (member.equals(orderDetail.getOrder().getMember()))
+        if (currentMemberId.equals(orderDetail.getOrder().getMemberId()))
             throw new CommonException(OrderErrorCode.ORDER_FORBIDDEN);
 
         return OrderDetailStatusResponse.from(orderDetail);
