@@ -3,6 +3,8 @@ package com.irum.orderservice.domain.order.service;
 import com.irum.orderservice.domain.client.payment.PaymentClient;
 import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentCorp;
 import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
+import com.irum.orderservice.domain.client.product.ProductClient;
+import com.irum.orderservice.domain.client.product.dto.response.ProductListResponse;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
@@ -51,6 +53,7 @@ public class CustomerOrderService {
     private final AppliedCouponService appliedCouponService;
 
     private final PaymentClient paymentClient;
+    private final ProductClient productClient;
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
@@ -145,10 +148,7 @@ public class CustomerOrderService {
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
         Long currentMemberId = 0L; //TODO
-//        Store store =
-//                storeRepository
-//                        .findByIdWithDeliveryPolicy(request.storeId())
-//                        .orElseThrow(() -> new CommonException(StoreErrorCode.STORE_NOT_FOUND));
+
         DeliveryAddress deliveryAddress =
                 deliveryAddressRepository
                         .findById(request.deliveryAddressId())
@@ -171,25 +171,17 @@ public class CustomerOrderService {
                         .distinct()
                         .toList();
 
-        // 조회
-        List<Product> products = productRepository.findAllById(productIds);
-        List<ProductOptionValue> optionValues =
-                productOptionValueRepository.findAllByIdInWithLock(optionValueIds);
 
-        // Map으로 변환
-        Map<UUID, Product> productMap =
-                products.stream().collect(Collectors.toMap(Product::getId, product -> product));
+        // 조회, 재고 미리 차감?
+        ProductListResponse response = productClient.getProductList(optionValueIds, request.storeId());
 
-        Map<UUID, ProductOptionValue> optionMap =
-                optionValues.stream()
-                        .collect(Collectors.toMap(ProductOptionValue::getId, option -> option));
+        Map<UUID, ProductListResponse.ProductResponse> optionMap =
+                response.productList().stream()
+                        .collect(Collectors.toMap(ProductListResponse.ProductResponse::optionValueId, product -> product));
 
         // 정합 정검
-        if (productMap.size() != productIds.size()) {
-            throw new CommonException(ProductErrorCode.PRODUCT_NOT_FOUND);
-        }
-        if (optionMap.size() != optionValueIds.size()) {
-            throw new CommonException(ProductErrorCode.PRODUCT_OPTION_VALUE_NOT_FOUND);
+        if (optionMap.size() != productIds.size() || optionMap.size() != optionValueIds.size()) {
+            throw new CommonException(OrderErrorCode.INVALID_ORDER);
         }
 
         // 상품 확인, 재고확인, 상품 정보 조회 , 가격 계산, 주문 상세 엔티티 생성 준비
@@ -197,48 +189,32 @@ public class CustomerOrderService {
         int productCount = 0;
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (CustomerOrderRequest.ProductSummary productReq : request.productList()) {
-            // 상품이 해당 상점의 상품인지 확인
-            Product product = productMap.get(productReq.productId());
-
-            if (!product.getStore().getId().equals(request.storeId())) {
-                throw new CommonException(OrderErrorCode.INVALID_ORDER);
-            }
-
-            // 재고 확인
-            ProductOptionValue productOptionValue = optionMap.get(productReq.optionValueId());
-            // 재고보다 요청 물품 개수가 많을때
-            if (productOptionValue.getStockQuantity() < productReq.quantity()) {
-                throw new CommonException(ProductErrorCode.PRODUCT_OUT_OF_STOCK);
-            }
+            ProductListResponse.ProductResponse product = optionMap.get(productReq.optionValueId());
 
             // 제품 가격 계산
             int productPrice =
-                    (product.getPrice() + productOptionValue.getExtraPrice())
-                            * productReq.quantity();
+                    (product.price() + product.extraPrice()) * productReq.quantity();
             calculatedTotalPrice += productPrice;
             productCount += productReq.quantity();
 
-            // 재고 미리 차감
-            productOptionValue.decreaseStock(productReq.quantity());
-
             OrderDetail orderDetail =
                     OrderDetail.builder()
-                            .product(product)
+                            .productId(product.productId())
                             .price(productPrice)
                             .quantity(productReq.quantity())
                             .orderStatusIndi(OrderStatus.PENDING)
-                            .optionName(productOptionValue.getName())
-                            .productName(product.getName())
-                            .productOptionValue(productOptionValue)
+                            .optionName(product.optionName())
+                            .productName(product.productName())
+                            .productOptionValueId(product.optionValueId())
                             .build();
             orderDetails.add(orderDetail);
         }
         log.info("상품 확인, 재고 확인, 재고 차감, 가격 계산 완료");
 
         /** 배송비 적용* */
-        int deliveryFee = store.getDeliveryPolicy().getDefaultDeliveryFee();
-        int deliveryMinAmount = store.getDeliveryPolicy().getMinAmount();
-        int deliveryMinQuantity = store.getDeliveryPolicy().getMinQuantity();
+        int deliveryFee = response.defaultDeliveryFee();
+        int deliveryMinAmount = response.minAmount();
+        int deliveryMinQuantity = response.minQuantity();
         if (calculatedTotalPrice > deliveryMinAmount || productCount > deliveryMinQuantity) {
             deliveryFee = 0;
         }
