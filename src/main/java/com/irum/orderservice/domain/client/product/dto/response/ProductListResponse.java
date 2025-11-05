@@ -11,11 +11,11 @@ public record ProductListResponse(
         List<ProductResponse> productList
 ) {
     public record ProductResponse(
-
             UUID productId,
             UUID optionValueId,
             int price,
             int extraPrice,
+            int productDiscount,
             String optionName,
             String productName
     ){

@@ -148,6 +148,7 @@ public class CustomerOrderService {
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
         Long currentMemberId = 0L; //TODO
+        int discountAmount = 0;
 
         DeliveryAddress deliveryAddress =
                 deliveryAddressRepository
@@ -195,7 +196,10 @@ public class CustomerOrderService {
             int productPrice =
                     (product.price() + product.extraPrice()) * productReq.quantity();
             calculatedTotalPrice += productPrice;
+            // 상품 개수 카운트
             productCount += productReq.quantity();
+            // 상품 개별 할인
+            discountAmount += product.productDiscount();
 
             OrderDetail orderDetail = OrderDetail.from(product, productPrice, productReq.quantity());
             orderDetails.add(orderDetail);
@@ -211,8 +215,8 @@ public class CustomerOrderService {
         }
         log.info("배송비 {}", deliveryFee);
 
-        /** 할인 적용 */
-        int discountAmount =
+        /** 할인 쿠폰 적용 */
+        discountAmount +=
                 couponService.validAndCalCoupon(
                         request.couponIdList(), calculatedTotalPrice, currentMemberId);
         int finalPaymentAmount = calculatedTotalPrice - discountAmount;
