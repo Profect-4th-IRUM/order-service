@@ -3,13 +3,12 @@ package com.irum.orderservice.domain.coupon.service;
 import com.irum.orderservice.domain.coupon.domain.entity.AppliedCoupon;
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
 import com.irum.orderservice.global.util.MemberUtil;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

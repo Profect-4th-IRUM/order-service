@@ -6,15 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.Where;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 // 1. 엔티티
 
@@ -42,6 +41,7 @@ public class Coupon extends BaseEntity {
 
     @Column(name = "member_id", nullable = false)
     private Long memberId;
+
     // 2. 생성자
 
     @Builder(access = AccessLevel.PRIVATE)

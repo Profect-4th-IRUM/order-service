@@ -11,15 +11,14 @@ import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddress
 import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoResponse;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +33,12 @@ public class DeliveryAddressService {
         String recipientName =
                 request.recipientName() == null ? member.name() : request.recipientName();
         String recipientContact =
-                request.recipientContact() == null
-                        ? member.contact()
-                        : request.recipientContact();
+                request.recipientContact() == null ? member.contact() : request.recipientContact();
         DeliveryAddress deliveryAddress =
-                DeliveryAddress.create(member.memberId(), request.address(), recipientName, recipientContact);
-        if (!deliveryAddressRepository.existsByMember(member.memberId())) deliveryAddress.markAsDefault();
+                DeliveryAddress.create(
+                        member.memberId(), request.address(), recipientName, recipientContact);
+        if (!deliveryAddressRepository.existsByMember(member.memberId()))
+            deliveryAddress.markAsDefault();
         deliveryAddressRepository.save(deliveryAddress);
     }
 

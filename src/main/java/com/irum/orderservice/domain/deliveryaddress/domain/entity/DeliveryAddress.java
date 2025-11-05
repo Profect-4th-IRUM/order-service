@@ -2,14 +2,13 @@ package com.irum.orderservice.domain.deliveryaddress.domain.entity;
 
 import com.irum.global.domain.BaseEntity;
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.Where;
-
-import java.util.UUID;
 
 @Getter
 @Entity

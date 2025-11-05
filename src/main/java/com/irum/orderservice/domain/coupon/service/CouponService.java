@@ -3,17 +3,16 @@ package com.irum.orderservice.domain.coupon.service;
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
-import com.irum.orderservice.openfeign.client.MemberClient;
 import com.irum.orderservice.global.exception.errorcode.CouponErrorCode;
 import com.irum.orderservice.global.exception.errorcode.MemberErrorCode;
+import com.irum.orderservice.openfeign.client.MemberClient;
 import com.irum.orderservice.openfeign.dto.response.MemberResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
