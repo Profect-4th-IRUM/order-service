@@ -91,12 +91,11 @@ public class CustomerOrderService {
     public CustomerOrderListResponse getOrderList(
             UUID cursor, int size, LocalDate startDate, LocalDate endDate) {
 
-        Member member = memberUtil.getCurrentMember();
-        log.info("member {}", member.getMemberId());
+        Long currentMemberId = 0L; //TODO
 
         // 2. order list 검색
         List<CustomerOrderSummaryRow> headerList =
-                orderRepository.fetchOrderListByMember(member, startDate, endDate, cursor, size);
+                orderRepository.fetchOrderListByMember(currentMemberId, startDate, endDate, cursor, size);
         log.info("order list {}", headerList);
 
         boolean hasNext = headerList.size() > size;

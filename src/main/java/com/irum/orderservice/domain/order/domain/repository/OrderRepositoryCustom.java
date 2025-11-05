@@ -16,7 +16,7 @@ public interface OrderRepositoryCustom {
     List<OrderDetailRow> fetchOrderDetailList(List<UUID> orderIdList);
 
     List<CustomerOrderSummaryRow> fetchOrderListByMember(
-            Member member, LocalDate startDate, LocalDate endDate, UUID cursor, int size);
+            Long memberId, LocalDate startDate, LocalDate endDate, UUID cursor, int size);
 
     List<CustomerOrderDetailRow> fetchOrderDetailListByMember(List<UUID> orderIdList);
 }
