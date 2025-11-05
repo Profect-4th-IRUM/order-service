@@ -5,6 +5,4 @@ import lombok.Builder;
 
 @Builder
 public record CreatePaymentRequest(
-        int finalPaymentAmount, int discountAmount, PaymentCorp paymentCorp
-) {
-}
+        int finalPaymentAmount, int discountAmount, PaymentCorp paymentCorp) {}

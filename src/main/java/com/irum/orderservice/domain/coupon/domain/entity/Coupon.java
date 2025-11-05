@@ -36,7 +36,7 @@ public class Coupon extends BaseEntity {
     @Column(name = "expiration") // 유효기간
     private LocalDateTime expiration;
 
-    //ManyToOne
+    // ManyToOne
     private Long memberId;
 
     // 2. 생성자

@@ -37,13 +37,13 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private OrderStatus orderStatusAll;
 
-    //OneToOne
+    // OneToOne
     private UUID paymentId;
 
-    //ManyToOne
+    // ManyToOne
     private Long memberId;
 
-    //ManyToOne
+    // ManyToOne
     private UUID storeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,7 +58,15 @@ public class Order extends BaseEntity {
         this.orderStatusAll = os;
     }
 
-    public static Order from(String orderNum, int calculatedTotalPrice, Integer deliveryFee, String deliveryRequest, Long memberId, UUID storeId, UUID paymentId, DeliveryAddress deliveryAddress) {
+    public static Order from(
+            String orderNum,
+            int calculatedTotalPrice,
+            Integer deliveryFee,
+            String deliveryRequest,
+            Long memberId,
+            UUID storeId,
+            UUID paymentId,
+            DeliveryAddress deliveryAddress) {
         return Order.builder()
                 .orderNum(orderNum)
                 .totalPrice(calculatedTotalPrice)

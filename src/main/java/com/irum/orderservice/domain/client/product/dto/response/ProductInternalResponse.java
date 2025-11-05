@@ -8,8 +8,7 @@ public record ProductInternalResponse(
         int minAmount,
         int minQuantity,
         UUID storeId,
-        List<ProductResponse> productList
-) {
+        List<ProductResponse> productList) {
     public record ProductResponse(
             UUID productId,
             UUID optionValueId,
@@ -17,8 +16,5 @@ public record ProductInternalResponse(
             int extraPrice,
             int productDiscount,
             String optionName,
-            String productName
-    ){
-
-    }
+            String productName) {}
 }

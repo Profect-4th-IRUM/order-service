@@ -56,7 +56,7 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
-        Long currentMemberId = 0L; //TODO
+        Long currentMemberId = 0L; // TODO
 
         OrderDetail orderDetail =
                 orderDetailRepository
@@ -72,7 +72,7 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(UUID orderId) {
-        Long currentMemberId = 0L; //TODO
+        Long currentMemberId = 0L; // TODO
 
         // order 조회 및 member 검증
         Order order =
@@ -85,18 +85,20 @@ public class CustomerOrderService {
         Refund refund = refundRepository.findByOrder(order).orElse(null);
         PaymentResponse paymentResponse = paymentClient.getPayment(order.getPaymentId());
 
-        return CustomerOrderMapper.toOrderDetailResponse(order, orderDetailList, refund, paymentResponse);
+        return CustomerOrderMapper.toOrderDetailResponse(
+                order, orderDetailList, refund, paymentResponse);
     }
 
     @Transactional
     public CustomerOrderListResponse getOrderList(
             UUID cursor, int size, LocalDate startDate, LocalDate endDate) {
 
-        Long currentMemberId = 0L; //TODO
+        Long currentMemberId = 0L; // TODO
 
         // 2. order list 검색
         List<CustomerOrderSummaryRow> headerList =
-                orderRepository.fetchOrderListByMember(currentMemberId, startDate, endDate, cursor, size);
+                orderRepository.fetchOrderListByMember(
+                        currentMemberId, startDate, endDate, cursor, size);
         log.info("order list {}", headerList);
 
         boolean hasNext = headerList.size() > size;
@@ -146,7 +148,7 @@ public class CustomerOrderService {
     }
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
-        Long currentMemberId = 0L; //TODO
+        Long currentMemberId = 0L; // TODO
         int discountAmount = 0;
 
         DeliveryAddress deliveryAddress =
@@ -171,13 +173,16 @@ public class CustomerOrderService {
                         .distinct()
                         .toList();
 
-
         // 조회, 재고 미리 차감?
-        ProductInternalResponse response = productClient.getProductList(optionValueIds, request.storeId());
+        ProductInternalResponse response =
+                productClient.getProductList(optionValueIds, request.storeId());
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
-                        .collect(Collectors.toMap(ProductInternalResponse.ProductResponse::optionValueId, product -> product));
+                        .collect(
+                                Collectors.toMap(
+                                        ProductInternalResponse.ProductResponse::optionValueId,
+                                        product -> product));
 
         // 정합 정검
         if (optionMap.size() != productIds.size() || optionMap.size() != optionValueIds.size()) {
@@ -189,18 +194,19 @@ public class CustomerOrderService {
         int productCount = 0;
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (CustomerOrderRequest.ProductSummary productReq : request.productList()) {
-            ProductInternalResponse.ProductResponse product = optionMap.get(productReq.optionValueId());
+            ProductInternalResponse.ProductResponse product =
+                    optionMap.get(productReq.optionValueId());
 
             // 제품 가격 계산
-            int productPrice =
-                    (product.price() + product.extraPrice()) * productReq.quantity();
+            int productPrice = (product.price() + product.extraPrice()) * productReq.quantity();
             calculatedTotalPrice += productPrice;
             // 상품 개수 카운트
             productCount += productReq.quantity();
             // 상품 개별 할인
             discountAmount += product.productDiscount();
 
-            OrderDetail orderDetail = OrderDetail.from(product, productPrice, productReq.quantity());
+            OrderDetail orderDetail =
+                    OrderDetail.from(product, productPrice, productReq.quantity());
             orderDetails.add(orderDetail);
         }
         log.info("상품 확인, 재고 확인, 재고 차감, 가격 계산 완료");
@@ -231,7 +237,16 @@ public class CustomerOrderService {
         // 주문 엔티티 생성 PENDING 상태  8 자리 랜덤값
         String orderNum = "ORD-" + (int) ((Math.random() * 100000000));
 
-        Order order = Order.from(orderNum, calculatedTotalPrice, deliveryFee, request.deliveryRequest(), currentMemberId, request.storeId(), paymentId, deliveryAddress);
+        Order order =
+                Order.from(
+                        orderNum,
+                        calculatedTotalPrice,
+                        deliveryFee,
+                        request.deliveryRequest(),
+                        currentMemberId,
+                        request.storeId(),
+                        paymentId,
+                        deliveryAddress);
         orderRepository.save(order);
 
         /** 주문 상세 저장* */
@@ -240,6 +255,7 @@ public class CustomerOrderService {
             orderDetailRepository.save(orderDetail);
         }
 
-        return CustomerOrderMapper.toCustomerOrderResponse(order, orderDetails, discountAmount, finalPaymentAmount);
+        return CustomerOrderMapper.toCustomerOrderResponse(
+                order, orderDetails, discountAmount, finalPaymentAmount);
     }
 }

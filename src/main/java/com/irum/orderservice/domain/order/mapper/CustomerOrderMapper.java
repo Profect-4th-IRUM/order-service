@@ -18,7 +18,10 @@ import org.springframework.stereotype.Component;
 public class CustomerOrderMapper {
 
     public static OrderDetailResponse toOrderDetailResponse(
-            Order order, List<OrderDetail> orderDetailList, Refund refund, PaymentResponse payment) {
+            Order order,
+            List<OrderDetail> orderDetailList,
+            Refund refund,
+            PaymentResponse payment) {
         List<OrderDetailResponse.ProductResponse> pList =
                 orderDetailList.stream().map(CustomerOrderMapper::toProductResponse).toList();
 
@@ -59,7 +62,10 @@ public class CustomerOrderMapper {
     }
 
     public static CustomerOrderResponse toCustomerOrderResponse(
-            Order order, List<OrderDetail> orderDetailList, int discountAmount, int finalPaymentAmount) {
+            Order order,
+            List<OrderDetail> orderDetailList,
+            int discountAmount,
+            int finalPaymentAmount) {
         List<CustomerOrderResponse.ProductSummary> productSummaryList =
                 orderDetailList.stream().map(CustomerOrderMapper::toProductSummary).toList();
 
