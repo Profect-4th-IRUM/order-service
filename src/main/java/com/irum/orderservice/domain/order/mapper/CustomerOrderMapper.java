@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.mapper;
 
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.dto.response.AddressResponse;
 import com.irum.orderservice.domain.order.dto.response.CustomerOrderListResponse;

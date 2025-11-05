@@ -69,17 +69,18 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(UUID orderId) {
-        Member member = memberUtil.getCurrentMember();
+        Long currentMemberId = 0L; //TODO
 
         // order 조회 및 member 검증
         Order order =
                 orderRepository
-                        .findByOrderIdAndMember(orderId, member)
+                        .findByOrderIdAndMemberId(orderId, currentMemberId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
 
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
 
         Refund refund = refundRepository.findByOrder(order).orElse(null);
+
 
         return CustomerOrderMapper.toOrderDetailResponse(order, orderDetailList, refund);
     }

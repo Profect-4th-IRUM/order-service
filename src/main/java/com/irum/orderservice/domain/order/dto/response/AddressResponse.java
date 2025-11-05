@@ -1,5 +1,7 @@
 package com.irum.orderservice.domain.order.dto.response;
 
+import com.irum.orderservice.domain.deliveryaddress.domain.Address;
+
 public record AddressResponse(
         String postalCode, String city, String sigungu, String roadname, String addressDetail) {
     public static AddressResponse from(Address address) {

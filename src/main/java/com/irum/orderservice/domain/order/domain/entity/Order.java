@@ -37,10 +37,10 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private OrderStatus orderStatusAll;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    //OneToOne
+    private UUID paymentId;
 
+    //many to one
     private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
