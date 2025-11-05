@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.orderservice.domain.client.payment.PaymentClient;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
@@ -18,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderBatchService {
 
     private final OrderRepository orderRepository;
-    private final PaymentRepository paymentRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final PaymentClient paymentClient;
 
     private static final int TIMEOUT_MINUTES = 5; // 5분 기준
 
@@ -27,7 +28,7 @@ public class OrderBatchService {
         LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(TIMEOUT_MINUTES);
 
         // 타임아웃된 주문, 결제 조회
-        List<Order> staleOrders = orderRepository.findStalePendingOrdersWithPayment(cutoffTime);
+        List<Order> staleOrders = orderRepository.findStalePendingOrders(cutoffTime);
 
         if (staleOrders.isEmpty()) {
             return; // 처리할 주문 없음
@@ -37,13 +38,13 @@ public class OrderBatchService {
         List<UUID> orderIds = staleOrders.stream().map(Order::getOrderId).toList();
 
         List<UUID> paymentIds =
-                staleOrders.stream().map(order -> order.getPayment().getPaymentId()).toList();
+                staleOrders.stream().map(Order::getPaymentId).toList();
 
         // OrderDetail 상태 변경
         int detailCount = orderDetailRepository.updateStatusToFailedByOrderIds(orderIds);
 
         // Payment 상태 변경
-        int paymentCount = paymentRepository.updateStatusToFailedByIds(paymentIds);
+        int paymentCount = paymentClient.updateStatusToFailed(paymentIds);
 
         // Order 상태 변경
         int orderCount = orderRepository.updateStatusToFailedByIds(orderIds);
