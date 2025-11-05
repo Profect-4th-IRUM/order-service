@@ -1,6 +1,5 @@
 package com.irum.orderservice.domain.client.payment.api;
 
-
 import com.irum.orderservice.domain.client.config.FeignConfig;
 import com.irum.orderservice.domain.client.payment.dto.request.UpdatePaymentStatusRequest;
 import org.springframework.cloud.openfeign.FeignClient;

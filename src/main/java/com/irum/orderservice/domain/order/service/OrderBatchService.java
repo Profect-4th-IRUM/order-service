@@ -37,8 +37,7 @@ public class OrderBatchService {
         // 대상 ID 수집
         List<UUID> orderIds = staleOrders.stream().map(Order::getOrderId).toList();
 
-        List<UUID> paymentIds =
-                staleOrders.stream().map(Order::getPaymentId).toList();
+        List<UUID> paymentIds = staleOrders.stream().map(Order::getPaymentId).toList();
 
         // OrderDetail 상태 변경
         int detailCount = orderDetailRepository.updateStatusToFailedByOrderIds(orderIds);
