@@ -1,5 +1,7 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
@@ -49,7 +51,7 @@ public class CustomerOrderService {
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final CouponService couponService;
     private final AppliedCouponService appliedCouponService;
-    private final PaymentService paymentService;
+    private final PaymentClient paymentClient;
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
@@ -80,9 +82,9 @@ public class CustomerOrderService {
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
 
         Refund refund = refundRepository.findByOrder(order).orElse(null);
+        PaymentResponse paymentResponse = paymentClient.getPayment(order.getPaymentId());
 
-
-        return CustomerOrderMapper.toOrderDetailResponse(order, orderDetailList, refund);
+        return CustomerOrderMapper.toOrderDetailResponse(order, orderDetailList, refund, paymentResponse);
     }
 
     @Transactional

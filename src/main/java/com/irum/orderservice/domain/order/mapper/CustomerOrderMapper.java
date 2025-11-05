@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.mapper;
 
+import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.dto.response.AddressResponse;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class CustomerOrderMapper {
 
     public static OrderDetailResponse toOrderDetailResponse(
-            Order order, List<OrderDetail> orderDetailList, Refund refund) {
+            Order order, List<OrderDetail> orderDetailList, Refund refund, PaymentResponse payment) {
         List<OrderDetailResponse.ProductResponse> pList =
                 orderDetailList.stream().map(CustomerOrderMapper::toProductResponse).toList();
 
@@ -30,12 +31,12 @@ public class CustomerOrderMapper {
 
         return OrderDetailResponse.builder()
                 .orderAt(order.getCreatedAt())
-                .paymentStatus(order.getPayment().getPaymentStatus())
-                .paymentMethod(order.getPayment().getPaymentMethod())
+                .paymentStatus(payment.paymentStatus())
+                .paymentMethod(payment.paymentMethod())
                 .deliveryFee(order.getDeliveryFee())
-                .discountAmount(order.getPayment().getTotalDiscountAmount())
+                .discountAmount(payment.totalDiscountAmount())
                 .totalProductPrice(order.getTotalPrice())
-                .totalPaymentPrice(order.getPayment().getAmount())
+                .totalPaymentPrice(payment.amount())
                 .orderStatusAll(order.getOrderStatusAll())
                 .refundStatus(refundStatus)
                 .deliveryRequest(order.getDeliveryRequest())
