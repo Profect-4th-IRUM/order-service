@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
-import com.irum.orderservice.domain.client.product.dto.response.ProductListResponse;
+import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -80,7 +80,7 @@ public class OrderDetail extends BaseEntity {
         this.order = order;
     }
 
-    public static OrderDetail from(ProductListResponse.ProductResponse product, int productPrice, int productQuantity) {
+    public static OrderDetail from(ProductInternalResponse.ProductResponse product, int productPrice, int productQuantity) {
         return OrderDetail.builder()
                 .productId(product.productId())
                 .price(productPrice)

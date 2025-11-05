@@ -4,14 +4,13 @@ import com.irum.orderservice.domain.client.payment.PaymentClient;
 import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentCorp;
 import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.client.product.ProductClient;
-import com.irum.orderservice.domain.client.product.dto.response.ProductListResponse;
+import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
-import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
@@ -174,11 +173,11 @@ public class CustomerOrderService {
 
 
         // 조회, 재고 미리 차감?
-        ProductListResponse response = productClient.getProductList(optionValueIds, request.storeId());
+        ProductInternalResponse response = productClient.getProductList(optionValueIds, request.storeId());
 
-        Map<UUID, ProductListResponse.ProductResponse> optionMap =
+        Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
-                        .collect(Collectors.toMap(ProductListResponse.ProductResponse::optionValueId, product -> product));
+                        .collect(Collectors.toMap(ProductInternalResponse.ProductResponse::optionValueId, product -> product));
 
         // 정합 정검
         if (optionMap.size() != productIds.size() || optionMap.size() != optionValueIds.size()) {
@@ -190,7 +189,7 @@ public class CustomerOrderService {
         int productCount = 0;
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (CustomerOrderRequest.ProductSummary productReq : request.productList()) {
-            ProductListResponse.ProductResponse product = optionMap.get(productReq.optionValueId());
+            ProductInternalResponse.ProductResponse product = optionMap.get(productReq.optionValueId());
 
             // 제품 가격 계산
             int productPrice =

@@ -3,7 +3,7 @@ package com.irum.orderservice.domain.client.product.dto.response;
 import java.util.List;
 import java.util.UUID;
 
-public record ProductListResponse(
+public record ProductInternalResponse(
         int defaultDeliveryFee,
         int minAmount,
         int minQuantity,

@@ -1,12 +1,11 @@
 package com.irum.orderservice.domain.client.product.api;
 
-import com.irum.orderservice.domain.client.product.dto.response.ProductListResponse;
+import com.irum.orderservice.domain.client.product.dto.request.ProductInternalRequest;
+import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.UUID;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "product-api",
@@ -14,6 +13,6 @@ import java.util.UUID;
         configuration = FeignClient.class
 )
 public interface ProductAPI {
-    @GetMapping
-    ProductListResponse getProductList(@RequestParam List<UUID> optionValueIds, @RequestParam UUID storeId);
+    @PatchMapping
+    ProductInternalResponse getProductList(@RequestBody ProductInternalRequest request);
 }
