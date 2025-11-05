@@ -59,7 +59,7 @@ public class CouponService {
     }
 
     /** 쿠폰 유효성 검증 및 할인 금액 계산 */
-    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, Member member) {
+    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, Long memberId) {
         if (couponIdList.isEmpty()) {
             return 0;
         }
@@ -69,7 +69,7 @@ public class CouponService {
 
         for (Coupon coupon : couponList) {
             // 권한 검사
-            if (!coupon.getMember().getMemberId().equals(member.getMemberId())) {
+            if (!coupon.getMemberId().equals(memberId)) {
                 throw new CommonException(CouponErrorCode.COUPON_NO_PERMISSION);
             }
             // 만료일 검사

@@ -45,12 +45,10 @@ public class CustomerOrderService {
     private final OrderRepository orderRepository;
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
-    private final ProductOptionValueRepository productOptionValueRepository;
-    private final ProductRepository productRepository;
-    private final StoreRepository storeRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final CouponService couponService;
     private final AppliedCouponService appliedCouponService;
+
     private final PaymentClient paymentClient;
 
     @Transactional(readOnly = true)
@@ -145,11 +143,11 @@ public class CustomerOrderService {
     }
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
-        Member member = memberUtil.getCurrentMember();
-        Store store =
-                storeRepository
-                        .findByIdWithDeliveryPolicy(request.storeId())
-                        .orElseThrow(() -> new CommonException(StoreErrorCode.STORE_NOT_FOUND));
+        Long currentMemberId = 0L; //TODO
+//        Store store =
+//                storeRepository
+//                        .findByIdWithDeliveryPolicy(request.storeId())
+//                        .orElseThrow(() -> new CommonException(StoreErrorCode.STORE_NOT_FOUND));
         DeliveryAddress deliveryAddress =
                 deliveryAddressRepository
                         .findById(request.deliveryAddressId())
@@ -158,9 +156,8 @@ public class CustomerOrderService {
                                         new CommonException(
                                                 DeliveryAddressErrorCode
                                                         .DELIVERY_ADDRESS_NOT_FOUND));
-        log.info("[주문준비] 멤버 {} {} , 상점, 주소 검색", member.getMemberId(), member.getName());
+        log.info("[주문준비] 멤버 {} , 상점, 주소 검색", currentMemberId);
 
-        // 요청에서 id목록 추출
         List<UUID> productIds =
                 request.productList().stream()
                         .map(CustomerOrderRequest.ProductSummary::productId)
@@ -202,7 +199,7 @@ public class CustomerOrderService {
             // 상품이 해당 상점의 상품인지 확인
             Product product = productMap.get(productReq.productId());
 
-            if (!product.getStore().getId().equals(store.getId())) {
+            if (!product.getStore().getId().equals(request.storeId())) {
                 throw new CommonException(OrderErrorCode.INVALID_ORDER);
             }
 
@@ -249,14 +246,14 @@ public class CustomerOrderService {
         /** 할인 적용 */
         int discountAmount =
                 couponService.validAndCalCoupon(
-                        request.couponIdList(), calculatedTotalPrice, member);
+                        request.couponIdList(), calculatedTotalPrice, currentMemberId);
         int finalPaymentAmount = calculatedTotalPrice - discountAmount;
         log.info("할인 {}, 할인 후 가격 {}", discountAmount, finalPaymentAmount);
 
         /** 결재 생성 PENDING 상태* */
         Payment payment =
                 paymentService.preparePayment(
-                        member, finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
+                        currentMemberId, finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
         // 쿠폰 미리 차감
         appliedCouponService.createAppliedCouponList(payment, request.couponIdList());
 
@@ -270,8 +267,8 @@ public class CustomerOrderService {
                         .deliveryFee(deliveryFee)
                         .deliveryRequest(request.deliveryRequest())
                         .orderStatusAll(OrderStatus.PENDING)
-                        .member(member)
-                        .store(store)
+                        .memberId(currentMemberId)
+                        .storeId(request.storeId())
                         .payment(payment)
                         .deliveryAddress(deliveryAddress)
                         .build();

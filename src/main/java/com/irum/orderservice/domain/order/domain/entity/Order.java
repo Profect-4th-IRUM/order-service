@@ -40,12 +40,11 @@ public class Order extends BaseEntity {
     //OneToOne
     private UUID paymentId;
 
-    //many to one
+    //ManyToOne
     private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    private Store store;
+    //ManyToOne
+    private UUID storeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_address_id")
