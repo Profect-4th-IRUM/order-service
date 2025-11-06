@@ -5,6 +5,8 @@ import com.irum.orderservice.domain.client.product.dto.request.ProductInternalRe
 import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import java.util.List;
 import java.util.UUID;
+
+import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +15,19 @@ import org.springframework.stereotype.Component;
 public class ProductClient {
     private final ProductAPI productAPI;
 
-    public ProductInternalResponse getProductList(List<UUID> optionValueIds, UUID storeId) {
+    public ProductInternalResponse updateStock(List<CustomerOrderRequest.ProductSummary> productList, UUID storeId) {
+        List<ProductInternalRequest.OptionValueRequest> optionValueRequestList = productList.stream().map(
+                p -> ProductInternalRequest.OptionValueRequest.builder()
+                        .optionValueId(p.optionValueId())
+                        .quantity(p.quantity())
+                        .build()
+                ).toList();
+
         ProductInternalRequest request =
                 ProductInternalRequest.builder()
                         .storeId(storeId)
-                        .optionValueIdList(optionValueIds)
+                        .optionValueList(optionValueRequestList)
                         .build();
-        return productAPI.getProductList(request);
+        return productAPI.updateStock(request);
     }
 }

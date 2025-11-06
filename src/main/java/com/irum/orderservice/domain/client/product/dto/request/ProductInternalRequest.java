@@ -5,4 +5,10 @@ import java.util.UUID;
 import lombok.Builder;
 
 @Builder
-public record ProductInternalRequest(List<UUID> optionValueIdList, UUID storeId) {}
+public record ProductInternalRequest(List<OptionValueRequest>optionValueList, UUID storeId
+) {
+    @Builder
+    public record OptionValueRequest(
+        UUID optionValueId,
+        int quantity) { }
+}

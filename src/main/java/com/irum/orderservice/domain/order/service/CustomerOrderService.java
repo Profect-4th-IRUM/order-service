@@ -173,9 +173,9 @@ public class CustomerOrderService {
                         .distinct()
                         .toList();
 
-        // 조회, 재고 미리 차감?
+        // 조회, 재고 미리 차감
         ProductInternalResponse response =
-                productClient.getProductList(optionValueIds, request.storeId());
+                productClient.updateStock(request.productList(), request.storeId());
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
