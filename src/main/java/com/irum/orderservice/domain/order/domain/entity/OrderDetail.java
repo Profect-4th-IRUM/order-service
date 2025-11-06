@@ -52,13 +52,11 @@ public class OrderDetail extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_value_id")
-    private ProductOptionValue productOptionValue;
+    //ManyToOne
+    private UUID productOptionValueId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    //ManyToOne
+    private UUID productId;
 
     public void updateStatusToPreparing() {
         this.orderStatusIndi = OrderStatus.PREPARING;

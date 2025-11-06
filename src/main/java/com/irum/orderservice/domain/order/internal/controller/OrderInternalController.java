@@ -1,6 +1,7 @@
 package com.irum.orderservice.domain.order.internal.controller;
 
 
+import com.irum.orderservice.domain.order.internal.dto.request.UpdateOrderFailedRequest;
 import com.irum.orderservice.domain.order.mapper.OrderInternalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,4 +19,11 @@ public class OrderInternalController {
     ){
         orderInternalService.updateOrderStatusPreparing(orderId);
     }
+
+    @PatchMapping("/{orderId}/failed")
+    public void updateOrderStatusFailed(@PathVariable UUID orderId, @RequestBody UpdateOrderFailedRequest request){
+        orderInternalService.updateOrderStatusFailed(orderId, request);
+    }
+
+
 }

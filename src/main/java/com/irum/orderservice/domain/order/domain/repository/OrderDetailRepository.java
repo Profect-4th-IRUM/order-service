@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.domain.repository;
 
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
@@ -31,7 +32,13 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
     @Query(
             "UPDATE OrderDetail od SET od.orderStatusIndi = 'PREPARING' WHERE od.order.orderId = :orderId"
     )
-    int updateStatusToPreparingByOrderId(@Param("orderId") UUID orderId);
+    void updateStatusToPreparingByOrderId(@Param("orderId") UUID orderId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+            "UPDATE OrderDetail od SET od.orderStatusIndi = 'FAILED' WHERE od.order.orderId = :orderId"
+    )
+    void updateStatusToFailedByOrderId(@Param("orderId") UUID orderId);
 
     @Modifying(clearAutomatically = true)
     @Query(

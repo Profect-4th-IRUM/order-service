@@ -37,7 +37,7 @@ public class AppliedCouponService {
 
     /** 롤백 */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void rollbackAppliedCouponList(Payment payment) {
-        appliedCouponRepository.deleteByPayment(payment);
+    public void rollbackAppliedCouponList(UUID paymentId) {
+        appliedCouponRepository.deleteByPaymentId(paymentId);
     }
 }
