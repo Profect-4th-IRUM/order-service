@@ -29,6 +29,12 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
 
     @Modifying(clearAutomatically = true)
     @Query(
+            "UPDATE OrderDetail od SET od.orderStatusIndi = 'PREPARING' WHERE od.order.orderId = :orderId"
+    )
+    int updateStatusToPreparingByOrderId(@Param("orderId") UUID orderId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(
             "UPDATE OrderDetail od SET od.orderStatusIndi = 'FAILED' WHERE od.order.orderId IN :orderIds")
     int updateStatusToFailedByOrderIds(@Param("orderIds") List<UUID> orderIds);
 }

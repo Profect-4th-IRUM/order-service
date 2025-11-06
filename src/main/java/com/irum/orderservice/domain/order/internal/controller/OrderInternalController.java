@@ -1,0 +1,21 @@
+package com.irum.orderservice.domain.order.internal.controller;
+
+
+import com.irum.orderservice.domain.order.mapper.OrderInternalService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("internal/orders/")
+public class OrderInternalController {
+    private final OrderInternalService orderInternalService;
+
+    @PatchMapping("/{orderId}/preparing")
+    public void updateOrderStatusPreparing(@PathVariable UUID orderId
+    ){
+        orderInternalService.updateOrderStatusPreparing(orderId);
+    }
+}
