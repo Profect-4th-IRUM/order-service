@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "payment-api", url = "payment-service", configuration = FeignConfig.class)
 public interface PaymentAPI {
 
-    @GetMapping
+    @GetMapping("/{paymentId}")
     PaymentResponse getPayment(@PathVariable UUID paymentId);
 
     @PostMapping
