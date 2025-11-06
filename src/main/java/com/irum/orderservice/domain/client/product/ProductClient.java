@@ -3,11 +3,9 @@ package com.irum.orderservice.domain.client.product;
 import com.irum.orderservice.domain.client.product.api.ProductAPI;
 import com.irum.orderservice.domain.client.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
 
 @Component
 @RequiredArgsConstructor
@@ -16,16 +14,19 @@ public class ProductClient {
 
     public void rollbackStock(List<OrderDetail> orderDetailList) {
 
-        List<RollbackStockRequest.OptionValueRequest> optionValueRequestList = orderDetailList.stream().map(o -> RollbackStockRequest.OptionValueRequest.builder()
-                .optionValueId(o.getProductOptionValueId())
-                .quantity(o.getQuantity())
-                .build()).toList();
+        List<RollbackStockRequest.OptionValueRequest> optionValueRequestList =
+                orderDetailList.stream()
+                        .map(
+                                o ->
+                                        RollbackStockRequest.OptionValueRequest.builder()
+                                                .optionValueId(o.getProductOptionValueId())
+                                                .quantity(o.getQuantity())
+                                                .build())
+                        .toList();
 
-        RollbackStockRequest rollbackStockRequest = RollbackStockRequest.builder()
-                .optionValueList(optionValueRequestList)
-                .build();
+        RollbackStockRequest rollbackStockRequest =
+                RollbackStockRequest.builder().optionValueList(optionValueRequestList).build();
 
         productAPI.rollbackStock(rollbackStockRequest);
     }
-
 }

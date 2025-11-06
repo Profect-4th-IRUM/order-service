@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(
         name = "product-service",
         url = "product-service/internal/products",
-        configuration = FeignConfig.class
-)
+        configuration = FeignConfig.class)
 public interface ProductAPI {
 
     /** 재고 롤백 */
