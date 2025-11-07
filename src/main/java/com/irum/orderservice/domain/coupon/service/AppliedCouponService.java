@@ -2,6 +2,8 @@ package com.irum.orderservice.domain.coupon.service;
 
 import com.irum.orderservice.domain.coupon.domain.entity.AppliedCoupon;
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
+import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository;
+import com.irum.orderservice.domain.coupon.domain.repository.CouponRepository;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.util.List;
 import java.util.UUID;
@@ -13,9 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AppliedCouponService {
-    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
-            appliedCouponRepository;
-    private final com.irum.orderservice.domain.coupon.repository.CouponRepository couponRepository;
+    private final AppliedCouponRepository appliedCouponRepository;
+    private final CouponRepository couponRepository;
     private final MemberUtil memberUtil;
 
     /** 쿠폰 사용 처리 */
@@ -39,5 +40,11 @@ public class AppliedCouponService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void rollbackAppliedCouponList(Payment payment) {
         appliedCouponRepository.deleteByPayment(payment);
+    }
+
+    /** 롤백 */
+    @Transactional
+    public void rollbackAppliedCouponList(List<UUID> paymentIdList) {
+        appliedCouponRepository.deleteAllByPaymentIds(paymentIdList);
     }
 }

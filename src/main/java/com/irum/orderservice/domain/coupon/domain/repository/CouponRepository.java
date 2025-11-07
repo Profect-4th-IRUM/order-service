@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.coupon.repository;
+package com.irum.orderservice.domain.coupon.domain.repository;
 
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
 import java.time.LocalDateTime;

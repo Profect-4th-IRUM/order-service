@@ -1,6 +1,8 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
+import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
@@ -21,6 +23,8 @@ public class OrderBatchService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final PaymentClient paymentClient;
+    private final AppliedCouponService appliedCouponService;
+
 
     private static final int TIMEOUT_MINUTES = 5; // 5분 기준
 
@@ -48,6 +52,11 @@ public class OrderBatchService {
 
         // Order 상태 변경
         int orderCount = orderRepository.updateStatusToFailedByIds(orderIds);
+
+        //쿠폰 롤백
+        appliedCouponService.rollbackAppliedCouponList(paymentIds);
+
+
 
         log.info(
                 "[주문 타임아웃 배치] {}개 주문, {}개 결제, {}개 주문상세 'FAILED' 처리 완료",
