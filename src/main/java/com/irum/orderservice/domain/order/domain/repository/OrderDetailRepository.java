@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.domain.repository;
 
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
@@ -26,6 +27,11 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
             @Param("orderDetailId") UUID orderDetailId);
 
     List<OrderDetail> findAllByOrder(Order order);
+
+    @Query("""
+    SELECT od FROM OrderDetail od WHERE od.order.orderId IN :orderIds
+    """)
+    List<OrderDetail> findAllByOrderIds(List<UUID> orderIds);
 
     @Modifying(clearAutomatically = true)
     @Query(
