@@ -41,6 +41,7 @@ public class CouponService {
     @Transactional(readOnly = true)
     public List<CouponResponse> getCouponByMember(Long memberId) {
         return couponRepository.findByMember_MemberId(memberId).stream()
+                .filter(coupon -> !appliedCouponRepository.existsByCouponId(coupon.getId()))
                 .map(CouponResponse::from)
                 .toList();
     }
