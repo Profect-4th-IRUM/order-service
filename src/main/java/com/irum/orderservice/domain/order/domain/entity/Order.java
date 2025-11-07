@@ -37,7 +37,7 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private OrderStatus orderStatusAll;
 
-    //OneToOne
+    // OneToOne
     private UUID paymentId;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -3,7 +3,6 @@ package com.irum.orderservice.domain.order.service;
 import com.irum.orderservice.domain.client.payment.PaymentClient;
 import com.irum.orderservice.domain.client.product.ProductClient;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
-import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
@@ -28,7 +27,6 @@ public class OrderBatchService {
     private final ProductClient productClient;
     private final AppliedCouponService appliedCouponService;
 
-
     private static final int TIMEOUT_MINUTES = 5; // 5분 기준
 
     public void processStalePendingOrders() {
@@ -44,26 +42,23 @@ public class OrderBatchService {
         // 대상 ID 수집
         List<UUID> orderIds = staleOrders.stream().map(Order::getOrderId).toList();
 
-        List<UUID> paymentIds =
-                staleOrders.stream().map(Order::getPaymentId).toList();
+        List<UUID> paymentIds = staleOrders.stream().map(Order::getPaymentId).toList();
 
         // OrderDetail 상태 변경
         int detailCount = orderDetailRepository.updateStatusToFailedByOrderIds(orderIds);
         // Order 상태 변경
         int orderCount = orderRepository.updateStatusToFailedByIds(orderIds);
 
-
-        //쿠폰 롤백
+        // 쿠폰 롤백
         appliedCouponService.rollbackAppliedCouponList(paymentIds);
 
-        //OrderDetail 조회
+        // OrderDetail 조회
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrderIds(orderIds);
 
         // Payment 상태 변경
         int paymentCount = paymentClient.updateStatusToFailed(paymentIds);
         // 재고 롤백
         productClient.rollbackStock(orderDetailList);
-
 
         log.info(
                 "[주문 타임아웃 배치] {}개 주문, {}개 결제, {}개 주문상세 'FAILED' 처리 완료",

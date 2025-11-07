@@ -1,12 +1,8 @@
 package com.irum.orderservice.domain.client.payment.dto.request;
 
-import lombok.Builder;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.Builder;
 
 @Builder
-public record UpdatePaymentStatusRequest(
-        List<UUID> paymentIdList
-) {
-}
+public record UpdatePaymentStatusRequest(List<UUID> paymentIdList) {}

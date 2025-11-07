@@ -1,11 +1,10 @@
 package com.irum.orderservice.domain.order.domain.repository;
 
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.irum.orderservice.domain.order.domain.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +19,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, OrderReposi
 
     Optional<Order> findByOrderId(UUID orderId);
 
-    @Query("""
+    @Query(
+            """
     SELECT o FROM Order o
     WHERE o.orderStatusAll = 'PENDING' AND o.createdAt < :cutoffTime
     """)

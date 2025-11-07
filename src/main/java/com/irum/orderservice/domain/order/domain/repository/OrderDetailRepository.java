@@ -28,7 +28,8 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
 
     List<OrderDetail> findAllByOrder(Order order);
 
-    @Query("""
+    @Query(
+            """
     SELECT od FROM OrderDetail od WHERE od.order.orderId IN :orderIds
     """)
     List<OrderDetail> findAllByOrderIds(List<UUID> orderIds);

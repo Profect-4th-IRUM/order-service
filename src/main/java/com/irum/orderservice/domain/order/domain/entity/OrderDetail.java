@@ -52,7 +52,7 @@ public class OrderDetail extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
-    //ManyToOne
+    // ManyToOne
     private UUID productOptionValueId;
 
     @ManyToOne(fetch = FetchType.LAZY)
