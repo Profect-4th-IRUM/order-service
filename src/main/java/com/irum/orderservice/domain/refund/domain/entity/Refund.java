@@ -44,7 +44,7 @@ public class Refund extends BaseEntity {
                 .reason(reason)
                 .description(description)
                 .price(order.getPayment().getAmount())
-                .refundStatus(RefundStatus.REQUESTED)
+                .refundStatus(RefundStatus.PENDING)
                 .order(order)
                 .build();
     }

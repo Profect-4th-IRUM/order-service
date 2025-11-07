@@ -99,19 +99,29 @@ public class RefundService {
         Order order = refund.getOrder();
         updateOrderStatusByRefundStatus(order, newStatus);
     }
+
     // 확인 가능한 주문 상태 확인 (OrderStatus가 PREPARING일때만 가능)
     private boolean isRefundableOrderStatus(OrderStatus orderStatus) {
         return orderStatus == OrderStatus.PREPARING;
     }
+
     // 환불 상태 변경 제약 (단계별 수정만 가능)
     private void validateRefundStatusTransition(RefundStatus current, RefundStatus next) {
-        if (current != RefundStatus.PENDING) {
-            throw new CommonException(RefundErrorCode.REFUND_NOT_AVAILABLE);
+        // 초기값인 PENDING 상태에서만 APPROVED or REJECTED 로 변경 가능
+        if (current == RefundStatus.PENDING) {
+            if (next != RefundStatus.APPROVED && next != RefundStatus.REJECTED) {
+                throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
+            }
         }
-        if (next != RefundStatus.APPROVED && next != RefundStatus.REJECTED) {
-            throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
+        if (current == RefundStatus.APPROVED) {
+            if (next != RefundStatus.COMPLETED) {
+                throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
+            }
         }
+        // 그 외 상태에서는 전환 불가
+        throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
     }
+
     // 환불 상태 변경에 따른 주문 상태 업데이트
     private void updateOrderStatusByRefundStatus(Order order, RefundStatus refundStatus) {
         switch (refundStatus) {
@@ -120,8 +130,6 @@ public class RefundService {
                 break;
             case REJECTED:
                 order.updateOrderStatus(OrderStatus.PREPARING);
-                break;
-            case PENDING:
                 break;
         }
     }

@@ -18,7 +18,7 @@ public class DeliveryAddressRepositoryImpl
     private final JPAQueryFactory queryFactory;
 
     private BooleanExpression belongsToMember(Long memberId, QDeliveryAddress deliveryAddress) {
-        return deliveryAddress.member.eq(memberId);
+        return deliveryAddress.memberId.eq(memberId);
     }
 
     private BooleanExpression ltCursor(UUID cursor, QDeliveryAddress deliveryAddress) {
