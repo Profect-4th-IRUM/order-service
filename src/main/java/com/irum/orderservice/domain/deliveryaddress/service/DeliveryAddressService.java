@@ -100,7 +100,7 @@ public class DeliveryAddressService {
                     .findTopByMemberOrderByCreatedAtDesc(member.memberId())
                     .ifPresent(DeliveryAddress::markAsDefault);
         }
-        memberUtil.assertMemberResourceAccess(address.getMember());
+        memberUtil.assertMemberResourceAccess(address.getMemberId());
         address.softDelete(memberUtil.getCurrentMember().memberId());
     }
 
@@ -113,7 +113,7 @@ public class DeliveryAddressService {
                                         new CommonException(
                                                 DeliveryAddressErrorCode
                                                         .DELIVERY_ADDRESS_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(address.getMember());
+        memberUtil.assertMemberResourceAccess(address.getMemberId());
         return address;
     }
 
