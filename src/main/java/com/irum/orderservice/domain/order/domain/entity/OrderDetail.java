@@ -12,26 +12,33 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(access = AccessLevel.PRIVATE)
 @SQLRestriction("deleted_at is null")
-@NoArgsConstructor
 @Table(name = "p_order_detail")
 public class OrderDetail extends BaseEntity {
+
     @Id
     @UuidGenerator(style = UuidGenerator.Style.TIME)
-    @Column(
-            name = "order_detail_id",
-            columnDefinition = "uuid",
-            nullable = false,
-            updatable = false)
+    @Column(name = "order_detail_id", nullable = false, updatable = false)
     private UUID orderDetailId;
 
-    private String optionName;
+    @Column(name = "product_id", nullable = false)
+    private UUID productId;
 
-    @Column(nullable = false)
+    @Column(name = "option_value_id", nullable = false)
+    private UUID optionValueId;
+
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
+
+    @Column(name = "product_name", nullable = false)
     private String productName;
+
+    @Column(name = "option_name")
+    private String optionName;
 
     @Column(nullable = false)
     private Integer price;
@@ -40,28 +47,43 @@ public class OrderDetail extends BaseEntity {
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "order_status_indi", nullable = false)
     private OrderStatus orderStatusIndi;
 
     private String trackingNumber;
-
     private LocalDateTime arrivedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_value_id")
-    private ProductOptionValue productOptionValue;
+    public static OrderDetail create(
+            Order order,
+            UUID productId,
+            UUID optionValueId,
+            Long memberId,
+            String productName,
+            String optionName,
+            Integer price,
+            Integer quantity,
+            OrderStatus status
+    ) {
+        return OrderDetail.builder()
+                .order(order)
+                .productId(productId)
+                .optionValueId(optionValueId)
+                .memberId(memberId)
+                .productName(productName)
+                .optionName(optionName)
+                .price(price)
+                .quantity(quantity)
+                .orderStatusIndi(status)
+                .build();
+    }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    public void updateStatusToPreparing() {
-        this.orderStatusIndi = OrderStatus.PREPARING;
+    public void updateStatus(OrderStatus newStatus) {
+        this.orderStatusIndi = newStatus;
     }
 
     public void updateStatusToShipped(String trackingNumber) {
@@ -71,10 +93,7 @@ public class OrderDetail extends BaseEntity {
 
     public void updateStatusToDelivered() {
         this.orderStatusIndi = OrderStatus.DELIVERED;
-    }
-
-    public void updateStatus(OrderStatus orderStatusIndi) {
-        this.orderStatusIndi = orderStatusIndi;
+        this.arrivedDate = LocalDateTime.now();
     }
 
     public void updateOrder(Order order) {
