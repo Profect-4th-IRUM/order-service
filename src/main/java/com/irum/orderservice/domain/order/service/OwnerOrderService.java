@@ -37,7 +37,7 @@ public class OwnerOrderService {
     private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;
     private final OrderMapper orderMapper;
-    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
+    private final com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository
             appliedCouponRepository;
 
     @Transactional(readOnly = true)

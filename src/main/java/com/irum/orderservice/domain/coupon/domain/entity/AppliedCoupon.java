@@ -23,16 +23,14 @@ public class AppliedCoupon extends BaseEntity {
     @Column(name = "applied_coupon_id", nullable = false, updatable = false)
     private UUID appliedCouponId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment;
+    private UUID payment;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
 
     // 2. 생성자
-    public AppliedCoupon(Payment payment, Coupon coupon) {
+    public AppliedCoupon(UUID payment, Coupon coupon) {
         this.payment = payment;
         this.coupon = coupon;
     }

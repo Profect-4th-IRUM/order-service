@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AppliedCouponService {
-    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
+    private final com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository
             appliedCouponRepository;
-    private final com.irum.orderservice.domain.coupon.repository.CouponRepository couponRepository;
+    private final com.irum.orderservice.domain.coupon.domain.repository.CouponRepository couponRepository;
     private final MemberUtil memberUtil;
 
     /** 쿠폰 사용 처리 */
-    public void createAppliedCouponList(Payment payment, List<UUID> couponIdList) {
+    public void createAppliedCouponList(UUID paymentId, List<UUID> couponIdList) {
         List<Coupon> couponList = couponRepository.findAllById(couponIdList);
 
         List<AppliedCoupon> appliedCouponList =
@@ -27,7 +27,7 @@ public class AppliedCouponService {
                         .map(
                                 coupon ->
                                         AppliedCoupon.builder()
-                                                .payment(payment)
+                                                .payment(paymentId)
                                                 .coupon(coupon)
                                                 .build())
                         .toList();
@@ -37,7 +37,7 @@ public class AppliedCouponService {
 
     /** 롤백 */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void rollbackAppliedCouponList(Payment payment) {
-        appliedCouponRepository.deleteByPayment(payment);
+    public void rollbackAppliedCouponList(UUID paymentId) {
+        appliedCouponRepository.deleteByPayment(paymentId);
     }
 }

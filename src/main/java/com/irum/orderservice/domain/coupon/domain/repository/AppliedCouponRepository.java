@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.coupon.repository;
+package com.irum.orderservice.domain.coupon.domain.repository;
 
 import com.irum.orderservice.domain.coupon.domain.entity.AppliedCoupon;
 import java.util.List;
@@ -12,7 +12,9 @@ public interface AppliedCouponRepository extends JpaRepository<AppliedCoupon, UU
 
     boolean existsByCouponId(UUID couponId);
 
-    void deleteByPayment(Payment payment);
+    void deleteByPayment(UUID paymentId);
 
     List<AppliedCoupon> findByPayment_PaymentId(UUID paymentId);
+
+    List<AppliedCoupon> findByCouponIdIn(List<UUID> couponIds);
 }
