@@ -37,7 +37,7 @@ public class DeliveryAddressService {
         DeliveryAddress deliveryAddress =
                 DeliveryAddress.create(
                         member.memberId(), request.address(), recipientName, recipientContact);
-        if (!deliveryAddressRepository.existsByMember(member.memberId()))
+        if (!deliveryAddressRepository.existsByMemberId(member.memberId()))
             deliveryAddress.markAsDefault();
         deliveryAddressRepository.save(deliveryAddress);
     }
@@ -97,7 +97,7 @@ public class DeliveryAddressService {
         if (address.isDefault()) {
             // DeliveryAddress 중 가장 최근 것 기본 배송지 설정
             deliveryAddressRepository
-                    .findTopByMemberOrderByCreatedAtDesc(member.memberId())
+                    .findTopByMemberIdOrderByCreatedAtDesc(member.memberId())
                     .ifPresent(DeliveryAddress::markAsDefault);
         }
         memberUtil.assertMemberResourceAccess(address.getMemberId(), member.memberId());
@@ -120,7 +120,7 @@ public class DeliveryAddressService {
     private DeliveryAddress getCurrentDefaultAddress() {
         MemberDto member = memberUtil.getCurrentMember();
         return deliveryAddressRepository
-                .findDefaultAddressByMember(member.memberId())
+                .findDefaultAddressByMemberId(member.memberId())
                 .orElseThrow(
                         () ->
                                 new CommonException(

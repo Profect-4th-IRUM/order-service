@@ -8,14 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface DeliveryAddressRepository
-        extends JpaRepository<DeliveryAddress, UUID>,
-                com.irum.orderservice.domain.deliveryaddress.domain.repository
-                        .DeliveryAddressRepositoryCustom {
+        extends JpaRepository<DeliveryAddress, UUID>, DeliveryAddressRepositoryCustom {
 
-    boolean existsByMember(Long memberId);
+    boolean existsByMemberId(Long memberId);
 
-    @Query("SELECT d FROM DeliveryAddress d WHERE d.member = :member AND d.isDefault = true")
-    Optional<DeliveryAddress> findDefaultAddressByMember(@Param("member") Long member);
 
-    Optional<DeliveryAddress> findTopByMemberOrderByCreatedAtDesc(Long member);
+    @Query("SELECT d FROM DeliveryAddress d WHERE d.memberId = :memberId AND d.isDefault = true")
+    Optional<DeliveryAddress> findDefaultAddressByMemberId(@Param("memberId") Long memberId);
+
+    Optional<DeliveryAddress> findTopByMemberIdOrderByCreatedAtDesc(Long memberId);
 }
