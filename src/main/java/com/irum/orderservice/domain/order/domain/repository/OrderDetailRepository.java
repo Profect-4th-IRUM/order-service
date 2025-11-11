@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.domain.repository;
 
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
