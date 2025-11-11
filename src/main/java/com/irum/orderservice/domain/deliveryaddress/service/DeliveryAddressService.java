@@ -100,8 +100,8 @@ public class DeliveryAddressService {
                     .findTopByMemberIdOrderByCreatedAtDesc(member.memberId())
                     .ifPresent(DeliveryAddress::markAsDefault);
         }
-        memberUtil.assertMemberResourceAccess(address.getMember());
-        address.softDelete(memberUtil.getCurrentMember().memberId());
+        memberUtil.assertMemberResourceAccess(address.getMemberId(), member.memberId());
+        address.softDelete(member.memberId());
     }
 
     private DeliveryAddress validDeliveryAddress(UUID deliveryAddressId) {
@@ -113,7 +113,7 @@ public class DeliveryAddressService {
                                         new CommonException(
                                                 DeliveryAddressErrorCode
                                                         .DELIVERY_ADDRESS_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(address.getMember());
+        memberUtil.assertMemberResourceAccess(address.getMemberId());
         return address;
     }
 

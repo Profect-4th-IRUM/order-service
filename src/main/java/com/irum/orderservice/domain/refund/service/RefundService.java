@@ -144,7 +144,7 @@ public class RefundService {
                 orderRepository
                         .findById(orderId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(order.getMember());
+        memberUtil.assertMemberResourceAccess(order.getMemberId());
         return order;
     }
 
@@ -153,7 +153,7 @@ public class RefundService {
                 orderRepository
                         .findOrderWithAddressAndPayment(orderId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(order.getMember());
+        memberUtil.assertMemberResourceAccess(order.getMemberId());
         return order;
     }
 

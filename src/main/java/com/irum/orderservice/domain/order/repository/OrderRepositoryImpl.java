@@ -90,11 +90,10 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     /** 주목 목록 및 refundstatus 조회, pageing적용 */
     @Override
     public List<CustomerOrderSummaryRow> fetchOrderListByMember(
-            Member member, LocalDate startDate, LocalDate endDate, UUID cursor, int size) {
+            Long memberId, LocalDate startDate, LocalDate endDate, UUID cursor, int size) {
 
         QOrder o = QOrder.order;
         QRefund r = QRefund.refund;
-        QMember m = QMember.member;
 
         return queryFactory
                 .select(
@@ -106,10 +105,9 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .from(o)
                 .leftJoin(r)
                 .on(r.order.eq(o))
-                .leftJoin(o.member, m)
                 .where(
                         ltCursor(cursor, o),
-                        m.memberId.eq(member.getMemberId()),
+                        o.memberId.eq(memberId),
                         geStartDate(startDate, o),
                         ltEndDateExclusive(endDate, o))
                 .orderBy(o.orderId.desc())

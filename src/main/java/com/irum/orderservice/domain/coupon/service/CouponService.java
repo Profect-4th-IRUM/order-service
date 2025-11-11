@@ -1,12 +1,12 @@
 package com.irum.orderservice.domain.coupon.service;
 
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
+import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository;
+import com.irum.orderservice.domain.coupon.domain.repository.CouponRepository;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
 import com.irum.orderservice.global.exception.errorcode.CouponErrorCode;
 import com.irum.orderservice.global.exception.errorcode.MemberErrorCode;
-import com.irum.orderservice.openfeign.client.MemberClient;
-import com.irum.orderservice.openfeign.dto.response.MemberResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -18,10 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CouponService {
-    private final com.irum.orderservice.domain.coupon.domain.repository.CouponRepository couponRepository;
-    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
-            appliedCouponRepository;
-    private final MemberClient memberClient;
+    private final CouponRepository couponRepository;
+    private final AppliedCouponRepository appliedCouponRepository;
+    private final openfeign.member.client.MemberClient memberClient;
 
     public void createCoupon(CouponGenerateRequest request) {
         private final MemberContextHolder holder;
@@ -31,7 +30,6 @@ public class CouponService {
         if (response != null) {
             throw new CommonException(MemberErrorCode.MEMBER_NOT_FOUND);
         }
-
 
 
         Coupon coupon =
@@ -65,7 +63,7 @@ public class CouponService {
     }
 
     /** 쿠폰 유효성 검증 및 할인 금액 계산 */
-    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, UUID memberId) {
+    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, Long memberId) {
         if (couponIdList.isEmpty()) {
             return 0;
         }

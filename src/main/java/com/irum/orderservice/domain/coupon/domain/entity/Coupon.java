@@ -39,11 +39,11 @@ public class Coupon extends BaseEntity {
     @Column(name = "expiration") // 유효기간
     private LocalDateTime expiration;
 
+    // ManyToOne
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
     // 2. 생성자
-
     @Builder(access = AccessLevel.PRIVATE)
     private Coupon(String name, Integer discountAmount, LocalDateTime expiration, Long memberId) {
         this.name = name;

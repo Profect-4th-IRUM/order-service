@@ -1,6 +1,7 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
@@ -34,11 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class OwnerOrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final OrderRepository orderRepository;
-    private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;
     private final OrderMapper orderMapper;
-    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
-            appliedCouponRepository;
+    private final AppliedCouponRepository appliedCouponRepository;
 
     @Transactional(readOnly = true)
     public OwnerOrderListResponse getPreparingOrderList(UUID storeId, UUID cursor, Integer size) {
@@ -119,7 +118,7 @@ public class OwnerOrderService {
                                                 detailMap.getOrDefault(
                                                         order.orderId(),
                                                         List.of()) // order detail 없다면 빈 리스트
-                                                ))
+                                        ))
                         .toList();
 
         // 6. next cursor계산
@@ -184,12 +183,6 @@ public class OwnerOrderService {
 
     /** OrderDetail 상태 목록을 기반으로 집계된(Aggregated) Order의 상태를 결정 */
     private OrderStatus aggregateOrderStatus(OrderDetail orderDetail) {
-
-        //                Order order =
-        //                        orderRepository
-        //                                .findByOrderId(orderDetail.getOrder().getOrderId())
-        //                                .orElseThrow(() -> new
-        // CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         Order order = orderDetail.getOrder();
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
         List<OrderStatus> orderStatusList =
