@@ -9,9 +9,10 @@ public record CouponResponse(
         UUID id,
         String name,
         int discountAmount,
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 명시적 포맷 추가
-                // 또는 요청 DTO와 동일하게 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                LocalDateTime expiration) {
+        // 명시적 포맷 추가
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        LocalDateTime expiration
+) {
     public static CouponResponse from(Coupon coupon) {
         return new CouponResponse(
                 coupon.getId(),

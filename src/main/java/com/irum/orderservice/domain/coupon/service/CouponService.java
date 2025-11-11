@@ -46,13 +46,13 @@ public class CouponService {
                 .map(Coupon::getId)
                 .toList();
 
-        List<UUID> appliedCouponIds = appliedCouponRepository.findByCouponIdIn(couponIds)
+        List<UUID> usedCouponIds = appliedCouponRepository.findByCouponIdIn(couponIds)
                 .stream()
                 .map(appliedCoupon -> appliedCoupon.getCoupon().getId())
                 .toList();
 
         return coupons.stream()
-                .filter(coupon -> !appliedCouponIds.contains(coupon.getId()))
+                .filter(coupon -> !usedCouponIds.contains(coupon.getId()))
                 .map(CouponResponse::from)
                 .toList();
     }
