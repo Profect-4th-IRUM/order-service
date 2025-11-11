@@ -1,6 +1,8 @@
 package com.irum.orderservice.domain.coupon.service;
 
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
+import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository;
+import com.irum.orderservice.domain.coupon.domain.repository.CouponRepository;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
 import com.irum.orderservice.global.exception.errorcode.CouponErrorCode;
@@ -18,9 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CouponService {
-    private final com.irum.orderservice.domain.coupon.domain.repository.CouponRepository couponRepository;
-    private final com.irum.orderservice.domain.coupon.repository.AppliedCouponRepository
-            appliedCouponRepository;
+    private final CouponRepository couponRepository;
+    private final AppliedCouponRepository appliedCouponRepository;
     private final MemberClient memberClient;
 
     public void createCoupon(CouponGenerateRequest request) {

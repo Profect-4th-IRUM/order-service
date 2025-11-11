@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.deliveryaddress.repository;
 
-import com.irum.orderservice.domain.deliveryaddress.domain.entity.QDeliveryAddress;
+import com.irum.orderservice.domain.deliveryaddress.domain.QDeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepositoryCustom;
 import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoResponse;
 import com.querydsl.core.types.Projections;
