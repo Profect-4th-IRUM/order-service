@@ -63,7 +63,7 @@ public class CouponService {
     }
 
     /** 쿠폰 유효성 검증 및 할인 금액 계산 */
-    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, UUID memberId) {
+    public int validAndCalCoupon(List<UUID> couponIdList, int calculatedTotalPrice, Long memberId) {
         if (couponIdList.isEmpty()) {
             return 0;
         }

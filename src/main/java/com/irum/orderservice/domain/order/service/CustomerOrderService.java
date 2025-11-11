@@ -1,16 +1,15 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.client.payment.PaymentClient;
 import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentCorp;
 import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.client.product.ProductClient;
 import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
-import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
-import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
+import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
-import com.irum.orderservice.domain.deliveryaddress.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
@@ -57,7 +56,7 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
-        Long currentMemberId = 0L; // TODO
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
 
         OrderDetail orderDetail =
                 orderDetailRepository
@@ -73,7 +72,7 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(UUID orderId) {
-        Long currentMemberId = 0L; // TODO
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
 
         // order 조회 및 member 검증
         Order order =
@@ -94,7 +93,7 @@ public class CustomerOrderService {
     public CustomerOrderListResponse getOrderList(
             UUID cursor, int size, LocalDate startDate, LocalDate endDate) {
 
-        Long currentMemberId = 0L; // TODO
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
 
         // 2. order list 검색
         List<CustomerOrderSummaryRow> headerList =
@@ -149,7 +148,7 @@ public class CustomerOrderService {
     }
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
-        Long currentMemberId = 0L; // TODO
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
         int discountAmount = 0;
 
         DeliveryAddress deliveryAddress =

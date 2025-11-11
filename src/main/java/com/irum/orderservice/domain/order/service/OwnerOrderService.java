@@ -185,10 +185,10 @@ public class OwnerOrderService {
     /** OrderDetail 상태 목록을 기반으로 집계된(Aggregated) Order의 상태를 결정 */
     private OrderStatus aggregateOrderStatus(OrderDetail orderDetail) {
 
-                Order order =
-                        orderRepository
-                                .findByOrderId(orderDetail.getOrder().getOrderId())
-                                .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+        Order order =
+                orderRepository
+                        .findByOrderId(orderDetail.getOrder().getOrderId())
+                        .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
 
         Order order = orderDetail.getOrder();
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
@@ -287,7 +287,7 @@ public class OwnerOrderService {
 
         AddressResponse address = AddressResponse.from(order.getDeliveryAddress().getAddress());
 
-        return new (OrderDetailResponse
+        return new OrderDetailResponse(
                 order.getCreatedAt(),
                 order.getPayment() != null ? order.getPayment().getPaymentStatus() : null,
                 order.getPayment() != null ? order.getPayment().getPaymentMethod() : null,
