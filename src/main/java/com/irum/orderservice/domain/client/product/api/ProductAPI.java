@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
-        name = "product-service",
+        name = "PRODUCT-SERVICE",
         url = "product-service/internal/products",
         configuration = FeignConfig.class)
 public interface ProductAPI {

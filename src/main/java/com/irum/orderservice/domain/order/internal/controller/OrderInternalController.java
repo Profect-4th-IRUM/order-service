@@ -1,7 +1,7 @@
 package com.irum.orderservice.domain.order.internal.controller;
 
 import com.irum.orderservice.domain.order.internal.dto.request.UpdateOrderFailedRequest;
-import com.irum.orderservice.domain.order.mapper.OrderInternalService;
+import com.irum.orderservice.domain.order.internal.service.OrderInternalService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
