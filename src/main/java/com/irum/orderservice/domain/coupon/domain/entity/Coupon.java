@@ -1,7 +1,10 @@
 package com.irum.orderservice.domain.coupon.domain.entity;
 
-import com.irum.orderservice.global.domain.BaseEntity;
-import jakarta.persistence.*;
+import com.irum.global.domain.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -37,6 +40,7 @@ public class Coupon extends BaseEntity {
     private LocalDateTime expiration;
 
     // ManyToOne
+    @Column(name = "member_id", nullable = false)
     private Long memberId;
 
     // 2. 생성자

@@ -1,5 +1,7 @@
 package com.irum.orderservice.domain.refund.service;
 
+import com.irum.global.advice.exception.CommonException;
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
@@ -13,9 +15,8 @@ import com.irum.orderservice.domain.refund.dto.response.RefundDetailResponse;
 import com.irum.orderservice.domain.refund.dto.response.RefundOrderList;
 import com.irum.orderservice.domain.refund.dto.response.RefundProductList;
 import com.irum.orderservice.domain.refund.dto.response.StoreRefundListResponse;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.OrderErrorCode;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.RefundErrorCode;
+import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
+import com.irum.orderservice.global.exception.errorcode.RefundErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.util.List;
 import java.util.UUID;
