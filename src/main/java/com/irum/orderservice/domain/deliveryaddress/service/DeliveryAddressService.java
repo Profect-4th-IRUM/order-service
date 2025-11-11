@@ -2,6 +2,7 @@ package com.irum.orderservice.domain.deliveryaddress.service;
 
 import com.irum.global.advice.exception.CommonException;
 import com.irum.global.advice.exception.errorcode.GlobalErrorCode;
+import com.irum.openfeign.member.dto.response.MemberDto;
 import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.deliveryaddress.dto.request.AddressDetailUpdateRequest;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
