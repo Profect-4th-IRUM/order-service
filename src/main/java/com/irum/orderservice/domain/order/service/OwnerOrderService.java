@@ -118,7 +118,7 @@ public class OwnerOrderService {
                                                 detailMap.getOrDefault(
                                                         order.orderId(),
                                                         List.of()) // order detail 없다면 빈 리스트
-                                        ))
+                                                ))
                         .toList();
 
         // 6. next cursor계산

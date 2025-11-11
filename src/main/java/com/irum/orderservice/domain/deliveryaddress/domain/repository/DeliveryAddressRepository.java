@@ -12,7 +12,6 @@ public interface DeliveryAddressRepository
 
     boolean existsByMemberId(Long memberId);
 
-
     @Query("SELECT d FROM DeliveryAddress d WHERE d.memberId = :memberId AND d.isDefault = true")
     Optional<DeliveryAddress> findDefaultAddressByMemberId(@Param("memberId") Long memberId);
 

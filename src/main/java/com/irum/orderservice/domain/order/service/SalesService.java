@@ -87,7 +87,8 @@ public class SalesService {
     @Transactional(readOnly = true)
     public BalanceResponse getBalance(UUID storeId) {
         // 1. 해당 스토어의 모든 주문 가져오기
-        List<Order> orders = orderRepository.findAllByMemberId(memberUtil.getCurrentMember().memberId());
+        List<Order> orders =
+                orderRepository.findAllByMemberId(memberUtil.getCurrentMember().memberId());
 
         // 2. 총 결제 금액 계산
         int totalPaymentAmount =
