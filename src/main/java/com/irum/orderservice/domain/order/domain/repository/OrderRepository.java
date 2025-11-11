@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID>, OrderRepositoryCustom {
-    Optional<Order> findByOrderIdAndMember(UUID orderId, Member member);
 
-    List<Order> findAllByMember(Member member);
+    Optional<Order> findByOrderIdAndMemberId(UUID orderId, Long memberId);
+
+    List<Order> findAllByMemberId(Long member);
 
     Optional<Order> findByOrderId(UUID orderId);
 
-    @Query(
-            """
+    @Query("""
     SELECT o FROM Order o
     WHERE o.orderStatusAll = 'PENDING' AND o.createdAt < :cutoffTime
     """)

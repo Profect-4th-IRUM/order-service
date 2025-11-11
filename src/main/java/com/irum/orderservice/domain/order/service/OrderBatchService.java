@@ -46,6 +46,7 @@ public class OrderBatchService {
 
         // OrderDetail 상태 변경
         int detailCount = orderDetailRepository.updateStatusToFailedByOrderIds(orderIds);
+
         // Order 상태 변경
         int orderCount = orderRepository.updateStatusToFailedByIds(orderIds);
 

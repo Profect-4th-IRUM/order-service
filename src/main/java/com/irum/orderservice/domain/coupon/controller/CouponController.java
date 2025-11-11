@@ -3,7 +3,6 @@ package com.irum.orderservice.domain.coupon.controller;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
 import com.irum.orderservice.domain.coupon.service.CouponService;
-import com.irum.orderservice.global.util.MemberUtil;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -17,25 +16,21 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CouponController {
     private final CouponService couponService;
-    private final MemberUtil memberUtil;
 
     @PostMapping
     public ResponseEntity<Void> createCoupon(@Valid @RequestBody CouponGenerateRequest request) {
-        Long memberId = memberUtil.getCurrentMember().getMemberId();
-        couponService.createCoupon(request, memberId);
+        couponService.createCoupon(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
     public ResponseEntity<List<CouponResponse>> getCoupon() {
-        Long memberId = memberUtil.getCurrentMember().getMemberId();
-        return ResponseEntity.ok(couponService.getCouponByMember(memberId));
+        return ResponseEntity.ok(couponService.getCouponByMember());
     }
 
     @DeleteMapping("/{couponId}")
     public ResponseEntity<Void> deleteCoupon(@PathVariable("couponId") UUID couponId) {
-        Long memberId = memberUtil.getCurrentMember().getMemberId();
-        couponService.deleteCoupon(couponId, memberId);
+        couponService.deleteCoupon(couponId);
         return ResponseEntity.noContent().build();
     }
 }
