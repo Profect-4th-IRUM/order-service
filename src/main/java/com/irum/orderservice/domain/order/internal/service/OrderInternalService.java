@@ -1,7 +1,7 @@
 package com.irum.orderservice.domain.order.internal.service;
 
 import com.irum.global.advice.exception.CommonException;
-import com.irum.orderservice.domain.client.product.ProductClient;
+import com.irum.orderservice.openfeign.product.ProductClient;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;

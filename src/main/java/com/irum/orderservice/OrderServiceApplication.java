@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableFeignClients(basePackages = {"com.irum.orderservice.openfeign"})
 public class OrderServiceApplication {
 
     public static void main(String[] args) {

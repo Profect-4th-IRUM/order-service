@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.openfeign.payment.PaymentClient;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;

@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
-import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
+import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;

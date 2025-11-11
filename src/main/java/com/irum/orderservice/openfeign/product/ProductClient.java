@@ -1,9 +1,9 @@
-package com.irum.orderservice.domain.client.product;
+package com.irum.orderservice.openfeign.product;
 
-import com.irum.orderservice.domain.client.product.api.ProductAPI;
-import com.irum.orderservice.domain.client.product.dto.request.ProductInternalRequest;
-import com.irum.orderservice.domain.client.product.dto.request.RollbackStockRequest;
-import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
+import com.irum.orderservice.openfeign.product.api.ProductAPI;
+import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
+import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
+import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
 import java.util.List;

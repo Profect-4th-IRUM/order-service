@@ -1,9 +1,9 @@
-package com.irum.orderservice.domain.client.payment.api;
+package com.irum.orderservice.openfeign.payment.api;
 
-import com.irum.orderservice.domain.client.config.FeignConfig;
-import com.irum.orderservice.domain.client.payment.dto.request.CreatePaymentRequest;
-import com.irum.orderservice.domain.client.payment.dto.request.UpdatePaymentStatusRequest;
-import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
+import com.irum.orderservice.openfeign.config.FeignConfig;
+import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
+import com.irum.orderservice.openfeign.payment.dto.request.UpdatePaymentStatusRequest;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
