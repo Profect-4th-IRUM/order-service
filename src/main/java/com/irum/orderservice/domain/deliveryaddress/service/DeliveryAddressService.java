@@ -100,7 +100,7 @@ public class DeliveryAddressService {
                     .findTopByMemberOrderByCreatedAtDesc(member.memberId())
                     .ifPresent(DeliveryAddress::markAsDefault);
         }
-        memberUtil.assertMemberResourceAccess(address.getMemberId()); //TODO : 추가 통신이 없도록 추후 수정
+        memberUtil.assertMemberResourceAccess(address.getMemberId(), member.memberId());
         address.softDelete(member.memberId());
     }
 
