@@ -24,7 +24,8 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final AppliedCouponRepository appliedCouponRepository;
 
-    public void createCoupon(CouponGenerateRequest request, Long memberId) {
+    public void createCoupon(CouponGenerateRequest request) {
+        Long memberId = memberUtil.getCurrentMember().memberId();
         if (memberId == null) {
             throw new CommonException(MemberErrorCode.MEMBER_NOT_FOUND);
         }
@@ -40,7 +41,8 @@ public class CouponService {
     }
 
     @Transactional(readOnly = true)
-    public List<CouponResponse> getCouponByMember(Long memberId) {
+    public List<CouponResponse> getCouponByMember() {
+        Long memberId = memberUtil.getCurrentMember().memberId();
         List<Coupon> coupons = couponRepository.findByMemberId(memberId);
 
         if (coupons.isEmpty()) {
@@ -64,7 +66,8 @@ public class CouponService {
 
 
 
-    public void deleteCoupon(UUID couponId, Long memberId) {
+    public void deleteCoupon(UUID couponId) {
+        Long memberId = memberUtil.getCurrentMember().memberId();
         Coupon coupon =
                 couponRepository
                         .findById(couponId)
