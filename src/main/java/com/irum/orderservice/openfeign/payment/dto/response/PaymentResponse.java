@@ -7,4 +7,5 @@ public record PaymentResponse(
         PaymentStatus paymentStatus,
         PaymentMethod paymentMethod,
         int totalDiscountAmount,
-        int amount) {}
+        int amount
+) {}
