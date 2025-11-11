@@ -42,5 +42,4 @@ out/
 
 ### mac ###
 .DS_Store
-
 gradle.properties

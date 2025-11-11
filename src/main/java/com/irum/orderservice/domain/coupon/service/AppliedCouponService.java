@@ -19,7 +19,7 @@ public class AppliedCouponService {
     private final MemberUtil memberUtil;
 
     /** 쿠폰 사용 처리 */
-    public void createAppliedCouponList(Payment payment, List<UUID> couponIdList) {
+    public void createAppliedCouponList(UUID paymentId, List<UUID> couponIdList) {
         List<Coupon> couponList = couponRepository.findAllById(couponIdList);
 
         List<AppliedCoupon> appliedCouponList =
@@ -27,7 +27,7 @@ public class AppliedCouponService {
                         .map(
                                 coupon ->
                                         AppliedCoupon.builder()
-                                                .payment(payment)
+                                                .paymentId(paymentId)
                                                 .coupon(coupon)
                                                 .build())
                         .toList();

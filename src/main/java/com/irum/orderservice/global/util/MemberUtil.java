@@ -25,6 +25,11 @@ public class MemberUtil {
             throw new CommonException(GlobalErrorCode.EMPTY_REQUEST);
     }
 
+    public void assertMemberResourceAccess(Long memberId, Long currentMemberId) {
+        if (!memberId.equals(currentMemberId))
+            throw new CommonException(GlobalErrorCode.EMPTY_REQUEST);
+    }
+
     private Long getCurrentMemberId() {
         return MemberAuthContext.getMemberId();
     } // 로그인 된 아이디 반환

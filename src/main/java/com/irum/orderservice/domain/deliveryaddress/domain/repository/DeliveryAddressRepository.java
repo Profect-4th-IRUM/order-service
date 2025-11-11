@@ -12,7 +12,7 @@ public interface DeliveryAddressRepository
                 com.irum.orderservice.domain.deliveryaddress.domain.repository
                         .DeliveryAddressRepositoryCustom {
 
-    boolean existsByMember(Long member);
+    boolean existsByMember(Long memberId);
 
     @Query("SELECT d FROM DeliveryAddress d WHERE d.member = :member AND d.isDefault = true")
     Optional<DeliveryAddress> findDefaultAddressByMember(@Param("member") Long member);

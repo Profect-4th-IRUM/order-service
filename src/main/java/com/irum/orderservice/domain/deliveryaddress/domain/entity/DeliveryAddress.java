@@ -21,9 +21,7 @@ public class DeliveryAddress extends BaseEntity {
     @Column(name = "delivery_address_id", updatable = false, nullable = false)
     private UUID deliveryAddressId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Long member;
+    private Long memberId;
 
     @Embedded private Address address;
 
@@ -38,12 +36,12 @@ public class DeliveryAddress extends BaseEntity {
 
     @Builder
     private DeliveryAddress(
-            Long member,
+            Long memberId,
             Address address,
             String recipientName,
             String recipientContact,
             Boolean isDefault) {
-        this.member = member;
+        this.memberId = memberId;
         this.address = address;
         this.recipientName = recipientName;
         this.recipientContact = recipientContact;
@@ -51,9 +49,9 @@ public class DeliveryAddress extends BaseEntity {
     }
 
     public static DeliveryAddress create(
-            Long member, Address address, String recipientName, String recipientContact) {
+            Long memberId, Address address, String recipientName, String recipientContact) {
         return DeliveryAddress.builder()
-                .member(member)
+                .memberId(memberId)
                 .address(address)
                 .recipientName(recipientName)
                 .recipientContact(recipientContact)

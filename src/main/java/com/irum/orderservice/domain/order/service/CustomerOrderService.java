@@ -1,13 +1,17 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentCorp;
+import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
+import com.irum.orderservice.domain.client.product.ProductClient;
+import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
-import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
-import com.irum.orderservice.domain.deliveryaddress.repository.DeliveryAddressRepository;
+import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
+import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
-import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
@@ -43,17 +47,16 @@ public class CustomerOrderService {
     private final OrderRepository orderRepository;
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
-    private final ProductOptionValueRepository productOptionValueRepository;
-    private final ProductRepository productRepository;
-    private final StoreRepository storeRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final CouponService couponService;
     private final AppliedCouponService appliedCouponService;
-    private final PaymentService paymentService;
+
+    private final PaymentClient paymentClient;
+    private final ProductClient productClient;
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
-        Member member = memberUtil.getCurrentMember();
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
 
         OrderDetail orderDetail =
                 orderDetailRepository
@@ -61,7 +64,7 @@ public class CustomerOrderService {
                         .orElseThrow(
                                 () -> new CommonException(OrderErrorCode.ORDER_DETAIL_NOT_FOUND));
 
-        if (member.equals(orderDetail.getOrder().getMember()))
+        if (currentMemberId.equals(orderDetail.getOrder().getMemberId()))
             throw new CommonException(OrderErrorCode.ORDER_FORBIDDEN);
 
         return OrderDetailStatusResponse.from(orderDetail);
@@ -69,31 +72,33 @@ public class CustomerOrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(UUID orderId) {
-        Member member = memberUtil.getCurrentMember();
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
 
         // order 조회 및 member 검증
         Order order =
                 orderRepository
-                        .findByOrderIdAndMember(orderId, member)
+                        .findByOrderIdAndMemberId(orderId, currentMemberId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
 
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
 
         Refund refund = refundRepository.findByOrder(order).orElse(null);
+        PaymentResponse paymentResponse = paymentClient.getPayment(order.getPaymentId());
 
-        return CustomerOrderMapper.toOrderDetailResponse(order, orderDetailList, refund);
+        return CustomerOrderMapper.toOrderDetailResponse(
+                order, orderDetailList, refund, paymentResponse);
     }
 
     @Transactional
     public CustomerOrderListResponse getOrderList(
             UUID cursor, int size, LocalDate startDate, LocalDate endDate) {
 
-        Member member = memberUtil.getCurrentMember();
-        log.info("member {}", member.getMemberId());
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
 
         // 2. order list 검색
         List<CustomerOrderSummaryRow> headerList =
-                orderRepository.fetchOrderListByMember(member, startDate, endDate, cursor, size);
+                orderRepository.fetchOrderListByMember(
+                        currentMemberId, startDate, endDate, cursor, size);
         log.info("order list {}", headerList);
 
         boolean hasNext = headerList.size() > size;
@@ -143,11 +148,9 @@ public class CustomerOrderService {
     }
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
-        Member member = memberUtil.getCurrentMember();
-        Store store =
-                storeRepository
-                        .findByIdWithDeliveryPolicy(request.storeId())
-                        .orElseThrow(() -> new CommonException(StoreErrorCode.STORE_NOT_FOUND));
+        Long currentMemberId = memberUtil.getCurrentMember().memberId();
+        int discountAmount = 0;
+
         DeliveryAddress deliveryAddress =
                 deliveryAddressRepository
                         .findById(request.deliveryAddressId())
@@ -156,9 +159,8 @@ public class CustomerOrderService {
                                         new CommonException(
                                                 DeliveryAddressErrorCode
                                                         .DELIVERY_ADDRESS_NOT_FOUND));
-        log.info("[주문준비] 멤버 {} {} , 상점, 주소 검색", member.getMemberId(), member.getName());
+        log.info("[주문준비] 멤버 {} , 상점, 주소 검색", currentMemberId);
 
-        // 요청에서 id목록 추출
         List<UUID> productIds =
                 request.productList().stream()
                         .map(CustomerOrderRequest.ProductSummary::productId)
@@ -171,25 +173,20 @@ public class CustomerOrderService {
                         .distinct()
                         .toList();
 
-        // 조회
-        List<Product> products = productRepository.findAllById(productIds);
-        List<ProductOptionValue> optionValues =
-                productOptionValueRepository.findAllByIdInWithLock(optionValueIds);
+        // 조회, 재고 미리 차감
+        ProductInternalResponse response =
+                productClient.updateStock(request.productList(), request.storeId());
 
-        // Map으로 변환
-        Map<UUID, Product> productMap =
-                products.stream().collect(Collectors.toMap(Product::getId, product -> product));
-
-        Map<UUID, ProductOptionValue> optionMap =
-                optionValues.stream()
-                        .collect(Collectors.toMap(ProductOptionValue::getId, option -> option));
+        Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
+                response.productList().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        ProductInternalResponse.ProductResponse::optionValueId,
+                                        product -> product));
 
         // 정합 정검
-        if (productMap.size() != productIds.size()) {
-            throw new CommonException(ProductErrorCode.PRODUCT_NOT_FOUND);
-        }
-        if (optionMap.size() != optionValueIds.size()) {
-            throw new CommonException(ProductErrorCode.PRODUCT_OPTION_VALUE_NOT_FOUND);
+        if (optionMap.size() != productIds.size() || optionMap.size() != optionValueIds.size()) {
+            throw new CommonException(OrderErrorCode.INVALID_ORDER);
         }
 
         // 상품 확인, 재고확인, 상품 정보 조회 , 가격 계산, 주문 상세 엔티티 생성 준비
@@ -197,82 +194,59 @@ public class CustomerOrderService {
         int productCount = 0;
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (CustomerOrderRequest.ProductSummary productReq : request.productList()) {
-            // 상품이 해당 상점의 상품인지 확인
-            Product product = productMap.get(productReq.productId());
-
-            if (!product.getStore().getId().equals(store.getId())) {
-                throw new CommonException(OrderErrorCode.INVALID_ORDER);
-            }
-
-            // 재고 확인
-            ProductOptionValue productOptionValue = optionMap.get(productReq.optionValueId());
-            // 재고보다 요청 물품 개수가 많을때
-            if (productOptionValue.getStockQuantity() < productReq.quantity()) {
-                throw new CommonException(ProductErrorCode.PRODUCT_OUT_OF_STOCK);
-            }
+            ProductInternalResponse.ProductResponse product =
+                    optionMap.get(productReq.optionValueId());
 
             // 제품 가격 계산
-            int productPrice =
-                    (product.getPrice() + productOptionValue.getExtraPrice())
-                            * productReq.quantity();
+            int productPrice = (product.price() + product.extraPrice()) * productReq.quantity();
             calculatedTotalPrice += productPrice;
+            // 상품 개수 카운트
             productCount += productReq.quantity();
-
-            // 재고 미리 차감
-            productOptionValue.decreaseStock(productReq.quantity());
+            // 상품 개별 할인
+            discountAmount += product.productDiscount();
 
             OrderDetail orderDetail =
-                    OrderDetail.builder()
-                            .product(product)
-                            .price(productPrice)
-                            .quantity(productReq.quantity())
-                            .orderStatusIndi(OrderStatus.PENDING)
-                            .optionName(productOptionValue.getName())
-                            .productName(product.getName())
-                            .productOptionValue(productOptionValue)
-                            .build();
+                    OrderDetail.from(product, productPrice, productReq.quantity());
             orderDetails.add(orderDetail);
         }
         log.info("상품 확인, 재고 확인, 재고 차감, 가격 계산 완료");
 
         /** 배송비 적용* */
-        int deliveryFee = store.getDeliveryPolicy().getDefaultDeliveryFee();
-        int deliveryMinAmount = store.getDeliveryPolicy().getMinAmount();
-        int deliveryMinQuantity = store.getDeliveryPolicy().getMinQuantity();
+        int deliveryFee = response.defaultDeliveryFee();
+        int deliveryMinAmount = response.minAmount();
+        int deliveryMinQuantity = response.minQuantity();
         if (calculatedTotalPrice > deliveryMinAmount || productCount > deliveryMinQuantity) {
             deliveryFee = 0;
         }
         log.info("배송비 {}", deliveryFee);
 
-        /** 할인 적용 */
-        int discountAmount =
+        /** 할인 쿠폰 적용 */
+        discountAmount +=
                 couponService.validAndCalCoupon(
-                        request.couponIdList(), calculatedTotalPrice, member);
+                        request.couponIdList(), calculatedTotalPrice, currentMemberId);
         int finalPaymentAmount = calculatedTotalPrice - discountAmount;
         log.info("할인 {}, 할인 후 가격 {}", discountAmount, finalPaymentAmount);
 
         /** 결재 생성 PENDING 상태* */
-        Payment payment =
-                paymentService.preparePayment(
-                        member, finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
+        UUID paymentId =
+                paymentClient.createPaymentPending(
+                        finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
         // 쿠폰 미리 차감
-        appliedCouponService.createAppliedCouponList(payment, request.couponIdList());
+        appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());
 
         // 주문 엔티티 생성 PENDING 상태  8 자리 랜덤값
         String orderNum = "ORD-" + (int) ((Math.random() * 100000000));
 
         Order order =
-                Order.builder()
-                        .orderNum(orderNum)
-                        .totalPrice(calculatedTotalPrice)
-                        .deliveryFee(deliveryFee)
-                        .deliveryRequest(request.deliveryRequest())
-                        .orderStatusAll(OrderStatus.PENDING)
-                        .member(member)
-                        .store(store)
-                        .payment(payment)
-                        .deliveryAddress(deliveryAddress)
-                        .build();
+                Order.from(
+                        orderNum,
+                        calculatedTotalPrice,
+                        deliveryFee,
+                        request.deliveryRequest(),
+                        currentMemberId,
+                        request.storeId(),
+                        paymentId,
+                        deliveryAddress);
         orderRepository.save(order);
 
         /** 주문 상세 저장* */
@@ -281,6 +255,7 @@ public class CustomerOrderService {
             orderDetailRepository.save(orderDetail);
         }
 
-        return CustomerOrderMapper.toCustomerOrderResponse(order, orderDetails);
+        return CustomerOrderMapper.toCustomerOrderResponse(
+                order, orderDetails, discountAmount, finalPaymentAmount);
     }
 }
