@@ -1,6 +1,6 @@
-package com.irum.orderservice.domain.deliveryaddress.domain;
+package com.irum.orderservice.domain.deliveryaddress.domain.entity;
 
-import com.irum.orderservice.global.domain.BaseEntity;
+import com.irum.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -21,9 +21,8 @@ public class DeliveryAddress extends BaseEntity {
     @Column(name = "delivery_address_id", updatable = false, nullable = false)
     private UUID deliveryAddressId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    //ManyToOne
+    private Long memberId;
 
     @Embedded private Address address;
 
@@ -38,12 +37,12 @@ public class DeliveryAddress extends BaseEntity {
 
     @Builder
     private DeliveryAddress(
-            Member member,
+            Long memberId,
             Address address,
             String recipientName,
             String recipientContact,
             Boolean isDefault) {
-        this.member = member;
+        this.memberId = memberId;
         this.address = address;
         this.recipientName = recipientName;
         this.recipientContact = recipientContact;
@@ -51,9 +50,9 @@ public class DeliveryAddress extends BaseEntity {
     }
 
     public static DeliveryAddress create(
-            Member member, Address address, String recipientName, String recipientContact) {
+            Long memberId, Address address, String recipientName, String recipientContact) {
         return DeliveryAddress.builder()
-                .member(member)
+                .memberId(memberId)
                 .address(address)
                 .recipientName(recipientName)
                 .recipientContact(recipientContact)

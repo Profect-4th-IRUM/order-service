@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.domain.repository;
 
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -12,16 +13,17 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID>, OrderRepositoryCustom {
-    Optional<Order> findByOrderIdAndMember(UUID orderId, Member member);
 
-    List<Order> findAllByMember(Member member);
+    Optional<Order> findByOrderIdAndMemberId(UUID orderId, Long memberId);
+
+    List<Order> findAllByMemberId(Long member);
 
     Optional<Order> findByOrderId(UUID orderId);
 
     @Query(
-            "SELECT o FROM Order o JOIN FETCH o.payment p "
+            "SELECT o FROM Order o"
                     + "WHERE o.orderStatusAll = 'PENDING' AND o.createdAt < :cutoffTime")
-    List<Order> findStalePendingOrdersWithPayment(@Param("cutoffTime") LocalDateTime cutoffTime);
+    List<Order> findStalePendingOrders(@Param("cutoffTime") LocalDateTime cutoffTime);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Order o SET o.orderStatusAll = 'FAILED' WHERE o.orderId IN :orderIds")

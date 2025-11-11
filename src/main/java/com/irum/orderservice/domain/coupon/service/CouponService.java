@@ -1,11 +1,14 @@
 package com.irum.orderservice.domain.coupon.service;
 
+import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
+import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository;
+import com.irum.orderservice.domain.coupon.domain.repository.CouponRepository;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.CouponErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
+import com.irum.orderservice.global.exception.errorcode.CouponErrorCode;
+import com.irum.orderservice.global.exception.errorcode.MemberErrorCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,12 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CouponService {
-    private final com.irum.orderservice.domain.coupon.domain.repository.CouponRepository couponRepository;
-    private final com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository
-            appliedCouponRepository;
     private final MemberUtil memberUtil;
+    private final CouponRepository couponRepository;
+    private final AppliedCouponRepository appliedCouponRepository;
 
     public void createCoupon(CouponGenerateRequest request, Long memberId) {
+        if (memberId == null) {
+            throw new CommonException(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
 
         Coupon coupon =
                 Coupon.createCoupon(
@@ -60,7 +65,6 @@ public class CouponService {
 
 
     public void deleteCoupon(UUID couponId, Long memberId) {
-
         Coupon coupon =
                 couponRepository
                         .findById(couponId)
@@ -69,6 +73,7 @@ public class CouponService {
             throw new CommonException(CouponErrorCode.ONLY_OWNER_CAN_DELETE);
         }
         coupon.softDelete(memberId);
+
     }
 
     /** 쿠폰 유효성 검증 및 할인 금액 계산 */

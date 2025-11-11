@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -7,12 +8,12 @@ import com.irum.orderservice.domain.order.dto.response.SalesResponse;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +26,14 @@ public class SalesService {
     private final MemberUtil memberUtil;
 
     public SalesResponse getSalesList(UUID storeId) {
-        Member member = memberUtil.getCurrentMember();
+        MemberDto member = memberUtil.getCurrentMember();
         Store store =
                 storeRepository
                         .findById(storeId)
                         .orElseThrow(() -> new CommonException(StoreErrorCode.STORE_NOT_FOUND));
         memberUtil.assertMemberResourceAccess(store.getMember());
 
-        List<Order> orders = orderRepository.findAllByMember(member);
+        List<Order> orders = orderRepository.findAllByMemberId(member.memberId());
         List<SalesResponse.OrderSummary> orderList =
                 orders.stream().map(this::toOrderSummary).toList();
         return new SalesResponse(orderList, null, false);
@@ -86,7 +87,7 @@ public class SalesService {
     @Transactional(readOnly = true)
     public BalanceResponse getBalance(UUID storeId) {
         // 1. 해당 스토어의 모든 주문 가져오기
-        List<Order> orders = orderRepository.findAllByMember(memberUtil.getCurrentMember());
+        List<Order> orders = orderRepository.findAllByMemberId(memberUtil.getCurrentMember().memberId());
 
         // 2. 총 결제 금액 계산
         int totalPaymentAmount =

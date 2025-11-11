@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
+import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -52,13 +53,11 @@ public class OrderDetail extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_value_id")
-    private ProductOptionValue productOptionValue;
+    // ManyToOne
+    private UUID productOptionValueId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    // ManyToOne
+    private UUID productId;
 
     public void updateStatusToPreparing() {
         this.orderStatusIndi = OrderStatus.PREPARING;
@@ -79,5 +78,20 @@ public class OrderDetail extends BaseEntity {
 
     public void updateOrder(Order order) {
         this.order = order;
+    }
+
+    public static OrderDetail from(
+            ProductInternalResponse.ProductResponse product,
+            int productPrice,
+            int productQuantity) {
+        return OrderDetail.builder()
+                .productId(product.productId())
+                .price(productPrice)
+                .quantity(productQuantity)
+                .orderStatusIndi(OrderStatus.PENDING)
+                .optionName(product.optionName())
+                .productName(product.productName())
+                .productOptionValueId(product.optionValueId())
+                .build();
     }
 }
