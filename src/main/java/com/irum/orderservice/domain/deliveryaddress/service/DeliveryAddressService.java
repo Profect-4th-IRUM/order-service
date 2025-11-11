@@ -1,20 +1,21 @@
 package com.irum.orderservice.domain.deliveryaddress.service;
 
-import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
+import com.irum.global.advice.exception.CommonException;
+import com.irum.global.advice.exception.errorcode.GlobalErrorCode;
+import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
+import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.deliveryaddress.dto.request.AddressDetailUpdateRequest;
 import com.irum.orderservice.domain.deliveryaddress.dto.request.DeliveryAddressRegisterRequest;
 import com.irum.orderservice.domain.deliveryaddress.dto.request.RecipientUpdateRequest;
 import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoListResponse;
 import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoResponse;
-import com.irum.orderservice.domain.deliveryaddress.repository.DeliveryAddressRepository;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.DeliveryAddressErrorCode;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.GlobalErrorCode;
+import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,16 +29,16 @@ public class DeliveryAddressService {
     private final DeliveryAddressRepository deliveryAddressRepository;
 
     public void createDeliveryAddress(DeliveryAddressRegisterRequest request) {
-        Member member = memberUtil.getCurrentMember();
+        MemberDto member = memberUtil.getCurrentMember();
         String recipientName =
-                request.recipientName() == null ? member.getName() : request.recipientName();
+                request.recipientName() == null ? member.name() : request.recipientName();
         String recipientContact =
-                request.recipientContact() == null
-                        ? member.getContact()
-                        : request.recipientContact();
+                request.recipientContact() == null ? member.contact() : request.recipientContact();
         DeliveryAddress deliveryAddress =
-                DeliveryAddress.create(member, request.address(), recipientName, recipientContact);
-        if (!deliveryAddressRepository.existsByMember(member)) deliveryAddress.markAsDefault();
+                DeliveryAddress.create(
+                        member.memberId(), request.address(), recipientName, recipientContact);
+        if (!deliveryAddressRepository.existsByMember(member.memberId()))
+            deliveryAddress.markAsDefault();
         deliveryAddressRepository.save(deliveryAddress);
     }
 
@@ -61,7 +62,7 @@ public class DeliveryAddressService {
         int limit = size + 1;
         List<DeliveryAddressInfoResponse> addressList =
                 deliveryAddressRepository.findDeliveryAddressByCursor(
-                        memberUtil.getCurrentMember().getMemberId(), cursor, limit);
+                        memberUtil.getCurrentMember().memberId(), cursor, limit);
         boolean hasNext = addressList.size() > size;
         List<DeliveryAddressInfoResponse> resultList =
                 hasNext ? addressList.subList(0, size) : addressList;
@@ -91,16 +92,16 @@ public class DeliveryAddressService {
     }
 
     public void removeDeliveryAddress(UUID deliveryAddressId) {
-        Member member = memberUtil.getCurrentMember();
+        MemberDto member = memberUtil.getCurrentMember();
         DeliveryAddress address = validDeliveryAddress(deliveryAddressId);
         if (address.isDefault()) {
             // DeliveryAddress 중 가장 최근 것 기본 배송지 설정
             deliveryAddressRepository
-                    .findTopByMemberOrderByCreatedAtDesc(member)
+                    .findTopByMemberOrderByCreatedAtDesc(member.memberId())
                     .ifPresent(DeliveryAddress::markAsDefault);
         }
-        memberUtil.assertMemberResourceAccess(address.getMember());
-        address.softDelete(memberUtil.getCurrentMember().getMemberId());
+        memberUtil.assertMemberResourceAccess(address.getMemberId(), member.memberId());
+        address.softDelete(member.memberId());
     }
 
     private DeliveryAddress validDeliveryAddress(UUID deliveryAddressId) {
@@ -112,14 +113,14 @@ public class DeliveryAddressService {
                                         new CommonException(
                                                 DeliveryAddressErrorCode
                                                         .DELIVERY_ADDRESS_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(address.getMember());
+        memberUtil.assertMemberResourceAccess(address.getMemberId());
         return address;
     }
 
     private DeliveryAddress getCurrentDefaultAddress() {
-        Member member = memberUtil.getCurrentMember();
+        MemberDto member = memberUtil.getCurrentMember();
         return deliveryAddressRepository
-                .findDefaultAddressByMember(member)
+                .findDefaultAddressByMember(member.memberId())
                 .orElseThrow(
                         () ->
                                 new CommonException(

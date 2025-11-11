@@ -1,8 +1,8 @@
 package com.irum.orderservice.domain.refund.domain.entity;
 
+import com.irum.global.domain.BaseEntity;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.*;
