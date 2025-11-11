@@ -1,6 +1,7 @@
 package com.irum.orderservice.domain.refund.dto.response;
 
-import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
+import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,9 +15,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID>, OrderRepositoryCustom {
+
     Optional<Order> findByOrderIdAndMemberId(UUID orderId, Long memberId);
 
-    List<Order> findAllByMember(Member member);
+    List<Order> findAllByMemberId(Long member);
 
     Optional<Order> findByOrderId(UUID orderId);
 
