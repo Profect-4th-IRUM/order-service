@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.irum.orderservice.openfeign.payment.PaymentClient;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentMapResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class OwnerOrderService {
     private final RefundRepository refundRepository;
     private final OrderMapper orderMapper;
     private final AppliedCouponRepository appliedCouponRepository;
+    private final PaymentClient paymentClient;
 
     @Transactional(readOnly = true)
     public OwnerOrderListResponse getPreparingOrderList(UUID storeId, UUID cursor, Integer size) {
@@ -93,6 +97,7 @@ public class OwnerOrderService {
             headerList = headerList.subList(0, size);
         }
 
+
         // 3. order detail 검색
         var orderIdList = headerList.stream().map(OrderSummaryRow::orderId).toList();
         List<OrderDetailRow> orderDetailList = orderRepository.fetchOrderDetailList(orderIdList);
@@ -107,6 +112,9 @@ public class OwnerOrderService {
                                                 orderMapper::toProductSummary,
                                                 Collectors.toList())));
 
+        // 5-1. payment로부터 totalAmount, Discount 받아오기
+        Map<UUID, PaymentMapResponse.PaymentResponse> paymentResponseMap = paymentClient.getPaymentMap(headerList).paymentMap();
+
         // 5. orderSummary 제작
         List<OwnerOrderListResponse.OrderSummary> orderSummaryList =
                 headerList.stream()
@@ -117,7 +125,8 @@ public class OwnerOrderService {
                                                 order,
                                                 detailMap.getOrDefault(
                                                         order.orderId(),
-                                                        List.of()) // order detail 없다면 빈 리스트
+                                                        List.of()), // order detail 없다면 빈 리스트
+                                                paymentResponseMap.get(order.paymentId())
                                                 ))
                         .toList();
 
