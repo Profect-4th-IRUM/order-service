@@ -21,6 +21,7 @@ public class DeliveryAddress extends BaseEntity {
     @Column(name = "delivery_address_id", updatable = false, nullable = false)
     private UUID deliveryAddressId;
 
+    //ManyToOne
     private Long memberId;
 
     @Embedded private Address address;

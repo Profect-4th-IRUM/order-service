@@ -3,8 +3,6 @@ package com.irum.orderservice.domain.order.service;
 import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
-import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
-import com.irum.orderservice.domain.deliveryaddress.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
