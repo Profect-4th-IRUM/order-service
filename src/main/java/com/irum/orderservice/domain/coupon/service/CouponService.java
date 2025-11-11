@@ -6,9 +6,9 @@ import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponReposi
 import com.irum.orderservice.domain.coupon.domain.repository.CouponRepository;
 import com.irum.orderservice.domain.coupon.dto.request.CouponGenerateRequest;
 import com.irum.orderservice.domain.coupon.dto.response.CouponResponse;
-import com.irum.orderservice.global.util.MemberUtil;
 import com.irum.orderservice.global.exception.errorcode.CouponErrorCode;
 import com.irum.orderservice.global.exception.errorcode.MemberErrorCode;
+import com.irum.orderservice.global.util.MemberUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -32,10 +32,7 @@ public class CouponService {
 
         Coupon coupon =
                 Coupon.createCoupon(
-                        request.name(),
-                        request.discountAmount(),
-                        request.expiration(),
-                        memberId);
+                        request.name(), request.discountAmount(), request.expiration(), memberId);
 
         couponRepository.save(coupon);
     }
@@ -49,22 +46,18 @@ public class CouponService {
             return List.of();
         }
 
-        List<UUID> couponIds = coupons.stream()
-                .map(Coupon::getId)
-                .toList();
+        List<UUID> couponIds = coupons.stream().map(Coupon::getId).toList();
 
-        List<UUID> usedCouponIds = appliedCouponRepository.findByCouponIdIn(couponIds)
-                .stream()
-                .map(appliedCoupon -> appliedCoupon.getCoupon().getId())
-                .toList();
+        List<UUID> usedCouponIds =
+                appliedCouponRepository.findByCouponIdIn(couponIds).stream()
+                        .map(appliedCoupon -> appliedCoupon.getCoupon().getId())
+                        .toList();
 
         return coupons.stream()
                 .filter(coupon -> !usedCouponIds.contains(coupon.getId()))
                 .map(CouponResponse::from)
                 .toList();
     }
-
-
 
     public void deleteCoupon(UUID couponId) {
         Long memberId = memberUtil.getCurrentMember().memberId();
@@ -76,7 +69,6 @@ public class CouponService {
             throw new CommonException(CouponErrorCode.ONLY_OWNER_CAN_DELETE);
         }
         coupon.softDelete(memberId);
-
     }
 
     /** 쿠폰 유효성 검증 및 할인 금액 계산 */
@@ -89,10 +81,10 @@ public class CouponService {
         List<Coupon> couponList = couponRepository.findAllById(couponIdList);
 
         // 사용된 쿠폰 ID를 한 번에 조회 (N+1 해결)
-        List<UUID> appliedCouponIds = appliedCouponRepository.findByCouponIdIn(couponIdList)
-                .stream()
-                .map(appliedCoupon -> appliedCoupon.getCoupon().getId())
-                .toList();
+        List<UUID> appliedCouponIds =
+                appliedCouponRepository.findByCouponIdIn(couponIdList).stream()
+                        .map(appliedCoupon -> appliedCoupon.getCoupon().getId())
+                        .toList();
 
         for (Coupon coupon : couponList) {
             // 권한 검사
