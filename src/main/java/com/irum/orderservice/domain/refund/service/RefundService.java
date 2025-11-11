@@ -1,5 +1,7 @@
 package com.irum.orderservice.domain.refund.service;
 
+import com.irum.global.advice.exception.CommonException;
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
@@ -13,9 +15,8 @@ import com.irum.orderservice.domain.refund.dto.response.RefundDetailResponse;
 import com.irum.orderservice.domain.refund.dto.response.RefundOrderList;
 import com.irum.orderservice.domain.refund.dto.response.RefundProductList;
 import com.irum.orderservice.domain.refund.dto.response.StoreRefundListResponse;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.OrderErrorCode;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.RefundErrorCode;
+import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
+import com.irum.orderservice.global.exception.errorcode.RefundErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.util.List;
 import java.util.UUID;
@@ -39,8 +40,10 @@ public class RefundService {
     public void createRefund(UUID orderId, RefundCreateRequest request) {
         assertNoRefundExistsByOrder(orderId);
         Order order = getValidOrder(orderId);
-        if (!order.getOrderStatusAll().equals(OrderStatus.PREPARING))
+        // 환불 가능한 주문 확인
+        if (!isRefundableOrderStatus(order.getOrderStatusAll()))
             throw new CommonException(RefundErrorCode.REFUND_NOT_AVAILABLE);
+
         refundRepository.save(Refund.create(request.reason(), request.description(), order));
     }
 
@@ -86,7 +89,49 @@ public class RefundService {
                         .findById(refundId)
                         .orElseThrow(() -> new CommonException(RefundErrorCode.REFUND_NOT_FOUND));
 
+        RefundStatus currentStatus = refund.getRefundStatus();
+        RefundStatus newStatus = request.refundStatus();
+
+        validateRefundStatusTransition(currentStatus, newStatus);
+
         refund.updateStatus(request.refundStatus());
+
+        Order order = refund.getOrder();
+        updateOrderStatusByRefundStatus(order, newStatus);
+    }
+
+    // 확인 가능한 주문 상태 확인 (OrderStatus가 PREPARING일때만 가능)
+    private boolean isRefundableOrderStatus(OrderStatus orderStatus) {
+        return orderStatus == OrderStatus.PREPARING;
+    }
+
+    // 환불 상태 변경 제약 (단계별 수정만 가능)
+    private void validateRefundStatusTransition(RefundStatus current, RefundStatus next) {
+        // 초기값인 PENDING 상태에서만 APPROVED or REJECTED 로 변경 가능
+        if (current == RefundStatus.PENDING) {
+            if (next != RefundStatus.APPROVED && next != RefundStatus.REJECTED) {
+                throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
+            }
+        }
+        if (current == RefundStatus.APPROVED) {
+            if (next != RefundStatus.COMPLETED) {
+                throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
+            }
+        }
+        // 그 외 상태에서는 전환 불가
+        throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
+    }
+
+    // 환불 상태 변경에 따른 주문 상태 업데이트
+    private void updateOrderStatusByRefundStatus(Order order, RefundStatus refundStatus) {
+        switch (refundStatus) {
+            case APPROVED:
+                order.updateOrderStatus(OrderStatus.FAILED);
+                break;
+            case REJECTED:
+                order.updateOrderStatus(OrderStatus.PREPARING);
+                break;
+        }
     }
 
     private void assertNoRefundExistsByOrder(UUID orderId) {
@@ -99,7 +144,7 @@ public class RefundService {
                 orderRepository
                         .findById(orderId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(order.getMember());
+        memberUtil.assertMemberResourceAccess(order.getMemberId());
         return order;
     }
 
@@ -108,7 +153,7 @@ public class RefundService {
                 orderRepository
                         .findOrderWithAddressAndPayment(orderId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(order.getMember());
+        memberUtil.assertMemberResourceAccess(order.getMemberId());
         return order;
     }
 

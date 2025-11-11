@@ -1,7 +1,10 @@
 package com.irum.orderservice.domain.coupon.domain.entity;
 
-import com.irum.orderservice.global.domain.BaseEntity;
-import jakarta.persistence.*;
+import com.irum.global.domain.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -36,29 +39,28 @@ public class Coupon extends BaseEntity {
     @Column(name = "expiration") // 유효기간
     private LocalDateTime expiration;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    // ManyToOne
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
     // 2. 생성자
-
     @Builder(access = AccessLevel.PRIVATE)
-    private Coupon(String name, Integer discountAmount, LocalDateTime expiration, Member member) {
+    private Coupon(String name, Integer discountAmount, LocalDateTime expiration, Long memberId) {
         this.name = name;
         this.discountAmount = discountAmount;
         this.expiration = expiration;
-        this.member = member;
+        this.memberId = memberId;
     }
 
     // 3. 쿠폰 생성 정적 팩토리 메서드
 
     public static Coupon createCoupon(
-            String name, Integer discountAmount, LocalDateTime expiration, Member member) {
+            String name, Integer discountAmount, LocalDateTime expiration, Long memberId) {
         return Coupon.builder()
                 .name(name)
                 .discountAmount(discountAmount)
                 .expiration(expiration)
-                .member(member)
+                .memberId(memberId)
                 .build();
     }
 }
