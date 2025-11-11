@@ -20,7 +20,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, OrderReposi
 
     Optional<Order> findByOrderId(UUID orderId);
 
-    @Query("""
+    @Query(
+            """
     SELECT o FROM Order o
     WHERE o.orderStatusAll = 'PENDING' AND o.createdAt < :cutoffTime
     """)

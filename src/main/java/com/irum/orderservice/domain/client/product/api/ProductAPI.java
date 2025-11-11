@@ -1,8 +1,6 @@
 package com.irum.orderservice.domain.client.product.api;
 
 import com.irum.orderservice.domain.client.config.FeignConfig;
-import com.irum.orderservice.domain.client.product.dto.request.RollbackStockRequest;
-import org.springframework.cloud.openfeign.FeignClient;
 import com.irum.orderservice.domain.client.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.domain.client.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
