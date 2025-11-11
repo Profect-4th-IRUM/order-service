@@ -5,7 +5,6 @@ import com.irum.orderservice.domain.order.service.CustomerOrderService;
 import com.irum.orderservice.domain.order.service.OwnerOrderService;
 import com.irum.orderservice.domain.order.service.SalesService;
 import com.irum.orderservice.domain.refund.service.RefundService;
-import com.irum.orderservice.global.util.CookieUtil;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

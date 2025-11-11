@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.deliveryaddress.repository;
+package com.irum.orderservice.domain.deliveryaddress.domain.repository;
 
 import com.irum.orderservice.domain.deliveryaddress.dto.response.DeliveryAddressInfoResponse;
 import java.util.List;

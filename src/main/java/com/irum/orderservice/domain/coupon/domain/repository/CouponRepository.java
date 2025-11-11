@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.coupon.repository;
+package com.irum.orderservice.domain.coupon.domain.repository;
 
 import com.irum.orderservice.domain.coupon.domain.entity.Coupon;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon, UUID> {
-    List<Coupon> findByMember_MemberId(Long memberId);
+    List<Coupon> findByMemberId(Long memberId);
 
     @Query("SELECT c FROM Coupon c WHERE c.member.memberId = :memberId AND c.expiration > :now")
     List<Coupon> findValidCouponByMemberId(

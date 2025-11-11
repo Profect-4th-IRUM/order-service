@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.DeliveryAddress;
@@ -19,9 +20,8 @@ import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.DeliveryAddressErrorCode;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.OrderErrorCode;
+import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
+import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;

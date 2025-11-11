@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
@@ -15,8 +16,7 @@ import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.OrderErrorCode;
+import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -185,11 +185,11 @@ public class OwnerOrderService {
     /** OrderDetail 상태 목록을 기반으로 집계된(Aggregated) Order의 상태를 결정 */
     private OrderStatus aggregateOrderStatus(OrderDetail orderDetail) {
 
-        //        Order order =
-        //                orderRepository
-        //                        .findByOrderId(orderDetail.getOrder().getOrderId())
-        //                        .orElseThrow(() -> new
-        // CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+                Order order =
+                        orderRepository
+                                .findByOrderId(orderDetail.getOrder().getOrderId())
+                                .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+
         Order order = orderDetail.getOrder();
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
         List<OrderStatus> orderStatusList =
@@ -287,7 +287,7 @@ public class OwnerOrderService {
 
         AddressResponse address = AddressResponse.from(order.getDeliveryAddress().getAddress());
 
-        return new OrderDetailResponse(
+        return new (OrderDetailResponse
                 order.getCreatedAt(),
                 order.getPayment() != null ? order.getPayment().getPaymentStatus() : null,
                 order.getPayment() != null ? order.getPayment().getPaymentMethod() : null,

@@ -1,4 +1,4 @@
-package com.irum.orderservice.global.presentation.advice.exception.errorcode;
+package com.irum.orderservice.global.exception.errorcode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
