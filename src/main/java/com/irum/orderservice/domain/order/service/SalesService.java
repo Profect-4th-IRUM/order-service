@@ -1,6 +1,9 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.orderservice.domain.client.product.ProductClient;
+import com.irum.orderservice.domain.client.store.StoreClient;
+import com.irum.orderservice.domain.client.store.api.StoreAPI;
+import com.irum.orderservice.domain.client.store.dto.response.StoreResponse;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -13,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +25,22 @@ public class SalesService {
     private final OrderRepository orderRepository;
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
-    private final ProductClient productClient;
+    private final StoreClient storeClient;
 
     public SalesResponse getSalesList(UUID storeId) {
-        MemberDto member = memberUtil.getCurrentMember();
+
+        StoreResponse storeResponse = storeClient.getStoreId(storeId);
+        Long CurrentMemberId = memberUtil.getCurrentMember().memberId();
+        memberUtil.assertMemberResourceAccess(storeResponse.memberId(), CurrentMemberId);
 
         List<Order> orders = orderRepository.findAllByStoreId(storeId);
-
         List<SalesResponse.OrderSummary> orderList =
                 orders.stream().map(this::toOrderSummary).toList();
         return new SalesResponse(orderList, null, false);
     }
 
     private SalesResponse.OrderSummary toOrderSummary(Order order) {
-        String displayStatus = displayStatus(order);
+        String DisplayStatus = displayStatus(order);
 
         List<SalesResponse.ProductSummary> productList =
                 order.getOrderDetails().stream()
@@ -61,7 +65,7 @@ public class SalesService {
                 order.getTotalPrice() + order.getDeliveryFee(),
                 order.getDeliveryFee(),
                 productList,
-                displayStatus);
+                DisplayStatus);
     }
 
     // 환불 존재시 환불 상태 반환, 환불 존재하지 않으면 주문 상태 반환
