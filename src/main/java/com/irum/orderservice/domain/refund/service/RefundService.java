@@ -1,6 +1,8 @@
 package com.irum.orderservice.domain.refund.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.domain.client.product.ProductClient;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
@@ -35,6 +37,7 @@ public class RefundService {
     private final RefundRepository refundRepository;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final PaymentClient paymentClient;
 
     // Customer
     public void createRefund(UUID orderId, RefundCreateRequest request) {
@@ -44,7 +47,9 @@ public class RefundService {
         if (!isRefundableOrderStatus(order.getOrderStatusAll()))
             throw new CommonException(RefundErrorCode.REFUND_NOT_AVAILABLE);
 
-        refundRepository.save(Refund.create(request.reason(), request.description(), order));
+        int refundAmount = paymentClient.getPaymentAmount(order.getPaymentId());
+
+        refundRepository.save(Refund.create(request.reason(), request.description(), order, refundAmount));
     }
 
     @Transactional(readOnly = true)
@@ -112,11 +117,13 @@ public class RefundService {
             if (next != RefundStatus.APPROVED && next != RefundStatus.REJECTED) {
                 throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
             }
+            return;
         }
         if (current == RefundStatus.APPROVED) {
             if (next != RefundStatus.COMPLETED) {
                 throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
             }
+            return;
         }
         // 그 외 상태에서는 전환 불가
         throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);

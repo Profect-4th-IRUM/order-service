@@ -35,4 +35,9 @@ public class PaymentClient {
                         .build();
         return paymentAPI.createPaymentPending(request);
     }
+
+    public int getPaymentAmount(UUID paymentId) {
+        PaymentResponse response = getPayment(paymentId);
+        return response.amount();
+    }
 }
