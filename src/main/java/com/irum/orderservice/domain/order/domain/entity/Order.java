@@ -48,7 +48,7 @@ public class Order extends BaseEntity {
 
     private Integer totalDiscountAmount;
 
-    private Integer amount;
+    private Integer payingAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_address_id")
@@ -84,7 +84,7 @@ public class Order extends BaseEntity {
                 .paymentId(paymentId)
                 .deliveryAddress(deliveryAddress)
                 .totalDiscountAmount(totalDiscountAmount)
-                .amount(amount)
+                .payingAmount(amount)
                 .build();
     }
 }
