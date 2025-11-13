@@ -246,7 +246,9 @@ public class CustomerOrderService {
                         currentMemberId,
                         request.storeId(),
                         paymentId,
-                        deliveryAddress);
+                        deliveryAddress,
+                        discountAmount,
+                        finalPaymentAmount);
         orderRepository.save(order);
 
         /** 주문 상세 저장* */

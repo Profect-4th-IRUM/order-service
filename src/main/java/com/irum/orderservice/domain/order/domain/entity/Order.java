@@ -46,6 +46,10 @@ public class Order extends BaseEntity {
     // ManyToOne
     private UUID storeId;
 
+    private Integer totalDiscountAmount;
+
+    private Integer amount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_address_id")
     private DeliveryAddress deliveryAddress;
@@ -66,7 +70,9 @@ public class Order extends BaseEntity {
             Long memberId,
             UUID storeId,
             UUID paymentId,
-            DeliveryAddress deliveryAddress) {
+            DeliveryAddress deliveryAddress,
+            int totalDiscountAmount,
+            int amount) {
         return Order.builder()
                 .orderNum(orderNum)
                 .totalPrice(calculatedTotalPrice)
@@ -77,6 +83,8 @@ public class Order extends BaseEntity {
                 .storeId(storeId)
                 .paymentId(paymentId)
                 .deliveryAddress(deliveryAddress)
+                .totalDiscountAmount(totalDiscountAmount)
+                .amount(amount)
                 .build();
     }
 }
