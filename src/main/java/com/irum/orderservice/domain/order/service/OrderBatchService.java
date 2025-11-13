@@ -1,7 +1,10 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.orderservice.domain.client.payment.PaymentClient;
+import com.irum.orderservice.domain.client.product.ProductClient;
+import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
+import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import java.time.LocalDateTime;
@@ -21,13 +24,15 @@ public class OrderBatchService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final PaymentClient paymentClient;
+    private final ProductClient productClient;
+    private final AppliedCouponService appliedCouponService;
 
     private static final int TIMEOUT_MINUTES = 5; // 5분 기준
 
     public void processStalePendingOrders() {
         LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(TIMEOUT_MINUTES);
 
-        // 타임아웃된 주문, 결제 조회
+        // 타임아웃된 주문 조회
         List<Order> staleOrders = orderRepository.findStalePendingOrders(cutoffTime);
 
         if (staleOrders.isEmpty()) {
@@ -42,11 +47,19 @@ public class OrderBatchService {
         // OrderDetail 상태 변경
         int detailCount = orderDetailRepository.updateStatusToFailedByOrderIds(orderIds);
 
-        // Payment 상태 변경
-        int paymentCount = paymentClient.updateStatusToFailed(paymentIds);
-
         // Order 상태 변경
         int orderCount = orderRepository.updateStatusToFailedByIds(orderIds);
+
+        // 쿠폰 롤백
+        appliedCouponService.rollbackAppliedCouponList(paymentIds);
+
+        // OrderDetail 조회
+        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrderIds(orderIds);
+
+        // Payment 상태 변경
+        int paymentCount = paymentClient.updateStatusToFailed(paymentIds);
+        // 재고 롤백
+        productClient.rollbackStock(orderDetailList);
 
         log.info(
                 "[주문 타임아웃 배치] {}개 주문, {}개 결제, {}개 주문상세 'FAILED' 처리 완료",

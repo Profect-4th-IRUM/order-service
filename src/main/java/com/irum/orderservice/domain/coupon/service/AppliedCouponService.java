@@ -41,4 +41,10 @@ public class AppliedCouponService {
     public void rollbackAppliedCouponList(UUID paymentId) {
         appliedCouponRepository.deleteByPaymentId(paymentId);
     }
+
+    /** 롤백 */
+    @Transactional
+    public void rollbackAppliedCouponList(List<UUID> paymentIdList) {
+        appliedCouponRepository.deleteAllByPaymentIds(paymentIdList);
+    }
 }

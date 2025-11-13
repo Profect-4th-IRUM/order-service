@@ -21,8 +21,10 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, OrderReposi
     Optional<Order> findByOrderId(UUID orderId);
 
     @Query(
-            "SELECT o FROM Order o"
-                    + "WHERE o.orderStatusAll = 'PENDING' AND o.createdAt < :cutoffTime")
+            """
+    SELECT o FROM Order o
+    WHERE o.orderStatusAll = 'PENDING' AND o.createdAt < :cutoffTime
+    """)
     List<Order> findStalePendingOrders(@Param("cutoffTime") LocalDateTime cutoffTime);
 
     @Modifying(clearAutomatically = true)

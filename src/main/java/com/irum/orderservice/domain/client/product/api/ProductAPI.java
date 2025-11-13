@@ -19,6 +19,7 @@ public interface ProductAPI {
     @PatchMapping("/rollback")
     void rollbackStock(@RequestBody RollbackStockRequest request);
 
-    @GetMapping("stock")
+    /** 주문 - 재고 차감 */
+    @GetMapping("/stock")
     ProductInternalResponse updateStock(@RequestBody ProductInternalRequest request);
 }
