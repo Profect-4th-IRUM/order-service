@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class StoreClient {
     private final StoreAPI storeAPI;
 
-    public StoreResponse getStoreId(UUID storeId) {
+    public StoreResponse getStoreInfo(UUID storeId) {
         return storeAPI.getStoreId(storeId);
     }
 }

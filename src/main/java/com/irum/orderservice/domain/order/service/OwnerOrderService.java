@@ -325,10 +325,8 @@ public class OwnerOrderService {
     }
 
     private int getDiscountAmount(UUID paymentId) {
-        Integer sum =
-                appliedCouponRepository.findByPayment_PaymentId(paymentId).stream()
-                        .mapToInt(ac -> ac.getCoupon().getDiscountAmount())
-                        .sum();
-        return sum != null ? sum : 0;
+        return appliedCouponRepository.findByPayment_PaymentId(paymentId).stream()
+                .mapToInt(ac -> ac.getCoupon().getDiscountAmount())
+                .sum();
     }
 }

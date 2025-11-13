@@ -10,6 +10,8 @@ import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.util.MemberUtil;
+
+import java.sql.Ref;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +29,7 @@ public class SalesService {
 
     public SalesResponse getSalesList(UUID storeId) {
 
-        StoreResponse storeResponse = storeClient.getStoreId(storeId);
+        StoreResponse storeResponse = storeClient.getStoreInfo(storeId);
         Long CurrentMemberId = memberUtil.getCurrentMember().memberId();
         memberUtil.assertMemberResourceAccess(storeResponse.memberId(), CurrentMemberId);
 
@@ -38,7 +40,7 @@ public class SalesService {
     }
 
     private SalesResponse.OrderSummary toOrderSummary(Order order) {
-        String DisplayStatus = displayStatus(order);
+        String displayStatus = displayStatus(order);
 
         List<SalesResponse.ProductSummary> productList =
                 order.getOrderDetails().stream()
@@ -63,7 +65,7 @@ public class SalesService {
                 order.getTotalPrice() + order.getDeliveryFee(),
                 order.getDeliveryFee(),
                 productList,
-                DisplayStatus);
+                displayStatus);
     }
 
     // 환불 존재시 환불 상태 반환, 환불 존재하지 않으면 주문 상태 반환
@@ -92,16 +94,9 @@ public class SalesService {
                 orders.stream().map(Order::getTotalPrice).mapToInt(Integer::intValue).sum();
 
         // 3. 환불된 금액 계산
-        int totalRefunds =
-                orders.stream()
-                        .flatMap(
-                                order ->
-                                        refundRepository
-                                                .findFirstByOrderOrderByCreatedAtDesc(order)
-                                                .stream())
-                        .filter(refund -> refund.getRefundStatus() == RefundStatus.COMPLETED)
-                        .mapToInt(Refund::getPrice)
-                        .sum();
+        List<Refund> refunds = refundRepository.findByOrderInAndRefundStatus(orders, RefundStatus.COMPLETED);
+
+        int totalRefunds = refunds.stream().mapToInt(Refund::getPrice).sum();
 
         // 4. 정산 금액 계산
         int settlementAmount = totalPaymentAmount - totalRefunds;

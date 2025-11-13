@@ -22,4 +22,6 @@ public interface RefundRepository extends JpaRepository<Refund, UUID> {
     Optional<Refund> findByOrderId(@Param("orderId") UUID orderId);
 
     Optional<Refund> findFirstByOrderOrderByCreatedAtDesc(Order order);
+
+    List<Refund> findByOrderInAndRefundStatus(List<Order> order, RefundStatus refundStatus);
 }
