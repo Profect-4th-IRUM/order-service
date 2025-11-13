@@ -1,7 +1,7 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.orderservice.domain.client.store.StoreClient;
-import com.irum.orderservice.domain.client.store.dto.response.StoreResponse;
+import com.irum.orderservice.domain.store.client.StoreClient;
+import com.irum.orderservice.domain.store.dto.response.StoreResponse;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -11,7 +11,6 @@ import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.util.MemberUtil;
 
-import java.sql.Ref;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class SalesService {
 
     public SalesResponse getSalesList(UUID storeId) {
 
-        StoreResponse storeResponse = storeClient.getStoreInfo(storeId);
+        StoreResponse storeResponse = storeClient.getStoreId(storeId);
         Long CurrentMemberId = memberUtil.getCurrentMember().memberId();
         memberUtil.assertMemberResourceAccess(storeResponse.memberId(), CurrentMemberId);
 
