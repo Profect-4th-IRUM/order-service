@@ -1,8 +1,6 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.orderservice.domain.client.product.ProductClient;
 import com.irum.orderservice.domain.client.store.StoreClient;
-import com.irum.orderservice.domain.client.store.api.StoreAPI;
 import com.irum.orderservice.domain.client.store.dto.response.StoreResponse;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;

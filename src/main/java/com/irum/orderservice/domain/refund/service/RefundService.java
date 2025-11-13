@@ -2,7 +2,6 @@ package com.irum.orderservice.domain.refund.service;
 
 import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.client.payment.PaymentClient;
-import com.irum.orderservice.domain.client.product.ProductClient;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
@@ -49,7 +48,8 @@ public class RefundService {
 
         int refundAmount = paymentClient.getPaymentAmount(order.getPaymentId());
 
-        refundRepository.save(Refund.create(request.reason(), request.description(), order, refundAmount));
+        refundRepository.save(
+                Refund.create(request.reason(), request.description(), order, refundAmount));
     }
 
     @Transactional(readOnly = true)

@@ -39,7 +39,8 @@ public class Refund extends BaseEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public static Refund create(RefundReason reason, String description, Order order, int refundPrice) {
+    public static Refund create(
+            RefundReason reason, String description, Order order, int refundPrice) {
         return Refund.builder()
                 .reason(reason)
                 .description(description)
