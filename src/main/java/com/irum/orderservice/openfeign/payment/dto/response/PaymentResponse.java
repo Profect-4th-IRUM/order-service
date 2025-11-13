@@ -5,7 +5,5 @@ import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentStatus;
 
 public record PaymentResponse(
         PaymentStatus paymentStatus,
-        PaymentMethod paymentMethod,
-        int totalDiscountAmount,
-        int amount
+        PaymentMethod paymentMethod
 ) {}

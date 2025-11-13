@@ -255,8 +255,12 @@ public class OwnerOrderService {
                                                 .build())
                         .toList();
         String couponName = getCouponName(order.getPaymentId());
-        PaymentResponse paymentResponse = paymentClient.getPayment(order.getPaymentId()); //TODO : payment 없을 경우 예외 처리 필요
-        int discountAmount = paymentResponse.totalDiscountAmount();
+        PaymentResponse paymentResponse;
+        if (order.getPaymentId() != null) {
+            paymentResponse = paymentClient.getPayment(order.getPaymentId());
+        } else { //결제 전
+            paymentResponse = new PaymentResponse(null, null);
+        }
         // 아직 결제 상태 Field 없음
         String trackingNumber =
                 order.getOrderDetails().stream()
@@ -276,7 +280,6 @@ public class OwnerOrderService {
 
         int deliveryFee = order.getDeliveryFee() != null ? order.getDeliveryFee() : 0;
         int totalProductPrice = order.getTotalPrice() != null ? order.getTotalPrice() : 0;
-        int totalPaymentPrice = totalProductPrice + deliveryFee - discountAmount;
 
         RefundStatus refundStatus =
                 refundRepository
@@ -291,9 +294,9 @@ public class OwnerOrderService {
                 paymentResponse.paymentStatus(),
                 paymentResponse.paymentMethod(),
                 deliveryFee,
-                discountAmount,
+                order.getTotalDiscountAmount(),
                 totalProductPrice,
-                totalPaymentPrice,
+                order.getPayingAmount(),
                 order.getOrderStatusAll(),
                 refundStatus,
                 order.getDeliveryRequest(),

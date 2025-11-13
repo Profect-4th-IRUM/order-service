@@ -55,7 +55,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                                 o.createdAt,
                                 o.totalPrice,
                                 o.totalDiscountAmount,
-                                o.amount,
+                                o.payingAmount,
                                 o.deliveryFee))
                 .from(o)
                 .where(
