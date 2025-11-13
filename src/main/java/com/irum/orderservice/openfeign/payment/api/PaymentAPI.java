@@ -11,7 +11,7 @@ import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "PAYMENT-SERVICE", url = "payment-service", configuration = FeignConfig.class)
+@FeignClient(name = "PAYMENT-SERVICE", url = "payment-service/internal/payments", configuration = FeignConfig.class)
 public interface PaymentAPI {
 
     @PatchMapping
