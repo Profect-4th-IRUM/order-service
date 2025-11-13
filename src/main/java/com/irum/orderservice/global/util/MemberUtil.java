@@ -20,11 +20,10 @@ public class MemberUtil {
         return memberClient.getMember(getCurrentMemberId());
     } // 로그인 된 유저 정보 조회
 
-    public MemberDto assertMemberResourceAccess(Long memberId) {
+    public void assertMemberResourceAccess(Long memberId) {
         MemberDto memberDto = memberClient.getMember(memberId);
         if (!memberId.equals(memberDto.memberId()))
             throw new CommonException(GlobalErrorCode.EMPTY_REQUEST);
-        return memberDto;
     }
 
     public void assertMemberResourceAccess(Long memberId, Long currentMemberId) {
