@@ -27,12 +27,6 @@ public class PaymentClient {
         return paymentAPI.getPayment(paymentId);
     }
 
-
-    public PaymentMapResponse getPaymentMap(List<OrderSummaryRow> headerList){
-        List<UUID> paymentIds = headerList.stream().map(OrderSummaryRow::paymentId).toList();
-        return paymentAPI.getPaymentMap(paymentIds);
-    }
-
     public UUID createPaymentPending(
             int finalPaymentAmount, int discountAmount, PaymentCorp paymentCorp) {
         CreatePaymentRequest request =

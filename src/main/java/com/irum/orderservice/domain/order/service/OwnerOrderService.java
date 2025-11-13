@@ -113,9 +113,6 @@ public class OwnerOrderService {
                                                 orderMapper::toProductSummary,
                                                 Collectors.toList())));
 
-        // 5-1. payment로부터 totalAmount, Discount 받아오기
-        Map<UUID, PaymentMapResponse.PaymentResponse> paymentResponseMap = paymentClient.getPaymentMap(headerList).paymentMap();
-
         // 5. orderSummary 제작
         List<OwnerOrderListResponse.OrderSummary> orderSummaryList =
                 headerList.stream()
@@ -126,9 +123,7 @@ public class OwnerOrderService {
                                                 order,
                                                 detailMap.getOrDefault(
                                                         order.orderId(),
-                                                        List.of()), // order detail 없다면 빈 리스트
-                                                paymentResponseMap.get(order.paymentId())
-                                                ))
+                                                        List.of())))
                         .toList();
 
         // 6. next cursor계산

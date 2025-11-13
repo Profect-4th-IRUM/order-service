@@ -11,5 +11,6 @@ public record OrderSummaryRow(
         String recipientAddress,
         LocalDateTime orderDate,
         int totalProductPrice,
-        UUID paymentId,
+        int discountAmount,
+        int payingAmount,
         int deliveryFee) {}

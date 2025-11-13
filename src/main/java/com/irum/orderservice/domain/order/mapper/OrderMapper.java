@@ -22,7 +22,7 @@ public class OrderMapper {
     }
 
     public OwnerOrderListResponse.OrderSummary toOrderSummary(
-            OrderSummaryRow header, List<OwnerOrderListResponse.ProductSummary> products, PaymentMapResponse.PaymentResponse payment) {
+            OrderSummaryRow header, List<OwnerOrderListResponse.ProductSummary> products) {
         return new OwnerOrderListResponse.OrderSummary(
                 header.orderId(),
                 header.recipientName(),
@@ -30,8 +30,8 @@ public class OrderMapper {
                 header.recipientAddress(),
                 header.orderDate(),
                 header.totalProductPrice(),
-                payment.discountAmount(),
-                payment.payingAmount(),
+                header.discountAmount(),
+                header.payingAmount(),
                 header.deliveryFee(),
                 products // 이미 변환된 ProductSummary 리스트를 받음
                 );

@@ -20,10 +20,6 @@ public interface PaymentAPI {
     @GetMapping("/{paymentId}")
     PaymentResponse getPayment(@PathVariable UUID paymentId);
 
-    /** payment map 가져오기 */
-    @GetMapping("/map")
-    PaymentMapResponse getPaymentMap(@RequestParam List<UUID> paymentIdList);
-
     @PostMapping
     UUID createPaymentPending(@RequestBody CreatePaymentRequest request);
 }
