@@ -1,8 +1,9 @@
 package com.irum.orderservice.domain.refund.domain.entity;
 
+import com.irum.global.domain.BaseEntity;
+import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundReason;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.*;
@@ -43,7 +44,7 @@ public class Refund extends BaseEntity {
                 .reason(reason)
                 .description(description)
                 .price(order.getPayment().getAmount())
-                .refundStatus(RefundStatus.REQUESTED)
+                .refundStatus(RefundStatus.PENDING)
                 .order(order)
                 .build();
     }

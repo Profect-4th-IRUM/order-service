@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
+import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -58,6 +59,11 @@ public class OrderDetail extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
+    // develop 쪽에서 추가된 필드 통합
+    // (컬럼명은 DB 설계에 맞게 필요하면 name 지정)
+    private UUID productOptionValueId;
+
+    // ✔ feature/#18 쪽에서 추가한 팩토리 메서드 살림
     public static OrderDetail create(
             Order order,
             UUID productId,
@@ -98,5 +104,22 @@ public class OrderDetail extends BaseEntity {
 
     public void updateOrder(Order order) {
         this.order = order;
+    }
+
+    public static OrderDetail from(
+            ProductInternalResponse.ProductResponse product,
+            int productPrice,
+            int productQuantity
+    ) {
+        return OrderDetail.builder()
+                .productId(product.productId())
+                .optionValueId(product.optionValueId())
+                .productOptionValueId(product.optionValueId()) 
+                .price(productPrice)
+                .quantity(productQuantity)
+                .orderStatusIndi(OrderStatus.PENDING)
+                .optionName(product.optionName())
+                .productName(product.productName())
+                .build();
     }
 }

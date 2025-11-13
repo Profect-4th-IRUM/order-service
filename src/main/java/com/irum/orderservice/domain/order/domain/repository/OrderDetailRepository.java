@@ -14,35 +14,31 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> {
 
-    /**
-     * 주문 상세 단건 조회
-     */
     Optional<OrderDetail> findByOrderDetailId(UUID orderDetailId);
 
-    /**
-     * 주문과 함께 주문 상세 조회
-     */
     @Query("""
-       SELECT od 
-       FROM OrderDetail od
-       JOIN FETCH od.order o
-       WHERE od.orderDetailId = :orderDetailId
+       select od from OrderDetail od
+       join fetch od.order o
+       join fetch o.member m
+       where od.orderDetailId = :orderDetailId
     """)
-    Optional<OrderDetail> findByOrderDetailIdWithOrder(@Param("orderDetailId") UUID orderDetailId);
+    Optional<OrderDetail> findByOrderDetailIdWithOrderAndMember(
+            @Param("orderDetailId") UUID orderDetailId);
 
-    /**
-     * 특정 주문에 포함된 모든 주문 상세 조회
-     */
     List<OrderDetail> findAllByOrder(Order order);
 
-    /**
-     * 주문 상태를 FAILED로 일괄 변경
-     */
     @Modifying(clearAutomatically = true)
-    @Query("""
-        UPDATE OrderDetail od 
-        SET od.orderStatusIndi = 'FAILED' 
-        WHERE od.order.orderId IN :orderIds
-    """)
+    @Query(
+            "UPDATE OrderDetail od SET od.orderStatusIndi = 'PREPARING' WHERE od.order.orderId = :orderId")
+    void updateStatusToPreparingByOrderId(@Param("orderId") UUID orderId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+            "UPDATE OrderDetail od SET od.orderStatusIndi = 'FAILED' WHERE od.order.orderId = :orderId")
+    void updateStatusToFailedByOrderId(@Param("orderId") UUID orderId);
+           
+    @Modifying(clearAutomatically = true)
+    @Query(
+            "UPDATE OrderDetail od SET od.orderStatusIndi = 'FAILED' WHERE od.order.orderId IN :orderIds")
     int updateStatusToFailedByOrderIds(@Param("orderIds") List<UUID> orderIds);
 }

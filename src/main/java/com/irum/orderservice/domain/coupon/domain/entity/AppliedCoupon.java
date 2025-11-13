@@ -1,6 +1,6 @@
 package com.irum.orderservice.domain.coupon.domain.entity;
 
-import com.irum.orderservice.global.domain.BaseEntity;
+import com.irum.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.*;
@@ -23,17 +23,16 @@ public class AppliedCoupon extends BaseEntity {
     @Column(name = "applied_coupon_id", nullable = false, updatable = false)
     private UUID appliedCouponId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment;
+    // ManyToOne
+    private UUID paymentId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
 
     // 2. 생성자
-    public AppliedCoupon(Payment payment, Coupon coupon) {
-        this.payment = payment;
+    public AppliedCoupon(UUID paymentId, Coupon coupon) {
+        this.paymentId = paymentId;
         this.coupon = coupon;
     }
 }
