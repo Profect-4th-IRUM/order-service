@@ -1,8 +1,7 @@
 package com.irum.orderservice.domain.store.dto.response;
 
-import lombok.Builder;
-
 import java.util.UUID;
+import lombok.Builder;
 
 @Builder
 public record StoreResponse(UUID storeId, Long memberId) {}

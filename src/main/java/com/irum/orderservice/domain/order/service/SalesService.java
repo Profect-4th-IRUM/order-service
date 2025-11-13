@@ -1,7 +1,5 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.orderservice.domain.store.client.StoreClient;
-import com.irum.orderservice.domain.store.dto.response.StoreResponse;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -9,8 +7,9 @@ import com.irum.orderservice.domain.order.dto.response.SalesResponse;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
+import com.irum.orderservice.domain.store.client.StoreClient;
+import com.irum.orderservice.domain.store.dto.response.StoreResponse;
 import com.irum.orderservice.global.util.MemberUtil;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -93,7 +92,8 @@ public class SalesService {
                 orders.stream().map(Order::getTotalPrice).mapToInt(Integer::intValue).sum();
 
         // 3. 환불된 금액 계산
-        List<Refund> refunds = refundRepository.findByOrderInAndRefundStatus(orders, RefundStatus.COMPLETED);
+        List<Refund> refunds =
+                refundRepository.findByOrderInAndRefundStatus(orders, RefundStatus.COMPLETED);
 
         int totalRefunds = refunds.stream().mapToInt(Refund::getPrice).sum();
 
