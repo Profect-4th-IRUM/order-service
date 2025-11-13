@@ -73,8 +73,7 @@ public class OrderDetail extends BaseEntity {
             String optionName,
             Integer price,
             Integer quantity,
-            OrderStatus status
-    ) {
+            OrderStatus status) {
         return OrderDetail.builder()
                 .order(order)
                 .productId(productId)
@@ -109,12 +108,11 @@ public class OrderDetail extends BaseEntity {
     public static OrderDetail from(
             ProductInternalResponse.ProductResponse product,
             int productPrice,
-            int productQuantity
-    ) {
+            int productQuantity) {
         return OrderDetail.builder()
                 .productId(product.productId())
                 .optionValueId(product.optionValueId())
-                .productOptionValueId(product.optionValueId()) 
+                .productOptionValueId(product.optionValueId())
                 .price(productPrice)
                 .quantity(productQuantity)
                 .orderStatusIndi(OrderStatus.PENDING)

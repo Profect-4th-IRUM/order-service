@@ -8,24 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderDetailInternalMapper {
 
-    /**
-     * 단일 주문 상세 변환
-     */
+    /** 단일 주문 상세 변환 */
     public static OrderDetailInternalResponse toResponse(OrderDetail orderDetail) {
         return new OrderDetailInternalResponse(
                 orderDetail.getOrderDetailId(),
                 orderDetail.getProductId(),
                 orderDetail.getMemberId(),
-                orderDetail.getOrderStatusIndi().name()
-        );
+                orderDetail.getOrderStatusIndi().name());
     }
 
-    /**
-     * 주문 상세 리스트 변환
-     */
-    public static List<OrderDetailInternalResponse> toResponseList(List<OrderDetail> orderDetailList) {
-        return orderDetailList.stream()
-                .map(OrderDetailInternalMapper::toResponse)
-                .toList();
+    /** 주문 상세 리스트 변환 */
+    public static List<OrderDetailInternalResponse> toResponseList(
+            List<OrderDetail> orderDetailList) {
+        return orderDetailList.stream().map(OrderDetailInternalMapper::toResponse).toList();
     }
 }

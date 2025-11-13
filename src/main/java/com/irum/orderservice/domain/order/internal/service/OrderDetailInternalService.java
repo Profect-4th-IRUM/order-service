@@ -19,8 +19,11 @@ public class OrderDetailInternalService {
     private final OrderDetailRepository orderDetailRepository;
 
     public OrderDetailInternalResponse getOrderDetail(UUID orderDetailId) {
-        OrderDetail orderDetail = orderDetailRepository.findById(orderDetailId)
-                .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_DETAIL_NOT_FOUND));
+        OrderDetail orderDetail =
+                orderDetailRepository
+                        .findById(orderDetailId)
+                        .orElseThrow(
+                                () -> new CommonException(OrderErrorCode.ORDER_DETAIL_NOT_FOUND));
 
         return OrderDetailInternalMapper.toResponse(orderDetail);
     }

@@ -16,7 +16,8 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
 
     Optional<OrderDetail> findByOrderDetailId(UUID orderDetailId);
 
-    @Query("""
+    @Query(
+            """
        select od from OrderDetail od
        join fetch od.order o
        join fetch o.member m
@@ -36,7 +37,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
     @Query(
             "UPDATE OrderDetail od SET od.orderStatusIndi = 'FAILED' WHERE od.order.orderId = :orderId")
     void updateStatusToFailedByOrderId(@Param("orderId") UUID orderId);
-           
+
     @Modifying(clearAutomatically = true)
     @Query(
             "UPDATE OrderDetail od SET od.orderStatusIndi = 'FAILED' WHERE od.order.orderId IN :orderIds")
