@@ -95,8 +95,8 @@ dependencies {
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
     // common module
-    implementation 'com.irum:open-feign-client:0.0.3-SNAPSHOT'
-    implementation 'com.irum:global-module:0.0.2-SNAPSHOT'
+    implementation 'com.irum:open-feign-client:0.0.4-SNAPSHOT'
+    implementation 'com.irum:global-module:0.1.6-SNAPSHOT'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'

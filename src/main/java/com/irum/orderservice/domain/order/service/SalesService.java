@@ -1,6 +1,5 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -9,38 +8,37 @@ import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.util.MemberUtil;
+import com.irum.orderservice.openfeign.store.client.StoreClient;
+import com.irum.orderservice.openfeign.store.dto.response.StoreResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SalesService {
-    private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
+    private final StoreClient storeClient;
 
     public SalesResponse getSalesList(UUID storeId) {
-        MemberDto member = memberUtil.getCurrentMember();
-        Store store =
-                storeRepository
-                        .findById(storeId)
-                        .orElseThrow(() -> new CommonException(StoreErrorCode.STORE_NOT_FOUND));
-        memberUtil.assertMemberResourceAccess(store.getMember());
 
-        List<Order> orders = orderRepository.findAllByMemberId(member.memberId());
+        StoreResponse storeResponse = storeClient.getStoreId(storeId);
+        Long CurrentMemberId = memberUtil.getCurrentMember().memberId();
+        memberUtil.assertMemberResourceAccess(storeResponse.memberId(), CurrentMemberId);
+
+        List<Order> orders = orderRepository.findAllByStoreId(storeId);
         List<SalesResponse.OrderSummary> orderList =
                 orders.stream().map(this::toOrderSummary).toList();
         return new SalesResponse(orderList, null, false);
     }
 
     private SalesResponse.OrderSummary toOrderSummary(Order order) {
-        String displayStatus = DisplayStatus(order);
+        String displayStatus = displayStatus(order);
 
         List<SalesResponse.ProductSummary> productList =
                 order.getOrderDetails().stream()
@@ -48,7 +46,7 @@ public class SalesService {
                                 detail ->
                                         new SalesResponse.ProductSummary(
                                                 detail.getOrderDetailId(),
-                                                detail.getProduct().getName(),
+                                                detail.getProductName(),
                                                 detail.getQuantity(),
                                                 detail.getPrice(),
                                                 detail.getOptionName()))
@@ -69,7 +67,7 @@ public class SalesService {
     }
 
     // 환불 존재시 환불 상태 반환, 환불 존재하지 않으면 주문 상태 반환
-    private String DisplayStatus(Order order) {
+    private String displayStatus(Order order) {
         Optional<Refund> latestRefundOpt =
                 refundRepository.findFirstByOrderOrderByCreatedAtDesc(order);
 
@@ -86,9 +84,8 @@ public class SalesService {
 
     @Transactional(readOnly = true)
     public BalanceResponse getBalance(UUID storeId) {
-        // 1. 해당 스토어의 모든 주문 가져오기
-        List<Order> orders =
-                orderRepository.findAllByMemberId(memberUtil.getCurrentMember().memberId());
+        // 1. storeId로 주문 조회
+        List<Order> orders = orderRepository.findAllByStoreId(storeId);
 
         // 2. 총 결제 금액 계산
         int totalPaymentAmount =
@@ -96,16 +93,13 @@ public class SalesService {
 
         // 3. 환불된 금액 계산
         List<Refund> refunds =
-                refundRepository.findAll(); // 또는 findByOrder_StoreIdAndRefundStatus(...)
-        int totalRefundAmount =
-                refunds.stream()
-                        .filter(refund -> refund.getOrder().getStore().getId().equals(storeId))
-                        .mapToInt(Refund::getPrice)
-                        .sum();
+                refundRepository.findByOrderInAndRefundStatus(orders, RefundStatus.COMPLETED);
+
+        int totalRefunds = refunds.stream().mapToInt(Refund::getPrice).sum();
 
         // 4. 정산 금액 계산
-        int settlementAmount = totalPaymentAmount - totalRefundAmount;
+        int settlementAmount = totalPaymentAmount - totalRefunds;
 
-        return new BalanceResponse(totalPaymentAmount, totalRefundAmount, settlementAmount);
+        return new BalanceResponse(totalPaymentAmount, totalRefunds, settlementAmount);
     }
 }

@@ -3,10 +3,10 @@ package com.irum.orderservice.global.util;
 import com.irum.global.advice.exception.CommonException;
 import com.irum.global.advice.exception.errorcode.GlobalErrorCode;
 import com.irum.global.context.MemberAuthContext;
+import com.irum.openfeign.member.client.MemberClient;
+import com.irum.openfeign.member.dto.response.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import openfeign.member.client.MemberClient;
-import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +21,8 @@ public class MemberUtil {
     } // 로그인 된 유저 정보 조회
 
     public void assertMemberResourceAccess(Long memberId) {
-        if (!memberId.equals(getCurrentMember().memberId()))
+        MemberDto memberDto = memberClient.getMember(memberId);
+        if (!memberId.equals(memberDto.memberId()))
             throw new CommonException(GlobalErrorCode.EMPTY_REQUEST);
     }
 

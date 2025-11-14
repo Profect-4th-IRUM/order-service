@@ -1,6 +1,5 @@
 package com.irum.orderservice.domain.order.mapper;
 
-import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.dto.response.AddressResponse;
@@ -11,6 +10,7 @@ import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +37,9 @@ public class CustomerOrderMapper {
                 .paymentStatus(payment.paymentStatus())
                 .paymentMethod(payment.paymentMethod())
                 .deliveryFee(order.getDeliveryFee())
-                .discountAmount(payment.totalDiscountAmount())
+                .discountAmount(order.getTotalDiscountAmount())
                 .totalProductPrice(order.getTotalPrice())
-                .totalPaymentPrice(payment.amount())
+                .totalPaymentPrice(order.getPayingAmount())
                 .orderStatusAll(order.getOrderStatusAll())
                 .refundStatus(refundStatus)
                 .deliveryRequest(order.getDeliveryRequest())

@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.client.payment.dto.request;
+package com.irum.orderservice.openfeign.payment.dto.request;
 
 import java.util.List;
 import java.util.UUID;

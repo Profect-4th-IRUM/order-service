@@ -4,10 +4,5 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({
-    JwtProperties.class,
-    RedisProperties.class,
-    TossProperties.class,
-    FileProperties.class
-})
+@EnableConfigurationProperties({RedisProperties.class, TossProperties.class, FileProperties.class})
 public class PropertiesConfig {}

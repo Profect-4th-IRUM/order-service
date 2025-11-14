@@ -112,11 +112,13 @@ public class RefundService {
             if (next != RefundStatus.APPROVED && next != RefundStatus.REJECTED) {
                 throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
             }
+            return;
         }
         if (current == RefundStatus.APPROVED) {
             if (next != RefundStatus.COMPLETED) {
                 throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
             }
+            return;
         }
         // 그 외 상태에서는 전환 불가
         throw new CommonException(RefundErrorCode.INVALID_STATUS_TRANSITION);
@@ -151,7 +153,7 @@ public class RefundService {
     private Order getValidOrderWithAddressAndPayment(UUID orderId) {
         Order order =
                 orderRepository
-                        .findOrderWithAddressAndPayment(orderId)
+                        .findOrderWithAddress(orderId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         memberUtil.assertMemberResourceAccess(order.getMemberId());
         return order;

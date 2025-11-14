@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.client.payment.dto.emuns;
+package com.irum.orderservice.openfeign.payment.dto.emuns;
 
 public enum PaymentMethod {
     CARD("카드"),

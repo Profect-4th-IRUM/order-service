@@ -1,6 +1,6 @@
-package com.irum.orderservice.domain.client.payment.dto.request;
+package com.irum.orderservice.openfeign.payment.dto.request;
 
-import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentCorp;
+import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentCorp;
 import lombok.Builder;
 
 @Builder
