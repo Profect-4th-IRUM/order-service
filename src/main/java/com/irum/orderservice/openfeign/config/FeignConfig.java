@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.client.config;
+package com.irum.orderservice.openfeign.config;
 
 import feign.Logger;
 import org.springframework.context.annotation.Bean;

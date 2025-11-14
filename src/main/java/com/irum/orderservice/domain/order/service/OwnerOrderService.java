@@ -23,6 +23,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.irum.orderservice.openfeign.payment.PaymentClient;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentMapResponse;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,7 @@ public class OwnerOrderService {
     private final RefundRepository refundRepository;
     private final OrderMapper orderMapper;
     private final AppliedCouponRepository appliedCouponRepository;
+    private final PaymentClient paymentClient;
 
     @Transactional(readOnly = true)
     public OwnerOrderListResponse getPreparingOrderList(UUID storeId, UUID cursor, Integer size) {
@@ -93,6 +98,7 @@ public class OwnerOrderService {
             headerList = headerList.subList(0, size);
         }
 
+
         // 3. order detail 검색
         var orderIdList = headerList.stream().map(OrderSummaryRow::orderId).toList();
         List<OrderDetailRow> orderDetailList = orderRepository.fetchOrderDetailList(orderIdList);
@@ -117,8 +123,7 @@ public class OwnerOrderService {
                                                 order,
                                                 detailMap.getOrDefault(
                                                         order.orderId(),
-                                                        List.of()) // order detail 없다면 빈 리스트
-                                                ))
+                                                        List.of())))
                         .toList();
 
         // 6. next cursor계산
@@ -249,8 +254,13 @@ public class OwnerOrderService {
                                                                 : null)
                                                 .build())
                         .toList();
-        String couponName = getCouponName(order.getPayment().getPaymentId());
-        int discountAmount = getDiscountAmount(order.getPayment().getPaymentId());
+        String couponName = getCouponName(order.getPaymentId());
+        PaymentResponse paymentResponse;
+        if (order.getPaymentId() != null) {
+            paymentResponse = paymentClient.getPayment(order.getPaymentId());
+        } else { //결제 전
+            paymentResponse = new PaymentResponse(null, null);
+        }
         // 아직 결제 상태 Field 없음
         String trackingNumber =
                 order.getOrderDetails().stream()
@@ -270,7 +280,6 @@ public class OwnerOrderService {
 
         int deliveryFee = order.getDeliveryFee() != null ? order.getDeliveryFee() : 0;
         int totalProductPrice = order.getTotalPrice() != null ? order.getTotalPrice() : 0;
-        int totalPaymentPrice = totalProductPrice + deliveryFee - discountAmount;
 
         RefundStatus refundStatus =
                 refundRepository
@@ -282,12 +291,12 @@ public class OwnerOrderService {
 
         return new OrderDetailResponse(
                 order.getCreatedAt(),
-                order.getPayment() != null ? order.getPayment().getPaymentStatus() : null,
-                order.getPayment() != null ? order.getPayment().getPaymentMethod() : null,
+                paymentResponse.paymentStatus(),
+                paymentResponse.paymentMethod(),
                 deliveryFee,
-                discountAmount,
+                order.getTotalDiscountAmount(),
                 totalProductPrice,
-                totalPaymentPrice,
+                order.getPayingAmount(),
                 order.getOrderStatusAll(),
                 refundStatus,
                 order.getDeliveryRequest(),
@@ -304,8 +313,4 @@ public class OwnerOrderService {
                 .orElse(null);
     }
 
-    private int getDiscountAmount(UUID paymentId) {
-        Integer sum = paymentRepository.getTotalDiscountByPaymentId(paymentId);
-        return sum != null ? sum : 0;
-    }
 }

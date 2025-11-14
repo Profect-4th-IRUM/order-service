@@ -1,6 +1,7 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.openfeign.member.dto.response.MemberDto;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -13,14 +14,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import openfeign.member.dto.response.MemberDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SalesService {
-    private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
