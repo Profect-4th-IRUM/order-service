@@ -9,9 +9,12 @@ import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepositor
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.internal.dto.request.UpdateOrderFailedRequest;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
-import com.irum.orderservice.openfeign.product.ProductAPI;
+
 import java.util.List;
 import java.util.UUID;
+
+import com.irum.orderservice.openfeign.product.client.ProductClient;
+import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +27,7 @@ public class OrderInternalService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final AppliedCouponService appliedCouponService;
-    private final ProductAPI productClient;
+    private final ProductClient productClient;
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
     public void updateOrderStatusPreparing(UUID orderId) {
@@ -52,6 +55,20 @@ public class OrderInternalService {
 
         // 재고 롤백
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
-        productClient.rollbackStock(orderDetailList);
+
+
+        List<RollbackStockRequest.OptionValueRequest> optionValueRequestList =
+                orderDetailList.stream()
+                        .map(
+                                o ->
+                                        RollbackStockRequest.OptionValueRequest.builder()
+                                                .optionValueId(o.getOptionValueId())
+                                                .quantity(o.getQuantity())
+                                                .build())
+                        .toList();
+
+        RollbackStockRequest rollbackStockRequest =
+                RollbackStockRequest.builder().optionValueList(optionValueRequestList).build();
+        productClient.rollbackStock(rollbackStockRequest);
     }
 }

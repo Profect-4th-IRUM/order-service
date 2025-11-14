@@ -7,10 +7,13 @@ import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepositor
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.openfeign.payment.client.PaymentClient;
 import com.irum.orderservice.openfeign.payment.dto.request.UpdatePaymentStatusRequest;
-import com.irum.orderservice.openfeign.product.ProductAPI;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import com.irum.orderservice.openfeign.product.client.ProductClient;
+import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,7 @@ public class OrderBatchService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final PaymentClient paymentClient;
-    private final ProductAPI productClient;
+    private final ProductClient productClient;
     private final AppliedCouponService appliedCouponService;
 
     private static final int TIMEOUT_MINUTES = 5; // 5분 기준
@@ -62,7 +65,19 @@ public class OrderBatchService {
                 UpdatePaymentStatusRequest.builder().paymentIdList(paymentIds).build();
         int paymentCount = paymentClient.updateStatusToFailed(request);
         // 재고 롤백
-        productClient.rollbackStock(orderDetailList);
+        List<RollbackStockRequest.OptionValueRequest> optionValueRequestList =
+                orderDetailList.stream()
+                        .map(
+                                o ->
+                                        RollbackStockRequest.OptionValueRequest.builder()
+                                                .optionValueId(o.getOptionValueId())
+                                                .quantity(o.getQuantity())
+                                                .build())
+                        .toList();
+
+        RollbackStockRequest rollbackStockRequest =
+                RollbackStockRequest.builder().optionValueList(optionValueRequestList).build();
+        productClient.rollbackStock(rollbackStockRequest);
 
         log.info(
                 "[주문 타임아웃 배치] {}개 주문, {}개 결제, {}개 주문상세 'FAILED' 처리 완료",

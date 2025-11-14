@@ -26,7 +26,8 @@ import com.irum.orderservice.openfeign.payment.client.PaymentClient;
 import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
 import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
-import com.irum.orderservice.openfeign.product.ProductAPI;
+import com.irum.orderservice.openfeign.product.client.ProductClient;
+import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class CustomerOrderService {
     private final AppliedCouponService appliedCouponService;
 
     private final PaymentClient paymentClient;
-    private final ProductAPI productClient;
+    private final ProductClient productClient;
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
@@ -175,8 +176,22 @@ public class CustomerOrderService {
                         .toList();
 
         // 조회, 재고 미리 차감
-        ProductInternalResponse response =
-                productClient.updateStock(request.productList(), request.storeId());
+        List<ProductInternalRequest.OptionValueRequest> optionValueRequestList =
+                request.productList().stream()
+                        .map(
+                                p ->
+                                        ProductInternalRequest.OptionValueRequest.builder()
+                                                .optionValueId(p.optionValueId())
+                                                .quantity(p.quantity())
+                                                .build())
+                        .toList();
+        ProductInternalRequest productInternalRequest =
+                ProductInternalRequest.builder()
+                        .storeId(request.storeId())
+                        .optionValueList(optionValueRequestList)
+                        .build();
+        ProductInternalResponse response = productClient.updateStock(productInternalRequest);
+
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
