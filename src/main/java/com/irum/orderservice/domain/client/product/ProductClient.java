@@ -23,7 +23,7 @@ public class ProductClient {
                         .map(
                                 o ->
                                         RollbackStockRequest.OptionValueRequest.builder()
-                                                .optionValueId(o.getProductOptionValueId())
+                                                .optionValueId(o.getOptionValueId())
                                                 .quantity(o.getQuantity())
                                                 .build())
                         .toList();

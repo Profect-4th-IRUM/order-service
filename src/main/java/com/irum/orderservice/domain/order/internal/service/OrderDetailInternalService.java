@@ -1,11 +1,11 @@
 package com.irum.orderservice.domain.order.internal.service;
 
+import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.internal.dto.response.OrderDetailInternalResponse;
 import com.irum.orderservice.domain.order.mapper.OrderDetailInternalMapper;
-import com.irum.orderservice.global.presentation.advice.exception.CommonException;
-import com.irum.orderservice.global.presentation.advice.exception.errorcode.OrderErrorCode;
+import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class OrderDetailInternalService {
     public OrderDetailInternalResponse getOrderDetail(UUID orderDetailId) {
         OrderDetail orderDetail =
                 orderDetailRepository
-                        .findById(orderDetailId)
+                        .findByIdWithOrder(orderDetailId)
                         .orElseThrow(
                                 () -> new CommonException(OrderErrorCode.ORDER_DETAIL_NOT_FOUND));
-
-        return OrderDetailInternalMapper.toResponse(orderDetail);
+        return OrderDetailInternalMapper.toResponse(
+                orderDetail, orderDetail.getOrder().getMemberId());
     }
 }

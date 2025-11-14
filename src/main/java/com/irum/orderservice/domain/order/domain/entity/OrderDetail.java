@@ -1,8 +1,8 @@
 package com.irum.orderservice.domain.order.domain.entity;
 
+import com.irum.global.domain.BaseEntity;
 import com.irum.orderservice.domain.client.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
-import com.irum.orderservice.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,9 +32,6 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "option_value_id", nullable = false)
     private UUID optionValueId;
 
-    @Column(name = "member_id", nullable = false)
-    private Long memberId;
-
     @Column(name = "product_name", nullable = false)
     private String productName;
 
@@ -59,16 +56,10 @@ public class OrderDetail extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Order order;
 
-    // develop 쪽에서 추가된 필드 통합
-    // (컬럼명은 DB 설계에 맞게 필요하면 name 지정)
-    private UUID productOptionValueId;
-
-    // ✔ feature/#18 쪽에서 추가한 팩토리 메서드 살림
     public static OrderDetail create(
             Order order,
             UUID productId,
             UUID optionValueId,
-            Long memberId,
             String productName,
             String optionName,
             Integer price,
@@ -78,7 +69,6 @@ public class OrderDetail extends BaseEntity {
                 .order(order)
                 .productId(productId)
                 .optionValueId(optionValueId)
-                .memberId(memberId)
                 .productName(productName)
                 .optionName(optionName)
                 .price(price)
@@ -112,7 +102,6 @@ public class OrderDetail extends BaseEntity {
         return OrderDetail.builder()
                 .productId(product.productId())
                 .optionValueId(product.optionValueId())
-                .productOptionValueId(product.optionValueId())
                 .price(productPrice)
                 .quantity(productQuantity)
                 .orderStatusIndi(OrderStatus.PENDING)
