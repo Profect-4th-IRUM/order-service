@@ -19,17 +19,14 @@ import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import com.irum.orderservice.openfeign.payment.PaymentClient;
 import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentMethod;
 import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentStatus;
-import com.irum.orderservice.openfeign.payment.dto.response.PaymentMapResponse;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -101,7 +98,6 @@ public class OwnerOrderService {
             headerList = headerList.subList(0, size);
         }
 
-
         // 3. order detail 검색
         var orderIdList = headerList.stream().map(OrderSummaryRow::orderId).toList();
         List<OrderDetailRow> orderDetailList = orderRepository.fetchOrderDetailList(orderIdList);
@@ -124,9 +120,7 @@ public class OwnerOrderService {
                                 order ->
                                         orderMapper.toOrderSummary(
                                                 order,
-                                                detailMap.getOrDefault(
-                                                        order.orderId(),
-                                                        List.of())))
+                                                detailMap.getOrDefault(order.orderId(), List.of())))
                         .toList();
 
         // 6. next cursor계산
@@ -299,5 +293,4 @@ public class OwnerOrderService {
                 order.getDeliveryAddress().getRecipientName(),
                 productList);
     }
-
 }

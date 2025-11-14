@@ -58,10 +58,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                                 o.payingAmount,
                                 o.deliveryFee))
                 .from(o)
-                .where(
-                        ltCursor(cursor, o),
-                        o.storeId.eq(storeId),
-                        o.orderStatusAll.eq(orderStatus))
+                .where(ltCursor(cursor, o), o.storeId.eq(storeId), o.orderStatusAll.eq(orderStatus))
                 .orderBy(o.orderId.desc())
                 .limit(size + 1) // hasnext 판별을 위해
                 .fetch();

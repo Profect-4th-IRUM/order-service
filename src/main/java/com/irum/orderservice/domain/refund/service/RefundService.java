@@ -44,8 +44,7 @@ public class RefundService {
         if (!isRefundableOrderStatus(order.getOrderStatusAll()))
             throw new CommonException(RefundErrorCode.REFUND_NOT_AVAILABLE);
 
-        refundRepository.save(
-                Refund.create(request.reason(), request.description(), order));
+        refundRepository.save(Refund.create(request.reason(), request.description(), order));
     }
 
     @Transactional(readOnly = true)
