@@ -5,7 +5,8 @@ import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
-import com.irum.orderservice.openfeign.payment.PaymentAPI;
+import com.irum.orderservice.openfeign.payment.client.PaymentClient;
+import com.irum.orderservice.openfeign.payment.dto.request.UpdatePaymentStatusRequest;
 import com.irum.orderservice.openfeign.product.ProductAPI;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class OrderBatchService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final PaymentAPI paymentClient;
+    private final PaymentClient paymentClient;
     private final ProductAPI productClient;
     private final AppliedCouponService appliedCouponService;
 
@@ -57,7 +58,9 @@ public class OrderBatchService {
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrderIds(orderIds);
 
         // Payment 상태 변경
-        int paymentCount = paymentClient.updateStatusToFailed(paymentIds);
+        UpdatePaymentStatusRequest request =
+                UpdatePaymentStatusRequest.builder().paymentIdList(paymentIds).build();
+        int paymentCount = paymentClient.updateStatusToFailed(request);
         // 재고 롤백
         productClient.rollbackStock(orderDetailList);
 
