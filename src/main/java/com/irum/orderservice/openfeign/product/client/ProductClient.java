@@ -4,17 +4,14 @@ import com.irum.orderservice.openfeign.product.dto.request.ProductInternalReques
 import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.openfeign.product.dto.response.StoreResponse;
+import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.UUID;
-
-@FeignClient(
-        name = "PRODUCT-SERVICE",
-        url = "/internal")
+@FeignClient(name = "PRODUCT-SERVICE", url = "/internal")
 public interface ProductClient {
 
     /** 재고 롤백 */

@@ -24,8 +24,8 @@ import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
 import com.irum.orderservice.openfeign.payment.client.PaymentClient;
 import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
-import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
+import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
 import com.irum.orderservice.openfeign.product.client.ProductClient;
 import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
@@ -191,7 +191,6 @@ public class CustomerOrderService {
                         .optionValueList(optionValueRequestList)
                         .build();
         ProductInternalResponse response = productClient.updateStock(productInternalRequest);
-
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()

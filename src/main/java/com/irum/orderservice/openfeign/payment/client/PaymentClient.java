@@ -7,9 +7,7 @@ import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(
-        name = "PAYMENT-SERVICE",
-        url = "/internal/payments")
+@FeignClient(name = "PAYMENT-SERVICE", url = "/internal/payments")
 public interface PaymentClient {
 
     @PatchMapping
