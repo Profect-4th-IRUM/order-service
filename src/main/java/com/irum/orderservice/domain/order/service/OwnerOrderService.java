@@ -19,9 +19,9 @@ import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
-import com.irum.orderservice.openfeign.payment.PaymentClient;
-import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentMethod;
-import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentStatus;
+import com.irum.orderservice.openfeign.payment.PaymentAPI;
+import com.irum.orderservice.openfeign.payment.emuns.PaymentMethod;
+import com.irum.orderservice.openfeign.payment.emuns.PaymentStatus;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class OwnerOrderService {
     private final RefundRepository refundRepository;
     private final OrderMapper orderMapper;
     private final AppliedCouponRepository appliedCouponRepository;
-    private final PaymentClient paymentClient;
+    private final PaymentAPI paymentClient;
 
     @Transactional(readOnly = true)
     public OwnerOrderListResponse getPreparingOrderList(UUID storeId, UUID cursor, Integer size) {

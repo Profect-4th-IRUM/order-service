@@ -1,4 +1,4 @@
-package com.irum.orderservice.openfeign.payment.api;
+package com.irum.orderservice.openfeign.payment.client;
 
 import com.irum.orderservice.openfeign.config.FeignConfig;
 import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
         name = "PAYMENT-SERVICE",
         url = "payment-service/internal/payments",
         configuration = FeignConfig.class)
-public interface PaymentAPI {
+public interface PaymentClient {
 
     @PatchMapping
     int updateStatusToFailed(@RequestBody UpdatePaymentStatusRequest request);

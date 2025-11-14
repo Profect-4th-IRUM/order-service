@@ -2,7 +2,7 @@ package com.irum.orderservice.openfeign.product;
 
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
-import com.irum.orderservice.openfeign.product.api.ProductAPI;
+import com.irum.orderservice.openfeign.product.client.ProductClient;
 import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ProductClient {
-    private final ProductAPI productAPI;
+public class ProductAPI {
+    private final ProductClient productAPI;
 
     public void rollbackStock(List<OrderDetail> orderDetailList) {
 

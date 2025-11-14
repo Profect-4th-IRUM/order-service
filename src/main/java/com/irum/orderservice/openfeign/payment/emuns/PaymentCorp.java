@@ -1,4 +1,4 @@
-package com.irum.orderservice.openfeign.payment.dto.emuns;
+package com.irum.orderservice.openfeign.payment.emuns;
 
 public enum PaymentCorp {
     TOSS,

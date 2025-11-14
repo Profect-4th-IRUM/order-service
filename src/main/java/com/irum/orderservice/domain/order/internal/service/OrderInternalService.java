@@ -9,7 +9,7 @@ import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepositor
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.internal.dto.request.UpdateOrderFailedRequest;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
-import com.irum.orderservice.openfeign.product.ProductClient;
+import com.irum.orderservice.openfeign.product.ProductAPI;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class OrderInternalService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final AppliedCouponService appliedCouponService;
-    private final ProductClient productClient;
+    private final ProductAPI productClient;
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
     public void updateOrderStatusPreparing(UUID orderId) {

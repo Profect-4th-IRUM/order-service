@@ -22,10 +22,10 @@ import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
-import com.irum.orderservice.openfeign.payment.PaymentClient;
-import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentCorp;
+import com.irum.orderservice.openfeign.payment.PaymentAPI;
+import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
-import com.irum.orderservice.openfeign.product.ProductClient;
+import com.irum.orderservice.openfeign.product.ProductAPI;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,8 +51,8 @@ public class CustomerOrderService {
     private final CouponService couponService;
     private final AppliedCouponService appliedCouponService;
 
-    private final PaymentClient paymentClient;
-    private final ProductClient productClient;
+    private final PaymentAPI paymentClient;
+    private final ProductAPI productClient;
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {

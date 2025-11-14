@@ -5,8 +5,8 @@ import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
-import com.irum.orderservice.openfeign.payment.PaymentClient;
-import com.irum.orderservice.openfeign.product.ProductClient;
+import com.irum.orderservice.openfeign.payment.PaymentAPI;
+import com.irum.orderservice.openfeign.product.ProductAPI;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +23,8 @@ public class OrderBatchService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final PaymentClient paymentClient;
-    private final ProductClient productClient;
+    private final PaymentAPI paymentClient;
+    private final ProductAPI productClient;
     private final AppliedCouponService appliedCouponService;
 
     private static final int TIMEOUT_MINUTES = 5; // 5분 기준

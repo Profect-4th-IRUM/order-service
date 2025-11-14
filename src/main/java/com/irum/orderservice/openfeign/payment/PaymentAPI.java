@@ -1,7 +1,7 @@
 package com.irum.orderservice.openfeign.payment;
 
-import com.irum.orderservice.openfeign.payment.api.PaymentAPI;
-import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentCorp;
+import com.irum.orderservice.openfeign.payment.client.PaymentClient;
+import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
 import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
 import com.irum.orderservice.openfeign.payment.dto.request.UpdatePaymentStatusRequest;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentClient {
-    private final PaymentAPI paymentAPI;
+public class PaymentAPI {
+    private final PaymentClient paymentAPI;
 
     public int updateStatusToFailed(List<UUID> paymentIdList) {
         UpdatePaymentStatusRequest request =
