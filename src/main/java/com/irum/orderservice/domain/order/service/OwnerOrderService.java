@@ -2,10 +2,6 @@ package com.irum.orderservice.domain.order.service;
 
 import com.irum.global.advice.exception.CommonException;
 import com.irum.global.advice.exception.errorcode.GlobalErrorCode;
-import com.irum.orderservice.domain.client.payment.PaymentClient;
-import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentMethod;
-import com.irum.orderservice.domain.client.payment.dto.emuns.PaymentStatus;
-import com.irum.orderservice.domain.client.payment.dto.response.PaymentResponse;
 import com.irum.orderservice.domain.coupon.domain.repository.AppliedCouponRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
@@ -28,6 +24,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.irum.orderservice.openfeign.payment.PaymentClient;
+import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentMethod;
+import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentStatus;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentMapResponse;
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -99,6 +101,7 @@ public class OwnerOrderService {
             headerList = headerList.subList(0, size);
         }
 
+
         // 3. order detail 검색
         var orderIdList = headerList.stream().map(OrderSummaryRow::orderId).toList();
         List<OrderDetailRow> orderDetailList = orderRepository.fetchOrderDetailList(orderIdList);
@@ -123,8 +126,7 @@ public class OwnerOrderService {
                                                 order,
                                                 detailMap.getOrDefault(
                                                         order.orderId(),
-                                                        List.of()) // order detail 없다면 빈 리스트
-                                                ))
+                                                        List.of())))
                         .toList();
 
         // 6. next cursor계산
@@ -243,14 +245,12 @@ public class OwnerOrderService {
         PaymentResponse paymentResponse = null;
         PaymentStatus paymentStatus = null;
         PaymentMethod paymentMethod = null;
-        int discountAmount = 0;
 
         if (order.getPaymentId() != null) {
             try {
                 paymentResponse = paymentClient.getPayment(order.getPaymentId());
                 paymentStatus = paymentResponse.paymentStatus();
                 paymentMethod = paymentResponse.paymentMethod();
-                discountAmount = paymentResponse.totalDiscountAmount();
             } catch (Exception e) {
                 throw new CommonException(GlobalErrorCode.EMPTY_REQUEST);
             }
@@ -271,26 +271,9 @@ public class OwnerOrderService {
                                                                 : null)
                                                 .build())
                         .toList();
-        // 아직 결제 상태 Field 없음
-        String trackingNumber =
-                order.getOrderDetails().stream()
-                        .map(od -> od.getTrackingNumber())
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .map(dt -> dt.toString())
-                        .orElse(null);
-
-        String arrivedDate =
-                order.getOrderDetails().stream()
-                        .map(od -> od.getArrivedDate())
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .map(dt -> dt.toString())
-                        .orElse(null);
 
         int deliveryFee = order.getDeliveryFee() != null ? order.getDeliveryFee() : 0;
         int totalProductPrice = order.getTotalPrice() != null ? order.getTotalPrice() : 0;
-        int totalPaymentPrice = totalProductPrice + deliveryFee - discountAmount;
 
         RefundStatus refundStatus =
                 refundRepository
@@ -305,9 +288,9 @@ public class OwnerOrderService {
                 paymentStatus,
                 paymentMethod,
                 deliveryFee,
-                discountAmount,
+                order.getTotalDiscountAmount(),
                 totalProductPrice,
-                totalPaymentPrice,
+                order.getPayingAmount(),
                 order.getOrderStatusAll(),
                 refundStatus,
                 order.getDeliveryRequest(),
@@ -317,16 +300,4 @@ public class OwnerOrderService {
                 productList);
     }
 
-    private String getCouponName(UUID paymentId) {
-        return appliedCouponRepository.findByPayment_PaymentId(paymentId).stream()
-                .findFirst()
-                .map(ac -> ac.getCoupon().getName())
-                .orElse(null);
-    }
-
-    private int getDiscountAmount(UUID paymentId) {
-        return appliedCouponRepository.findByPayment_PaymentId(paymentId).stream()
-                .mapToInt(ac -> ac.getCoupon().getDiscountAmount())
-                .sum();
-    }
 }

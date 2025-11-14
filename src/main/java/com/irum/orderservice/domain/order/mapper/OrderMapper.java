@@ -4,6 +4,8 @@ import com.irum.orderservice.domain.order.dto.response.OwnerOrderListResponse;
 import com.irum.orderservice.domain.order.repository.dto.OrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
 import java.util.List;
+
+import com.irum.orderservice.openfeign.payment.dto.response.PaymentMapResponse;
 import org.springframework.stereotype.Component;
 
 @Component

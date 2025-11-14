@@ -1,5 +1,7 @@
 package com.irum.orderservice.domain.order.service;
 
+import com.irum.global.advice.exception.CommonException;
+import com.irum.openfeign.member.dto.response.MemberDto;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;

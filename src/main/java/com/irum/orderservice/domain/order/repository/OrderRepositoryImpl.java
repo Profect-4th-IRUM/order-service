@@ -1,11 +1,14 @@
 package com.irum.orderservice.domain.order.repository;
 
+import com.irum.orderservice.domain.order.domain.entity.QOrder;
+import com.irum.orderservice.domain.order.domain.entity.QOrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepositoryCustom;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
 import com.irum.orderservice.domain.order.repository.dto.OrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
+import com.irum.orderservice.domain.refund.domain.entity.QRefund;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -51,13 +54,13 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                                 o.deliveryAddress.address,
                                 o.createdAt,
                                 o.totalPrice,
-                                o.payment.totalDiscountAmount,
-                                o.payment.amount,
+                                o.totalDiscountAmount,
+                                o.payingAmount,
                                 o.deliveryFee))
                 .from(o)
                 .where(
                         ltCursor(cursor, o),
-                        o.store.id.eq(storeId),
+                        o.storeId.eq(storeId),
                         o.orderStatusAll.eq(orderStatus))
                 .orderBy(o.orderId.desc())
                 .limit(size + 1) // hasnext 판별을 위해

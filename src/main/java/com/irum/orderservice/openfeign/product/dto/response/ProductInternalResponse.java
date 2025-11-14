@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.client.product.dto.response;
+package com.irum.orderservice.openfeign.product.dto.response;
 
 import java.util.List;
 import java.util.UUID;
