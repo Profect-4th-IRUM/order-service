@@ -1,6 +1,5 @@
 package com.irum.orderservice.openfeign.product.client;
 
-import com.irum.orderservice.openfeign.config.FeignConfig;
 import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
