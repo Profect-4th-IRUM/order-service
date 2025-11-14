@@ -34,6 +34,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, OrderReposi
     int updateStatusToFailedByIds(@Param("orderIds") List<UUID> orderIds);
 
     @Query(
-            "SELECT o FROM Order o JOIN FETCH o.deliveryAddress da JOIN FETCH o.payment p WHERE o.orderId = :orderId")
-    Optional<Order> findOrderWithAddressAndPayment(@Param("orderId") UUID orderId);
+            "SELECT o FROM Order o JOIN FETCH o.deliveryAddress da WHERE o.orderId = :orderId")
+    Optional<Order> findOrderWithAddress(@Param("orderId") UUID orderId);
 }

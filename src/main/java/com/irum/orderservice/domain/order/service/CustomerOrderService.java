@@ -60,7 +60,7 @@ public class CustomerOrderService {
 
         OrderDetail orderDetail =
                 orderDetailRepository
-                        .findByOrderDetailIdWithOrderAndMember(orderDetailId)
+                        .findByOrderDetailIdWithOrder(orderDetailId)
                         .orElseThrow(
                                 () -> new CommonException(OrderErrorCode.ORDER_DETAIL_NOT_FOUND));
 

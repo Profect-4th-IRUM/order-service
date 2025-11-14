@@ -1,7 +1,5 @@
 package com.irum.orderservice.domain.order.service;
 
-import com.irum.global.advice.exception.CommonException;
-import com.irum.openfeign.member.dto.response.MemberDto;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.response.BalanceResponse;
@@ -9,8 +7,8 @@ import com.irum.orderservice.domain.order.dto.response.SalesResponse;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
-import com.irum.orderservice.domain.store.client.StoreClient;
-import com.irum.orderservice.domain.store.dto.response.StoreResponse;
+import com.irum.orderservice.openfeign.store.client.StoreClient;
+import com.irum.orderservice.openfeign.store.dto.response.StoreResponse;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.util.List;
 import java.util.Optional;

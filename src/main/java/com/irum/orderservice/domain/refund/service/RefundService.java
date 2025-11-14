@@ -1,7 +1,6 @@
 package com.irum.orderservice.domain.refund.service;
 
 import com.irum.global.advice.exception.CommonException;
-import com.irum.orderservice.domain.client.payment.PaymentClient;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
@@ -36,7 +35,6 @@ public class RefundService {
     private final RefundRepository refundRepository;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final PaymentClient paymentClient;
 
     // Customer
     public void createRefund(UUID orderId, RefundCreateRequest request) {
@@ -46,10 +44,8 @@ public class RefundService {
         if (!isRefundableOrderStatus(order.getOrderStatusAll()))
             throw new CommonException(RefundErrorCode.REFUND_NOT_AVAILABLE);
 
-        int refundAmount = paymentClient.getPaymentAmount(order.getPaymentId());
-
         refundRepository.save(
-                Refund.create(request.reason(), request.description(), order, refundAmount));
+                Refund.create(request.reason(), request.description(), order));
     }
 
     @Transactional(readOnly = true)
@@ -158,7 +154,7 @@ public class RefundService {
     private Order getValidOrderWithAddressAndPayment(UUID orderId) {
         Order order =
                 orderRepository
-                        .findOrderWithAddressAndPayment(orderId)
+                        .findOrderWithAddress(orderId)
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         memberUtil.assertMemberResourceAccess(order.getMemberId());
         return order;

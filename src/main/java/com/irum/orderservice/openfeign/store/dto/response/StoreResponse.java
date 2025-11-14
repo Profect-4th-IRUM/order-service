@@ -1,4 +1,4 @@
-package com.irum.orderservice.domain.store.dto.response;
+package com.irum.orderservice.openfeign.store.dto.response;
 
 import java.util.UUID;
 import lombok.Builder;
