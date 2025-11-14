@@ -16,7 +16,8 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
 
     Optional<OrderDetail> findByOrderDetailId(UUID orderDetailId);
 
-    @Query("""
+    @Query(
+            """
        select od from OrderDetail od
        join fetch od.order o
        where od.orderDetailId = :orderDetailId
