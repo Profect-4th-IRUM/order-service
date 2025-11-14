@@ -1,11 +1,9 @@
 package com.irum.orderservice.openfeign.payment;
 
-import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
 import com.irum.orderservice.openfeign.payment.api.PaymentAPI;
 import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentCorp;
 import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
 import com.irum.orderservice.openfeign.payment.dto.request.UpdatePaymentStatusRequest;
-import com.irum.orderservice.openfeign.payment.dto.response.PaymentMapResponse;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
 import java.util.List;
 import java.util.UUID;

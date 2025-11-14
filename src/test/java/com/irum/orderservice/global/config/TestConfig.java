@@ -37,5 +37,4 @@ public class TestConfig {
     public SalesService salesService() {
         return Mockito.mock(SalesService.class);
     }
-
 }

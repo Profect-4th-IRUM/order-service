@@ -20,7 +20,5 @@ public interface AppliedCouponRepository extends JpaRepository<AppliedCoupon, UU
     @Query("DELETE FROM AppliedCoupon ac WHERE ac.paymentId IN :paymentIds")
     void deleteAllByPaymentIds(List<UUID> paymentIds);
 
-    List<AppliedCoupon> findByPayment_PaymentId(UUID paymentId);
-
     List<AppliedCoupon> findByCouponIdIn(List<UUID> couponIds);
 }

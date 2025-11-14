@@ -18,6 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, OrderReposi
 
     List<Order> findAllByMemberId(Long member);
 
+    List<Order> findAllByStoreId(UUID storeId);
+
     Optional<Order> findByOrderId(UUID orderId);
 
     @Query(
@@ -31,7 +33,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, OrderReposi
     @Query("UPDATE Order o SET o.orderStatusAll = 'FAILED' WHERE o.orderId IN :orderIds")
     int updateStatusToFailedByIds(@Param("orderIds") List<UUID> orderIds);
 
-    @Query(
-            "SELECT o FROM Order o JOIN FETCH o.deliveryAddress da JOIN FETCH o.payment p WHERE o.orderId = :orderId")
-    Optional<Order> findOrderWithAddressAndPayment(@Param("orderId") UUID orderId);
+    @Query("SELECT o FROM Order o JOIN FETCH o.deliveryAddress da WHERE o.orderId = :orderId")
+    Optional<Order> findOrderWithAddress(@Param("orderId") UUID orderId);
 }
