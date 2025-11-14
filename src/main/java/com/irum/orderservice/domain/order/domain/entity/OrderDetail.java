@@ -49,6 +49,7 @@ public class OrderDetail extends BaseEntity {
     private OrderStatus orderStatusIndi;
 
     private String trackingNumber;
+
     private LocalDateTime arrivedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

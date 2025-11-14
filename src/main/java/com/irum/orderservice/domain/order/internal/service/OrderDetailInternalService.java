@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class OrderDetailInternalService {
 
     private final OrderDetailRepository orderDetailRepository;
 
+    @Transactional(readOnly = true)
     public OrderDetailInternalResponse getOrderDetail(UUID orderDetailId) {
         OrderDetail orderDetail =
                 orderDetailRepository
