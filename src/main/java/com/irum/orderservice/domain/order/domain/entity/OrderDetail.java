@@ -81,6 +81,10 @@ public class OrderDetail extends BaseEntity {
         this.orderStatusIndi = newStatus;
     }
 
+    public void updateStatusToPreparing() {
+        this.orderStatusIndi = OrderStatus.PREPARING;
+    }
+
     public void updateStatusToShipped(String trackingNumber) {
         this.orderStatusIndi = OrderStatus.SHIPPED;
         this.trackingNumber = trackingNumber;
