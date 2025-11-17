@@ -26,7 +26,6 @@ public class Refund extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RefundReason reason;
 
-
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
