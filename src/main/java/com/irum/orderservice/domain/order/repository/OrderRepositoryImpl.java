@@ -51,7 +51,13 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                                 o.orderId,
                                 o.deliveryAddress.recipientName,
                                 o.deliveryAddress.recipientContact,
-                                o.deliveryAddress.address,
+                                o.deliveryAddress.address.city
+                                        .concat(" ")
+                                        .concat(o.deliveryAddress.address.sigungu)
+                                        .concat(" ")
+                                        .concat(o.deliveryAddress.address.roadName)
+                                        .concat(" ")
+                                        .concat(o.deliveryAddress.address.addressDetail),
                                 o.createdAt,
                                 o.totalPrice,
                                 o.totalDiscountAmount,
