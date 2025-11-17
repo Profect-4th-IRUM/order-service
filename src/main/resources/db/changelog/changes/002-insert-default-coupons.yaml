@@ -2,7 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-coupon-data-1
       author: hyeonji91
-      comment: "쿠폰 데이터 삽입"
+      comment: "쿠폰 데이터 삽입 (일반 쿠폰 /유효기간이 지난 쿠폰)"
 
       changes:
         - insert:
@@ -73,39 +73,39 @@ databaseChangeLog:
                   name: updated_by
                   valueNumeric: 1
 
-              - insert:
-                  tableName: p_coupon
-                  columns:
-                    - column:
-                        name: coupon_id
-                        value: "11111111-3333-3333-3333-333333333333"
-                    - column:
-                        name: name
-                        value: "유효기간 지난 쿠폰"
-                    - column:
-                        name: discount_amount
-                        valueNumeric: 10000
-                    - column:
-                        name: expiration
-                        valueDate: "2025-10-31T23:59:59"
-                    - column:
-                        name: member_id
-                        valueNumeric: 1
-                    - column:
-                        name: created_at
-                        valueDate: "2025-09-31T23:59:59"
-                    - column:
-                        name: updated_at
-                        valueDate: "2025-09-31T23:59:59"
-                    - column:
-                        name: deleted_at
-                        value: null
-                    - column:
-                        name: created_by
-                        valueNumeric: 1
-                    - column:
-                        name: updated_by
-                        valueNumeric: 1
+        - insert:
+            tableName: p_coupon
+            columns:
+              - column:
+                  name: coupon_id
+                  value: "11111111-3333-3333-3333-333333333333"
+              - column:
+                  name: name
+                  value: "유효기간 지난 쿠폰"
+              - column:
+                  name: discount_amount
+                  valueNumeric: 10000
+              - column:
+                  name: expiration
+                  valueDate: "2025-10-31T23:59:59"
+              - column:
+                  name: member_id
+                  valueNumeric: 1
+              - column:
+                  name: created_at
+                  valueDate: "2025-09-31T23:59:59"
+              - column:
+                  name: updated_at
+                  valueDate: "2025-09-31T23:59:59"
+              - column:
+                  name: deleted_at
+                  value: null
+              - column:
+                  name: created_by
+                  valueNumeric: 1
+              - column:
+                  name: updated_by
+                  valueNumeric: 1
 
       rollback:
         - delete:
