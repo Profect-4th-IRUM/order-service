@@ -1,9 +1,9 @@
 package com.irum.orderservice.domain.order.dto.response;
 
+import com.irum.openfeign.payment.emuns.PaymentMethod;
+import com.irum.openfeign.payment.emuns.PaymentStatus;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
-import com.irum.orderservice.openfeign.payment.emuns.PaymentMethod;
-import com.irum.orderservice.openfeign.payment.emuns.PaymentStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
