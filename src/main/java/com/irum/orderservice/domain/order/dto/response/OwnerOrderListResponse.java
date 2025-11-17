@@ -1,6 +1,8 @@
 package com.irum.orderservice.domain.order.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.irum.orderservice.domain.deliveryaddress.domain.entity.Address;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +13,7 @@ public record OwnerOrderListResponse(
             UUID orderId,
             String recipientName,
             String recipientContact,
-            String recipientAddress,
+            AddressResponse recipientAddress,
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime orderDate,
             int totalProductPrice,
             int discountAmount,

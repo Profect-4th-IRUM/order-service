@@ -1,5 +1,6 @@
 package com.irum.orderservice.domain.order.mapper;
 
+import com.irum.orderservice.domain.order.dto.response.AddressResponse;
 import com.irum.orderservice.domain.order.dto.response.OwnerOrderListResponse;
 import com.irum.orderservice.domain.order.repository.dto.OrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.OrderSummaryRow;
@@ -25,7 +26,7 @@ public class OrderMapper {
                 header.orderId(),
                 header.recipientName(),
                 header.recipientContact(),
-                header.recipientAddress(),
+                AddressResponse.from(header.recipientAddress()),
                 header.orderDate(),
                 header.totalProductPrice(),
                 header.discountAmount(),

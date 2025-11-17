@@ -1,5 +1,8 @@
 package com.irum.orderservice.domain.order.repository.dto;
 
+import com.irum.orderservice.domain.deliveryaddress.domain.entity.Address;
+import com.irum.orderservice.domain.order.dto.response.AddressResponse;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -8,7 +11,7 @@ public record OrderSummaryRow(
         UUID orderId,
         String recipientName,
         String recipientContact,
-        String recipientAddress,
+        Address recipientAddress,
         LocalDateTime orderDate,
         int totalProductPrice,
         int discountAmount,
