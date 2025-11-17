@@ -16,7 +16,7 @@ databaseChangeLog:
                   value: "신규가입 축하 쿠폰"
               - column:
                   name: discount_amount
-                  valueNumeric: 5000
+                  valueNumeric: 3000
               - column:
                   name: expiration
                   valueDate: "2025-12-31T23:59:59"
