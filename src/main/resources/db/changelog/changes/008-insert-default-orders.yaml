@@ -28,7 +28,7 @@ databaseChangeLog:
                   value: "SHIPPED"
               - column:
                   name: payment_id
-                  value: "33333333-3333-3333-3333-333333333333"
+                  value: "33333333-3333-3333-3333-333333333333" # payment service paymentId반영 (failed)
               - column:
                   name: member_id
                   valueNumeric: 1
@@ -53,6 +53,12 @@ databaseChangeLog:
               - column:
                   name: deleted_at
                   value: null
+              - column:
+                  name: created_by
+                  valueNumeric: 1
+              - column:
+                  name: updated_by
+                  valueNumeric: 1
 
         - insert:
             tableName: p_order
@@ -102,6 +108,12 @@ databaseChangeLog:
               - column:
                   name: deleted_at
                   value: null
+              - column:
+                  name: created_by
+                  valueNumeric: 1
+              - column:
+                  name: updated_by
+                  valueNumeric: 1
 
       rollback:
         - delete:
