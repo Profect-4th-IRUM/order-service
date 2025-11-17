@@ -8,8 +8,8 @@ import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.entity.enums.RefundStatus;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.util.MemberUtil;
-import com.irum.orderservice.openfeign.store.client.StoreClient;
-import com.irum.orderservice.openfeign.store.dto.response.StoreResponse;
+import com.irum.orderservice.openfeign.product.client.ProductClient;
+import com.irum.orderservice.openfeign.product.dto.response.StoreResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,11 +23,11 @@ public class SalesService {
     private final OrderRepository orderRepository;
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
-    private final StoreClient storeClient;
+    private final ProductClient productClient;
 
     public SalesResponse getSalesList(UUID storeId) {
 
-        StoreResponse storeResponse = storeClient.getStoreId(storeId);
+        StoreResponse storeResponse = productClient.getStoreId(storeId);
         Long CurrentMemberId = memberUtil.getCurrentMember().memberId();
         memberUtil.assertMemberResourceAccess(storeResponse.memberId(), CurrentMemberId);
 

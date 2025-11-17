@@ -22,10 +22,12 @@ import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
-import com.irum.orderservice.openfeign.payment.PaymentClient;
-import com.irum.orderservice.openfeign.payment.dto.emuns.PaymentCorp;
+import com.irum.orderservice.openfeign.payment.client.PaymentClient;
+import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
 import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
-import com.irum.orderservice.openfeign.product.ProductClient;
+import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
+import com.irum.orderservice.openfeign.product.client.ProductClient;
+import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -174,8 +176,21 @@ public class CustomerOrderService {
                         .toList();
 
         // 조회, 재고 미리 차감
-        ProductInternalResponse response =
-                productClient.updateStock(request.productList(), request.storeId());
+        List<ProductInternalRequest.OptionValueRequest> optionValueRequestList =
+                request.productList().stream()
+                        .map(
+                                p ->
+                                        ProductInternalRequest.OptionValueRequest.builder()
+                                                .optionValueId(p.optionValueId())
+                                                .quantity(p.quantity())
+                                                .build())
+                        .toList();
+        ProductInternalRequest productInternalRequest =
+                ProductInternalRequest.builder()
+                        .storeId(request.storeId())
+                        .optionValueList(optionValueRequestList)
+                        .build();
+        ProductInternalResponse response = productClient.updateStock(productInternalRequest);
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
@@ -228,9 +243,14 @@ public class CustomerOrderService {
         log.info("할인 {}, 할인 후 가격 {}", discountAmount, finalPaymentAmount);
 
         /** 결재 생성 PENDING 상태* */
-        UUID paymentId =
-                paymentClient.createPaymentPending(
-                        finalPaymentAmount, discountAmount, PaymentCorp.TOSS);
+        CreatePaymentRequest paymentRequest =
+                CreatePaymentRequest.builder()
+                        .finalPaymentAmount(finalPaymentAmount)
+                        .discountAmount(discountAmount)
+                        .paymentCorp(PaymentCorp.TOSS)
+                        .build();
+        UUID paymentId = paymentClient.createPaymentPending(paymentRequest);
+
         // 쿠폰 미리 차감
         appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());
 

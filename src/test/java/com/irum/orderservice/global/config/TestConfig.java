@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @TestConfiguration
-@Import(GlobalAutoConfiguration.class) // 얘 붙이세요
+@Import(GlobalAutoConfiguration.class)
 public class TestConfig {
     @Bean
     public DeliveryAddressService deliveryAddressService() {
