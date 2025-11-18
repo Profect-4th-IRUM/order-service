@@ -14,9 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SalesService {
@@ -26,12 +28,15 @@ public class SalesService {
     private final ProductClient productClient;
 
     public SalesResponse getSalesList(UUID storeId) {
-
+        log.info("SalesService getSalesList");
         StoreResponse storeResponse = productClient.getStoreId(storeId);
+        log.info("storeResponse {}", storeResponse);
         Long CurrentMemberId = memberUtil.getCurrentMember().memberId();
         memberUtil.assertMemberResourceAccess(storeResponse.memberId(), CurrentMemberId);
+        log.info("memberId {}", CurrentMemberId);
 
         List<Order> orders = orderRepository.findAllByStoreId(storeId);
+        log.info("orders {}", orders);
         List<SalesResponse.OrderSummary> orderList =
                 orders.stream().map(this::toOrderSummary).toList();
         return new SalesResponse(orderList, null, false);

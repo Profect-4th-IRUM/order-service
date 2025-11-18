@@ -226,6 +226,7 @@ public class CustomerOrderService {
 
             // 제품 가격 계산
             int productPrice = (product.price() + product.extraPrice()) * productReq.quantity();
+            log.info("제품 가격 단품 : {} 엑스트라 : {} 개수 : {} 총 : {}", product.price(),  product.extraPrice(), productReq.quantity(), productPrice);
             calculatedTotalPrice += productPrice;
             // 상품 개수 카운트
             productCount += productReq.quantity();
