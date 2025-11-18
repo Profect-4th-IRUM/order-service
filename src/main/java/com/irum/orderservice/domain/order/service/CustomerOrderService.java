@@ -152,7 +152,7 @@ public class CustomerOrderService {
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
 
         Long currentMemberId = null;
-        try{
+        try {
             currentMemberId = memberUtil.getCurrentMember().memberId();
         } catch (Exception e) {
             log.error("memberUtil.getCurrentMember: {} message : {}", e, e.getMessage());
@@ -197,12 +197,11 @@ public class CustomerOrderService {
                         .optionValueList(optionValueRequestList)
                         .build();
         ProductInternalResponse response = null;
-        try{
+        try {
             response = productClient.updateStock(productInternalRequest);
         } catch (Exception e) {
             log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
         }
-
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
@@ -226,7 +225,12 @@ public class CustomerOrderService {
 
             // 제품 가격 계산
             int productPrice = (product.price() + product.extraPrice()) * productReq.quantity();
-            log.info("제품 가격 단품 : {} 엑스트라 : {} 개수 : {} 총 : {}", product.price(),  product.extraPrice(), productReq.quantity(), productPrice);
+            log.info(
+                    "제품 가격 단품 : {} 엑스트라 : {} 개수 : {} 총 : {}",
+                    product.price(),
+                    product.extraPrice(),
+                    productReq.quantity(),
+                    productPrice);
             calculatedTotalPrice += productPrice;
             // 상품 개수 카운트
             productCount += productReq.quantity();
@@ -264,12 +268,11 @@ public class CustomerOrderService {
                         .build();
 
         UUID paymentId = null;
-        try{
+        try {
             paymentId = paymentClient.createPaymentPending(paymentRequest);
         } catch (Exception e) {
             log.error("paymentClient.createPaymentPending: {} message : {}", e, e.getMessage());
         }
-
 
         // 쿠폰 미리 차감
         appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());
