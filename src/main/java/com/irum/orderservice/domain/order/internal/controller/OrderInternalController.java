@@ -15,8 +15,8 @@ public class OrderInternalController {
     private final OrderInternalService orderInternalService;
 
     @PutMapping("/preparing")
-    public void updateOrderStatusPreparing(@RequestBody UpdateOrderStatusPreparingRequest request) {
-        orderInternalService.updateOrderStatusPreparing(request);
+    public String updateOrderStatusPreparing(@RequestBody UpdateOrderStatusPreparingRequest request) {
+        return orderInternalService.updateOrderStatusPreparing(request);
     }
 
     @PutMapping("/failed")

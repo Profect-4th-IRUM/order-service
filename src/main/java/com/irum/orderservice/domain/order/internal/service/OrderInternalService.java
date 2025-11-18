@@ -30,7 +30,7 @@ public class OrderInternalService {
     private final ProductClient productClient;
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
-    public void updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {
+    public String updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {
         Order order =
                 orderRepository
                         .findByOrderId(request.orderId())
@@ -38,6 +38,7 @@ public class OrderInternalService {
         order.updateOrderStatus(OrderStatus.PREPARING);
 
         orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
+        return order.getOrderNum();
     }
 
     /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
