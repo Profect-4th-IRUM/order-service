@@ -150,7 +150,13 @@ public class CustomerOrderService {
     }
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
-        Long currentMemberId = memberUtil.getCurrentMember().memberId();
+
+        Long currentMemberId = null;
+        try{
+            currentMemberId = memberUtil.getCurrentMember().memberId();
+        } catch (Exception e) {
+            log.error("memberUtil.getCurrentMember: {} message : {}", e, e.getMessage());
+        }
         int discountAmount = 0;
 
         DeliveryAddress deliveryAddress =
@@ -190,7 +196,13 @@ public class CustomerOrderService {
                         .storeId(request.storeId())
                         .optionValueList(optionValueRequestList)
                         .build();
-        ProductInternalResponse response = productClient.updateStock(productInternalRequest);
+        ProductInternalResponse response = null;
+        try{
+            response = productClient.updateStock(productInternalRequest);
+        } catch (Exception e) {
+            log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
+        }
+
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
@@ -200,7 +212,7 @@ public class CustomerOrderService {
                                         product -> product));
 
         // 정합 정검
-        if (optionMap.size() != productIds.size() || optionMap.size() != optionValueIds.size()) {
+        if (optionMap.size() != optionValueIds.size()) {
             throw new CommonException(OrderErrorCode.INVALID_ORDER);
         }
 
@@ -249,7 +261,14 @@ public class CustomerOrderService {
                         .discountAmount(discountAmount)
                         .paymentCorp(PaymentCorp.TOSS)
                         .build();
-        UUID paymentId = paymentClient.createPaymentPending(paymentRequest);
+
+        UUID paymentId = null;
+        try{
+            paymentId = paymentClient.createPaymentPending(paymentRequest);
+        } catch (Exception e) {
+            log.error("paymentClient.createPaymentPending: {} message : {}", e, e.getMessage());
+        }
+
 
         // 쿠폰 미리 차감
         appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());

@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class OrderInternalController {
     private final OrderInternalService orderInternalService;
 
-    @PatchMapping("/preparing")
+    @PutMapping("/preparing")
     public void updateOrderStatusPreparing(@RequestBody UpdateOrderStatusPreparingRequest request) {
         orderInternalService.updateOrderStatusPreparing(request);
     }
 
-    @PatchMapping("/failed")
+    @PutMapping("/failed")
     public void updateOrderStatusFailed(
             @RequestBody UpdateOrderStatusFailedRequest request) {
         orderInternalService.updateOrderStatusFailed(request);
