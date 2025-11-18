@@ -1,6 +1,8 @@
 package com.irum.orderservice.domain.order.internal.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.openfeign.order.dto.request.UpdateOrderStatusFailedRequest;
+import com.irum.openfeign.order.dto.request.UpdateOrderStatusPreparingRequest;
 import com.irum.openfeign.product.client.ProductClient;
 import com.irum.openfeign.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
@@ -28,25 +30,25 @@ public class OrderInternalService {
     private final ProductClient productClient;
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
-    public void updateOrderStatusPreparing(UUID orderId) {
+    public void updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {
         Order order =
                 orderRepository
-                        .findByOrderId(orderId)
+                        .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.PREPARING);
 
-        orderDetailRepository.updateStatusToPreparingByOrderId(orderId);
+        orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
     }
 
     /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
-    public void updateOrderStatusFailed(UUID orderId, UpdateOrderFailedRequest request) {
+    public void updateOrderStatusFailed(UpdateOrderStatusFailedRequest request) {
         Order order =
                 orderRepository
-                        .findByOrderId(orderId)
+                        .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.FAILED);
 
-        orderDetailRepository.updateStatusToPreparingByOrderId(orderId);
+        orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
 
         // 쿠폰 롤백
         appliedCouponService.rollbackAppliedCouponList(request.paymentId());
