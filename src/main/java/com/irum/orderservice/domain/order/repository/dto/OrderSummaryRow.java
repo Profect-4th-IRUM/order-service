@@ -1,8 +1,6 @@
 package com.irum.orderservice.domain.order.repository.dto;
 
 import com.irum.orderservice.domain.deliveryaddress.domain.entity.Address;
-import com.irum.orderservice.domain.order.dto.response.AddressResponse;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 

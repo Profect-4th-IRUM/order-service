@@ -1,8 +1,6 @@
 package com.irum.orderservice.domain.order.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.irum.orderservice.domain.deliveryaddress.domain.entity.Address;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
