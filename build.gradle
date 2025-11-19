@@ -96,7 +96,7 @@ dependencies {
 
     // common module
     implementation 'com.irum:open-feign-client:1.0.0-SNAPSHOT'
-    implementation 'com.irum:global-module:0.1.6-SNAPSHOT'
+    implementation 'com.irum:global-module:0.1.8-SNAPSHOT'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -113,7 +113,6 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-
     // Config Server
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
@@ -125,6 +124,8 @@ dependencies {
     implementation 'io.micrometer:micrometer-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
+    // Liquibase
+    implementation 'org.liquibase:liquibase-core'
 }
 
 test {
