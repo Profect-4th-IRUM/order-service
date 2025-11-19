@@ -1,37 +1,24 @@
 databaseChangeLog:
   - include:
-      file: changes/001-create-coupon-table.yaml
+      file: changes/ddl/001-create-table-coupon.yaml
       relativeToChangelogFile: true
   - include:
-      file: changes/002-insert-default-coupons.yaml
+      file: changes/ddl/002-create-table-applied-coupon.yaml
       relativeToChangelogFile: true
   - include:
-      file: changes/003-create-applied-coupon-table.yaml
+      file: changes/ddl/003-create-table-delivery-address.yaml
       relativeToChangelogFile: true
   - include:
-      file: changes/004-insert-default-applied-coupons.yaml
+      file: changes/ddl/004-create-table-order.yaml
       relativeToChangelogFile: true
   - include:
-      file: changes/005-create-delivery-address-table.yaml
+      file: changes/ddl/005-create-table-order-detail.yaml
       relativeToChangelogFile: true
   - include:
-      file: changes/006-insert-default-delivery-addresses.yaml
+      file: changes/ddl/006-create-table-refund.yaml
       relativeToChangelogFile: true
+
+  ### test data ###
   - include:
-      file: changes/007-create-order-table.yaml
-      relativeToChangelogFile: true
-  - include:
-      file: changes/008-insert-default-orders.yaml
-      relativeToChangelogFile: true
-  - include:
-      file: changes/009-create-order-detail-table.yaml
-      relativeToChangelogFile: true
-  - include:
-      file: changes/010-insert-default-order-details.yaml
-      relativeToChangelogFile: true
-  - include:
-      file: changes/011-create-refund-table.yaml
-      relativeToChangelogFile: true
-  - include:
-      file: changes/012-insert-default-refunds.yaml
+      file: changes/dml/011-insert-default-delivery-address.sql
       relativeToChangelogFile: true
