@@ -1,6 +1,13 @@
 package com.irum.orderservice.domain.order.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.openfeign.payment.client.PaymentClient;
+import com.irum.openfeign.payment.dto.request.CreatePaymentRequest;
+import com.irum.openfeign.payment.dto.response.PaymentResponse;
+import com.irum.openfeign.payment.emuns.PaymentCorp;
+import com.irum.openfeign.product.client.ProductClient;
+import com.irum.openfeign.product.dto.request.ProductInternalRequest;
+import com.irum.openfeign.product.dto.response.ProductInternalResponse;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
@@ -22,13 +29,6 @@ import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
-import com.irum.orderservice.openfeign.payment.client.PaymentClient;
-import com.irum.orderservice.openfeign.payment.dto.request.CreatePaymentRequest;
-import com.irum.orderservice.openfeign.payment.dto.response.PaymentResponse;
-import com.irum.orderservice.openfeign.payment.emuns.PaymentCorp;
-import com.irum.orderservice.openfeign.product.client.ProductClient;
-import com.irum.orderservice.openfeign.product.dto.request.ProductInternalRequest;
-import com.irum.orderservice.openfeign.product.dto.response.ProductInternalResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +150,13 @@ public class CustomerOrderService {
     }
 
     public CustomerOrderResponse prepareOrder(CustomerOrderRequest request) {
-        Long currentMemberId = memberUtil.getCurrentMember().memberId();
+
+        Long currentMemberId = null;
+        try {
+            currentMemberId = memberUtil.getCurrentMember().memberId();
+        } catch (Exception e) {
+            log.error("memberUtil.getCurrentMember: {} message : {}", e, e.getMessage());
+        }
         int discountAmount = 0;
 
         DeliveryAddress deliveryAddress =
@@ -190,7 +196,12 @@ public class CustomerOrderService {
                         .storeId(request.storeId())
                         .optionValueList(optionValueRequestList)
                         .build();
-        ProductInternalResponse response = productClient.updateStock(productInternalRequest);
+        ProductInternalResponse response = null;
+        try {
+            response = productClient.updateStock(productInternalRequest);
+        } catch (Exception e) {
+            log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
+        }
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
                 response.productList().stream()
@@ -200,7 +211,7 @@ public class CustomerOrderService {
                                         product -> product));
 
         // 정합 정검
-        if (optionMap.size() != productIds.size() || optionMap.size() != optionValueIds.size()) {
+        if (optionMap.size() != optionValueIds.size()) {
             throw new CommonException(OrderErrorCode.INVALID_ORDER);
         }
 
@@ -214,6 +225,12 @@ public class CustomerOrderService {
 
             // 제품 가격 계산
             int productPrice = (product.price() + product.extraPrice()) * productReq.quantity();
+            log.info(
+                    "제품 가격 단품 : {} 엑스트라 : {} 개수 : {} 총 : {}",
+                    product.price(),
+                    product.extraPrice(),
+                    productReq.quantity(),
+                    productPrice);
             calculatedTotalPrice += productPrice;
             // 상품 개수 카운트
             productCount += productReq.quantity();
@@ -249,7 +266,13 @@ public class CustomerOrderService {
                         .discountAmount(discountAmount)
                         .paymentCorp(PaymentCorp.TOSS)
                         .build();
-        UUID paymentId = paymentClient.createPaymentPending(paymentRequest);
+
+        UUID paymentId = null;
+        try {
+            paymentId = paymentClient.createPaymentPending(paymentRequest);
+        } catch (Exception e) {
+            log.error("paymentClient.createPaymentPending: {} message : {}", e, e.getMessage());
+        }
 
         // 쿠폰 미리 차감
         appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());

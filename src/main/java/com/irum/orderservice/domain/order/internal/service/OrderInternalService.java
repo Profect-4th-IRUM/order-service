@@ -1,18 +1,18 @@
 package com.irum.orderservice.domain.order.internal.service;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.openfeign.order.dto.request.UpdateOrderStatusFailedRequest;
+import com.irum.openfeign.order.dto.request.UpdateOrderStatusPreparingRequest;
+import com.irum.openfeign.product.client.ProductClient;
+import com.irum.openfeign.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
-import com.irum.orderservice.domain.order.internal.dto.request.UpdateOrderFailedRequest;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
-import com.irum.orderservice.openfeign.product.client.ProductClient;
-import com.irum.orderservice.openfeign.product.dto.request.RollbackStockRequest;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,25 +28,26 @@ public class OrderInternalService {
     private final ProductClient productClient;
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
-    public void updateOrderStatusPreparing(UUID orderId) {
+    public String updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {
         Order order =
                 orderRepository
-                        .findByOrderId(orderId)
+                        .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.PREPARING);
 
-        orderDetailRepository.updateStatusToPreparingByOrderId(orderId);
+        orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
+        return order.getOrderNum();
     }
 
     /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
-    public void updateOrderStatusFailed(UUID orderId, UpdateOrderFailedRequest request) {
+    public void updateOrderStatusFailed(UpdateOrderStatusFailedRequest request) {
         Order order =
                 orderRepository
-                        .findByOrderId(orderId)
+                        .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.FAILED);
 
-        orderDetailRepository.updateStatusToPreparingByOrderId(orderId);
+        orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
 
         // 쿠폰 롤백
         appliedCouponService.rollbackAppliedCouponList(request.paymentId());
