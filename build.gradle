@@ -76,6 +76,17 @@ dependencyManagement {
 }
 
 dependencies {
+    // Config-Server
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // Service-Discovery
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // JPA & DB

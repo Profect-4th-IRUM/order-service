@@ -11,7 +11,7 @@ public record OwnerOrderListResponse(
             UUID orderId,
             String recipientName,
             String recipientContact,
-            String recipientAddress,
+            AddressResponse recipientAddress,
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime orderDate,
             int totalProductPrice,
             int discountAmount,
