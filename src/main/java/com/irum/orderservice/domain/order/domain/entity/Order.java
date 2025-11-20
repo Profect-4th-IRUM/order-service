@@ -62,6 +62,11 @@ public class Order extends BaseEntity {
         this.orderStatusAll = os;
     }
 
+    public void updateAmount(int totalDiscount, int finalPaymentAmount){
+        this.totalDiscountAmount = totalDiscount;
+        this.payingAmount = finalPaymentAmount;
+    }
+
     public static Order from(
             String orderNum,
             int calculatedTotalPrice,
