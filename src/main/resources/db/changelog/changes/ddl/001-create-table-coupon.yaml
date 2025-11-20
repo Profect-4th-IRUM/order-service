@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-table-1
+      id: create-table-order-1
       author: hyeonji91
       comment: "p_coupon 테이블 생성 및 기본 컬럼 정의"
 

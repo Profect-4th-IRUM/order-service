@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-table-6
+      id: create-table-order-6
       author: hyeonji91
       comment: "p_refund 태이블 생성 및 기본 컬럼 정의"
 

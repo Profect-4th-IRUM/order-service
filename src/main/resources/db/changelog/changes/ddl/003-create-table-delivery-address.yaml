@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-table-3
+      id: create-table-order-3
       author: hyeonji91
       comment: "p_delivery_address 테이블 생성 및 기본 컬럼 정의"
 

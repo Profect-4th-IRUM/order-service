@@ -1,4 +1,4 @@
--- changeset willjsw:insert-data-1
+-- changeset willjsw:insert-data-order-1
 -- comment: 기본 배송지 주소 데이터 삽입 (member_id 1~5000)
 
 INSERT INTO p_delivery_address (

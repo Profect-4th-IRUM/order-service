@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-table-5
+      id: create-table-order-5
       author: hyeonji91
       comment: "p_order_detail 테이블 생성 및 기본 컬럼 정의"
 
