@@ -1,41 +1,29 @@
 databaseChangeLog:
   - changeSet:
-      id: create-refund-table-1
+      id: create-table-order-2
       author: hyeonji91
-      comment: "p_refund 태이블 생성 및 기본 컬럼 정의"
+      comment: "p_appliedcoupon 테이블 생성 및 기본 컬럼 정의"
 
       changes:
         - createTable:
-            tableName: p_refund
+            tableName: p_applied_coupon
             columns:
               - column:
-                  name: refund_id
+                  name: applied_coupon_id
                   type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: reason
-                  type: VARCHAR(20)
+                  name: payment_id
+                  type: UUID
               - column:
-                  name: description
-                  type: CLOB
-              - column:
-                  name: price
-                  type: INT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: refund_status
-                  type: VARCHAR(20)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: order_id
+                  name: coupon_id
                   type: UUID
                   constraints:
-                    foreignKeyName: FK_REFUND_ON_ORDER
-                    references: p_order(order_id)
+                    nullable: false
+                    foreignKeyName: FK_APPLIED_COUPON_ON_COUPON
+                    references: p_coupon(coupon_id)
               - column:
                   name: created_at
                   type: TIMESTAMP WITH TIME ZONE
@@ -61,4 +49,4 @@ databaseChangeLog:
 
       rollback:
         - dropTable:
-            tableName: p_refund
+            tableName: p_applied_coupon

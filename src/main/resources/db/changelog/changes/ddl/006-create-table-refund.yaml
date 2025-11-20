@@ -1,66 +1,41 @@
 databaseChangeLog:
   - changeSet:
-      id: create-order-table-1
+      id: create-table-order-6
       author: hyeonji91
-      comment: "p_order_detail 테이블 생성 및 기본 컬럼 정의"
+      comment: "p_refund 태이블 생성 및 기본 컬럼 정의"
 
       changes:
         - createTable:
-            tableName: p_order_detail
+            tableName: p_refund
             columns:
               - column:
-                  name: order_detail_id
+                  name: refund_id
                   type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: product_id
-                  type: UUID
-                  constraints:
-                    nullable: false
+                  name: reason
+                  type: VARCHAR(20)
               - column:
-                  name: option_value_id
-                  type: UUID
-                  constraints:
-                    nullable: false
-              - column:
-                  name: product_name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: option_name
-                  type: VARCHAR(255)
+                  name: description
+                  type: CLOB
               - column:
                   name: price
-                  type: INTEGER
+                  type: INT
                   constraints:
                     nullable: false
               - column:
-                  name: quantity
-                  type: INTEGER
-                  constraints:
-                    nullable: false
-              - column:
-                  name: order_status_indi
+                  name: refund_status
                   type: VARCHAR(20)
                   constraints:
                     nullable: false
               - column:
-                  name: tracking_number
-                  type: VARCHAR(255)
-              - column:
-                  name: arrived_date
-                  type: TIMESTAMP WITH TIME ZONE
-              - column:
                   name: order_id
                   type: UUID
                   constraints:
-                    nullable: false
-                    foreignKeyName: FK_ORDER_DETAIL_ON_ORDER
+                    foreignKeyName: FK_REFUND_ON_ORDER
                     references: p_order(order_id)
-                    deleteCascade: true
               - column:
                   name: created_at
                   type: TIMESTAMP WITH TIME ZONE
@@ -86,4 +61,4 @@ databaseChangeLog:
 
       rollback:
         - dropTable:
-            tableName: p_order_detail
+            tableName: p_refund
