@@ -11,6 +11,7 @@ import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
@@ -53,13 +54,14 @@ public class AppliedCouponEventListener {
             order.updateAmount(totalDiscount, finalPaymentAmount);
 
         } catch (Exception e){
-            log.error("[Step 3] 쿠폰 할인 계산 실패 - orderId: {}", event.orderId(), e);
+            log.error("쿠폰 할인 계산 실패 - orderId: {}", event.orderId(), e);
 //            publishOrderFailed(event.getOrderId(), null, null,
 //                    OrderFailedEvent.FailureStep.COUPON_APPLICATION, "쿠폰 할인 계산 실패", e);
         }
     }
 
 
+    @Async
     @Transactional
     @EventListener
     public void handleCouponAppliedEvent(CouponAppliedEvent event) {
@@ -73,7 +75,7 @@ public class AppliedCouponEventListener {
                 log.info("쿠폰 차감 완료 - couponCount: {}", event.couponIdList().size());
             }
         } catch (Exception e) {
-            log.error("[Step 5] 쿠폰 차감 실패 - paymentId: {}", event.paymentId(), e);
+            log.error("쿠폰 차감 실패 - paymentId: {}", event.paymentId(), e);
 //            Order order = orderRepository.findById(event.getOrderId()).orElse(null);
 //            List<UUID> couponIds = order != null ? order.getCouponIds() : null;
 //            publishOrderFailed(event.getOrderId(), event.getPaymentId(), couponIds,

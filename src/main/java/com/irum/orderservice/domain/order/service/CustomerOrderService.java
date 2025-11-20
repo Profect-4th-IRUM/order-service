@@ -25,10 +25,12 @@ import com.irum.orderservice.domain.order.dto.response.OrderDetailStatusResponse
 import com.irum.orderservice.domain.order.event.event.CouponAppliedEvent;
 import com.irum.orderservice.domain.order.event.event.CouponValidatedEvent;
 import com.irum.orderservice.domain.order.mapper.CustomerOrderMapper;
+import com.irum.orderservice.domain.order.mapper.ProductInternalRequestMapper;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
+import com.irum.orderservice.global.exception.errorcode.AuthErrorCode;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
@@ -54,8 +56,6 @@ public class CustomerOrderService {
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
     private final DeliveryAddressRepository deliveryAddressRepository;
-    private final CouponService couponService;
-    private final AppliedCouponService appliedCouponService;
 
     private final PaymentClient paymentClient;
     private final ProductClient productClient;
@@ -162,16 +162,12 @@ public class CustomerOrderService {
             currentMemberId = memberUtil.getCurrentMember().memberId();
         } catch (Exception e) {
             log.error("memberUtil.getCurrentMember: {} message : {}", e, e.getMessage());
+            throw new CommonException(AuthErrorCode.AUTHENTICATION_NOT_FOUND);
         }
+
         int discountAmount = 0;
         DeliveryAddress deliveryAddress = findDeliveryAddress(request.deliveryAddressId());
         log.info("[주문준비] 멤버 {} , 상점, 주소 검색", currentMemberId);
-
-        List<UUID> productIds =
-                request.productList().stream()
-                        .map(CustomerOrderRequest.ProductSummary::productId)
-                        .distinct()
-                        .toList();
 
         List<UUID> optionValueIds =
                 request.productList().stream()
@@ -180,24 +176,9 @@ public class CustomerOrderService {
                         .toList();
 
         // 조회, 재고 미리 차감
-        List<ProductInternalRequest.OptionValueRequest> optionValueRequestList =
-                request.productList().stream()
-                        .map(
-                                p ->
-                                        ProductInternalRequest.OptionValueRequest.builder()
-                                                .optionValueId(p.optionValueId())
-                                                .quantity(p.quantity())
-                                                .build())
-                        .toList();
-        ProductInternalRequest productInternalRequest =
-                ProductInternalRequest.builder()
-                        .storeId(request.storeId())
-                        .optionValueList(optionValueRequestList)
-                        .build();
-
         ProductInternalResponse response = null;
         try {
-            response = productClient.updateStock(productInternalRequest);
+            response = productClient.updateStock(ProductInternalRequestMapper.toProductInternalRequest(request));
         } catch (Exception e) {
             log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
         }
@@ -286,7 +267,6 @@ public class CustomerOrderService {
 
         // 쿠폰 미리 차감
         eventPublisher.publishEvent(new CouponAppliedEvent(paymentId, request.couponIdList()));
-
 
 
         /** 주문 상세 저장* */
