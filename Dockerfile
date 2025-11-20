@@ -1,28 +1,28 @@
-# syntax=docker/dockerfile:1.2
+# syntax=docker/dockerfile:1.4
 
-FROM gradle:8.7-jdk21-alpine AS build
+FROM gradle:8.7-jdk21 AS build
 
 WORKDIR /app
 
-RUN --mount=type=secret,id=app_env \
-    mkdir -p /app && \
-    cat /run/secrets/app_env > /app/.env
+ARG GIT_USERNAME
+ARG GIT_TOKEN
 
-COPY build.gradle settings.gradle gradlew ./
-COPY gradle gradle
-RUN ./gradlew dependencies --no-daemon || true
+ENV GIT_USERNAME=${GIT_USERNAME}
+ENV GIT_TOKEN=${GIT_TOKEN}
+
+COPY gradlew build.gradle settings.gradle ./
+COPY gradle ./gradle
+RUN chmod +x gradlew && ./gradlew --version
 
 COPY . .
-RUN ./gradlew clean bootJar --no-daemon
+RUN ./gradlew clean bootJar --no-daemon --build-cache
 
 FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*SNAPSHOT.jar app.jar
+COPY --from=build /app/build/libs/*.jar app.jar
 
 ENV TZ=Asia/Seoul
-
-EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
