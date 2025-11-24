@@ -6,10 +6,7 @@ import com.irum.openfeign.payment.dto.request.CreatePaymentRequest;
 import com.irum.openfeign.payment.dto.response.PaymentResponse;
 import com.irum.openfeign.payment.emuns.PaymentCorp;
 import com.irum.openfeign.product.client.ProductClient;
-import com.irum.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.openfeign.product.dto.response.ProductInternalResponse;
-import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
-import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
@@ -178,7 +175,9 @@ public class CustomerOrderService {
         // 조회, 재고 미리 차감
         ProductInternalResponse response = null;
         try {
-            response = productClient.updateStock(ProductInternalRequestMapper.toProductInternalRequest(request));
+            response =
+                    productClient.updateStock(
+                            ProductInternalRequestMapper.toProductInternalRequest(request));
         } catch (Exception e) {
             log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
         }
@@ -234,21 +233,23 @@ public class CustomerOrderService {
 
         // 주문 엔티티 생성 PENDING 상태
         String orderNum = generateOrderNumber();
-        Order order = Order.builder()
-                .orderNum(orderNum)
-                .memberId(currentMemberId)
-                .storeId(request.storeId())
-                .deliveryAddress(deliveryAddress)
-                .deliveryRequest(request.deliveryRequest())
-                .totalDiscountAmount(discountAmount)
-                .totalPrice(calculatedTotalPrice)
-                .deliveryFee(deliveryFee)
-                .orderStatusAll(OrderStatus.PENDING)
-                .build();
+        Order order =
+                Order.builder()
+                        .orderNum(orderNum)
+                        .memberId(currentMemberId)
+                        .storeId(request.storeId())
+                        .deliveryAddress(deliveryAddress)
+                        .deliveryRequest(request.deliveryRequest())
+                        .totalDiscountAmount(discountAmount)
+                        .totalPrice(calculatedTotalPrice)
+                        .deliveryFee(deliveryFee)
+                        .orderStatusAll(OrderStatus.PENDING)
+                        .build();
         orderRepository.save(order);
 
         /** 할인 쿠폰 적용 */
-        eventPublisher.publishEvent(new CouponValidatedEvent(order.getOrderId(), request.couponIdList()));
+        eventPublisher.publishEvent(
+                new CouponValidatedEvent(order.getOrderId(), request.couponIdList()));
 
         /** 결재 생성 PENDING 상태* */
         CreatePaymentRequest paymentRequest =
@@ -268,7 +269,6 @@ public class CustomerOrderService {
         // 쿠폰 미리 차감
         eventPublisher.publishEvent(new CouponAppliedEvent(paymentId, request.couponIdList()));
 
-
         /** 주문 상세 저장* */
         for (OrderDetail orderDetail : orderDetails) {
             orderDetail.updateOrder(order);
@@ -281,15 +281,14 @@ public class CustomerOrderService {
 
     private DeliveryAddress findDeliveryAddress(UUID addressId) {
         return deliveryAddressRepository
-                        .findById(addressId)
-                        .orElseThrow(
-                                () ->
-                                        new CommonException(
-                                                DeliveryAddressErrorCode
-                                                        .DELIVERY_ADDRESS_NOT_FOUND));
+                .findById(addressId)
+                .orElseThrow(
+                        () ->
+                                new CommonException(
+                                        DeliveryAddressErrorCode.DELIVERY_ADDRESS_NOT_FOUND));
     }
 
-    /**8 자리 랜덤값*/
+    /** 8 자리 랜덤값 */
     private String generateOrderNumber() {
         return "ORD-" + (int) (Math.random() * 100000000);
     }

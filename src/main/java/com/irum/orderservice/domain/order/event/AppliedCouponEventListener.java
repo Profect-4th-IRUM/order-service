@@ -14,8 +14,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -25,25 +23,23 @@ public class AppliedCouponEventListener {
     private final CouponService couponService;
     private final OrderRepository orderRepository;
 
-    /**
-     *  쿠폰 할인 검증 및 계산 (결제 생성 전)
-     */
+    /** 쿠폰 할인 검증 및 계산 (결제 생성 전) */
     @Transactional
     @EventListener
     public void handleCouponValidatedEvent(CouponValidatedEvent event) {
         log.info("쿠폰 할인 계산 시작 - orderId: {}", event.orderId());
-        try{
-            Order order = orderRepository.findById(event.orderId())
-                    .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+        try {
+            Order order =
+                    orderRepository
+                            .findById(event.orderId())
+                            .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
 
             // 쿠폰 할인 계산
             int couponDiscount = 0;
             if (event.couponIdList() != null && !event.couponIdList().isEmpty()) {
-                couponDiscount = couponService.validAndCalCoupon(
-                        event.couponIdList(),
-                        order.getTotalPrice(),
-                        order.getMemberId()
-                );
+                couponDiscount =
+                        couponService.validAndCalCoupon(
+                                event.couponIdList(), order.getTotalPrice(), order.getMemberId());
             }
 
             int totalDiscount = couponDiscount + order.getTotalDiscountAmount();
@@ -53,34 +49,31 @@ public class AppliedCouponEventListener {
 
             order.updateAmount(totalDiscount, finalPaymentAmount);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("쿠폰 할인 계산 실패 - orderId: {}", event.orderId(), e);
-//            publishOrderFailed(event.getOrderId(), null, null,
-//                    OrderFailedEvent.FailureStep.COUPON_APPLICATION, "쿠폰 할인 계산 실패", e);
+            //            publishOrderFailed(event.getOrderId(), null, null,
+            //                    OrderFailedEvent.FailureStep.COUPON_APPLICATION, "쿠폰 할인 계산 실패",
+            // e);
         }
     }
-
 
     @Async
     @Transactional
     @EventListener
     public void handleCouponAppliedEvent(CouponAppliedEvent event) {
         log.info("쿠폰 차감 시작 - orderId: {}", event.paymentId());
-        try{
+        try {
             if (event.couponIdList() != null && !event.couponIdList().isEmpty()) {
                 appliedCouponService.createAppliedCouponList(
-                        event.paymentId(),
-                        event.couponIdList()
-                );
+                        event.paymentId(), event.couponIdList());
                 log.info("쿠폰 차감 완료 - couponCount: {}", event.couponIdList().size());
             }
         } catch (Exception e) {
             log.error("쿠폰 차감 실패 - paymentId: {}", event.paymentId(), e);
-//            Order order = orderRepository.findById(event.getOrderId()).orElse(null);
-//            List<UUID> couponIds = order != null ? order.getCouponIds() : null;
-//            publishOrderFailed(event.getOrderId(), event.getPaymentId(), couponIds,
-//                    OrderFailedEvent.FailureStep.COUPON_APPLICATION, "쿠폰 차감 실패", e);
+            //            Order order = orderRepository.findById(event.getOrderId()).orElse(null);
+            //            List<UUID> couponIds = order != null ? order.getCouponIds() : null;
+            //            publishOrderFailed(event.getOrderId(), event.getPaymentId(), couponIds,
+            //                    OrderFailedEvent.FailureStep.COUPON_APPLICATION, "쿠폰 차감 실패", e);
         }
-
     }
 }

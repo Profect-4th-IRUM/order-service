@@ -2,9 +2,8 @@ package com.irum.orderservice.domain.order.mapper;
 
 import com.irum.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProductInternalRequestMapper {
@@ -20,8 +19,8 @@ public class ProductInternalRequestMapper {
                                                 .build())
                         .toList();
         return ProductInternalRequest.builder()
-                        .storeId(request.storeId())
-                        .optionValueList(optionValueRequestList)
-                        .build();
+                .storeId(request.storeId())
+                .optionValueList(optionValueRequestList)
+                .build();
     }
 }
