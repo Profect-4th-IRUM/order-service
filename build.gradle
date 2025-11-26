@@ -77,8 +77,8 @@ dependencyManagement {
 }
 
 dependencies {
-    // Config-Server
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+//    // Config-Server
+//    implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
     // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -122,8 +122,6 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-//    // Config Server
-//    implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
     // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
