@@ -3,10 +3,12 @@ spring:
     name: order-service
   profiles:
     group:
-      "local": "local, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator"
-      "docker": "docker, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator"
-      "prod": "prod, prod-datasource, prod-db-management, prod-cache-redis, eureka, openfeign, actuator"
+      "local": "local, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator, kafka"
+      "docker": "docker, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator, kafka"
+      "prod": "prod, prod-datasource, prod-db-management, prod-cache-redis, eureka, openfeign, actuator, kafka"
     active: ${PROFILE_ACTIVE:local}
 
   config:
-    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+    import:
+      - optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+      - classpath:/order-service-kafka.yaml
