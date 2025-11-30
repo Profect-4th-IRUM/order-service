@@ -12,7 +12,9 @@ spring:
       properties:
         spring.json:
           trusted.packages: "com.irum.paymentservice.domain.payment.event.*"
-          type.mapping: "paymentPaidEvent: com.irum.orderservice.domain.order.event.PaymentPaidEvent"
+          type.mapping: |
+            paymentPaidEvent: com.irum.orderservice.domain.order.event.PaymentPaidEvent, 
+            paymentFailedEvent: com.irum.orderservice.domain.order.event.PaymentFailedEvent
 
 
     partition: ${NUM_OF_PARTITION}

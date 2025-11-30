@@ -31,7 +31,7 @@ public class OrderInternalService {
     private final AppliedCouponService appliedCouponService;
     private final ProductClient productClient;
 
-    /** 주문 및 주문 상세 상태 변경 - preparing */
+    /** EDA - 주문 및 주문 상세 상태 변경 - preparing */
     public void updateOrderStatusPreparing(PaymentPaidEvent event) {
         Order order =
                 orderRepository
@@ -47,28 +47,28 @@ public class OrderInternalService {
         log.info("[DB] order detail 업데이트 완료");
     }
 
-    /** 주문 및 주문 상세 상태 변경 - preparing */
+    /** REST API - 주문 및 주문 상세 상태 변경 - preparing */
     public String updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {
         Order order =
                 orderRepository
                         .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.PREPARING);
-
+        orderRepository.flush();
         orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
         return order.getOrderNum();
     }
 
 
-    /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
+    /** EDA - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
     public void updateOrderStatusFailed(PaymentFailedEvent event) {
         Order order =
                 orderRepository
                         .findByOrderId(event.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.FAILED);
-
-        orderDetailRepository.updateStatusToPreparingByOrderId(event.orderId());
+        orderRepository.flush();
+        orderDetailRepository.updateStatusToFailedByOrderId(event.orderId());
 
         // 쿠폰 롤백
         appliedCouponService.rollbackAppliedCouponList(event.paymentId());
@@ -91,15 +91,15 @@ public class OrderInternalService {
         productClient.rollbackStock(rollbackStockRequest);
     }
 
-    /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
+    /** REST API - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
     public void updateOrderStatusFailed(UpdateOrderStatusFailedRequest request) {
         Order order =
                 orderRepository
                         .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         order.updateOrderStatus(OrderStatus.FAILED);
-
-        orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
+        orderRepository.flush();
+        orderDetailRepository.updateStatusToFailedByOrderId(request.orderId());
 
         // 쿠폰 롤백
         appliedCouponService.rollbackAppliedCouponList(request.paymentId());
