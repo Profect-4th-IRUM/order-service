@@ -22,6 +22,7 @@ spring:
     topics:
       payment-paid: ${PAYMENT_PAID_TOPIC_NAME}
       payment-failed: ${PAYMENT_FAILED_TOPIC_NAME}
+      order-failed: ${ORDER_FAILED_TOPIC_NAME}
 
 logging:
   level:

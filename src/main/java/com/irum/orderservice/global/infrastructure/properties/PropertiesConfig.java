@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
     RedisProperties.class,
     TossProperties.class,
     FileProperties.class,
-    KafkaProperties.class
+    KafkaProperties.class,
+        KafkaTopicProperties.class
 })
 public class PropertiesConfig {}
