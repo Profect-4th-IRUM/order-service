@@ -15,7 +15,14 @@ spring:
           type.mapping: |
             paymentPaidEvent: com.irum.orderservice.domain.order.event.PaymentPaidEvent, 
             paymentFailedEvent: com.irum.orderservice.domain.order.event.PaymentFailedEvent,
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json:
+          type.mapping: |
             orderFailedEvent: com.irum.orderservice.domain.order.event.OrderFailedEvent
+      acks: all
 
 
     partition: ${NUM_OF_PARTITION}
