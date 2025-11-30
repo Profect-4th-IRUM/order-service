@@ -11,6 +11,7 @@ import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
+import com.irum.orderservice.domain.order.event.PaymentFailedEvent;
 import com.irum.orderservice.domain.order.event.PaymentPaidEvent;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import java.util.List;
@@ -56,6 +57,38 @@ public class OrderInternalService {
 
         orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
         return order.getOrderNum();
+    }
+
+
+    /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
+    public void updateOrderStatusFailed(PaymentFailedEvent event) {
+        Order order =
+                orderRepository
+                        .findByOrderId(event.orderId())
+                        .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+        order.updateOrderStatus(OrderStatus.FAILED);
+
+        orderDetailRepository.updateStatusToPreparingByOrderId(event.orderId());
+
+        // 쿠폰 롤백
+        appliedCouponService.rollbackAppliedCouponList(event.paymentId());
+
+        // 재고 롤백
+        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
+
+        List<RollbackStockRequest.OptionValueRequest> optionValueRequestList =
+                orderDetailList.stream()
+                        .map(
+                                o ->
+                                        RollbackStockRequest.OptionValueRequest.builder()
+                                                .optionValueId(o.getOptionValueId())
+                                                .quantity(o.getQuantity())
+                                                .build())
+                        .toList();
+
+        RollbackStockRequest rollbackStockRequest =
+                RollbackStockRequest.builder().optionValueList(optionValueRequestList).build();
+        productClient.rollbackStock(rollbackStockRequest);
     }
 
     /** 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
