@@ -27,6 +27,7 @@ import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
+import com.irum.orderservice.global.exception.errorcode.GlobalErrorCode;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import com.irum.orderservice.global.util.MemberUtil;
 import java.time.LocalDate;
@@ -156,6 +157,7 @@ public class CustomerOrderService {
             currentMemberId = memberUtil.getCurrentMember().memberId();
         } catch (Exception e) {
             log.error("memberUtil.getCurrentMember: {} message : {}", e, e.getMessage());
+            throw new CommonException(GlobalErrorCode.MEMBER_SERVICE_ERROR);
         }
         int discountAmount = 0;
 
@@ -201,6 +203,7 @@ public class CustomerOrderService {
             response = productClient.updateStock(productInternalRequest);
         } catch (Exception e) {
             log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
+            throw new CommonException(GlobalErrorCode.PRODUCT_SERVICE_ERROR);
         }
 
         Map<UUID, ProductInternalResponse.ProductResponse> optionMap =
@@ -272,6 +275,7 @@ public class CustomerOrderService {
             paymentId = paymentClient.createPaymentPending(paymentRequest);
         } catch (Exception e) {
             log.error("paymentClient.createPaymentPending: {} message : {}", e, e.getMessage());
+            throw new CommonException(GlobalErrorCode.PAYMENT_SERVICE_ERROR);
         }
 
         // 쿠폰 미리 차감

@@ -11,21 +11,38 @@ import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
+import com.irum.orderservice.domain.order.event.PaymentPaidEvent;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class OrderInternalService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final AppliedCouponService appliedCouponService;
     private final ProductClient productClient;
+
+    /** 주문 및 주문 상세 상태 변경 - preparing */
+    public void updateOrderStatusPreparing(PaymentPaidEvent event) {
+        Order order =
+                orderRepository
+                        .findByOrderId(event.orderId())
+                        .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+        log.info("[DB] order 조회 완료 {}", order.getOrderId());
+        order.updateOrderStatus(OrderStatus.PREPARING);
+        log.info("[DB] order 업데이트 완료 {}", order.getOrderId());
+
+        orderDetailRepository.updateStatusToPreparingByOrderId(event.orderId());
+        log.info("[DB] order detail 업데이트 완료");
+    }
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
     public String updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {

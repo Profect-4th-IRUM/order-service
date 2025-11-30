@@ -8,7 +8,11 @@ spring:
       group-id: ${ORDER_GROUP_ID}
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json:
+          trusted.packages: "com.irum.paymentservice.domain.payment.event.*"
+          type.mapping: "paymentPaidEvent: com.irum.orderservice.domain.order.event.PaymentPaidEvent"
 
 
     partition: ${NUM_OF_PARTITION}
