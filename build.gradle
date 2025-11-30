@@ -77,16 +77,13 @@ dependencyManagement {
 }
 
 dependencies {
-    // Config-Server
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+//    // Config-Server
+//    implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
     // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
-
-    // Service-Discovery
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -125,11 +122,6 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // Config Server
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
-
-    // Service-Discovery
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
