@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: "default-redis"
+  data:
+    redis:
+      host: ${ORDER_REDIS_HOST:localhost}
+      port: ${ORDER_REDIS_PORT:6379}
+      password: ${ORDER_REDIS_PASSWORD:}
