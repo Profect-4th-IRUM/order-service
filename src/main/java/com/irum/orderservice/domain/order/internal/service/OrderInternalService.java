@@ -32,16 +32,18 @@ public class OrderInternalService {
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
     public void updateOrderStatusPreparing(PaymentPaidEvent event) {
-        Order order =
-                orderRepository
-                        .findByOrderId(event.orderId())
-                        .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
-        log.info("[DB] order 조회 완료 {}", order.getOrderId());
-        order.updateOrderStatus(OrderStatus.PREPARING);
-        log.info("[DB] order 업데이트 완료 {}", order.getOrderId());
+            Order order =
+                    orderRepository
+                            .findByOrderId(event.orderId())
+                            .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+            log.info("[DB] order 조회 완료 {}", order.getOrderId());
 
-        orderDetailRepository.updateStatusToPreparingByOrderId(event.orderId());
-        log.info("[DB] order detail 업데이트 완료");
+            order.updateOrderStatus(OrderStatus.PREPARING);
+            orderRepository.flush();
+            log.info("[DB] order 업데이트 완료 {}", order.getOrderId());
+
+            orderDetailRepository.updateStatusToPreparingByOrderId(event.orderId());
+            log.info("[DB] order detail 업데이트 완료");
     }
 
     /** 주문 및 주문 상세 상태 변경 - preparing */
