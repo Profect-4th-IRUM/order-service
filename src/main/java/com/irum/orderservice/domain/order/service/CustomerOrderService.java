@@ -6,14 +6,12 @@ import com.irum.openfeign.payment.dto.request.CreatePaymentRequest;
 import com.irum.openfeign.payment.dto.response.PaymentResponse;
 import com.irum.openfeign.payment.emuns.PaymentCorp;
 import com.irum.openfeign.product.client.ProductClient;
-import com.irum.openfeign.product.dto.request.ProductInternalRequest;
 import com.irum.openfeign.product.dto.response.ProductInternalResponse;
-import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
-import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
+import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
 import com.irum.orderservice.domain.order.dto.request.CustomerOrderRequest;
@@ -21,11 +19,15 @@ import com.irum.orderservice.domain.order.dto.response.CustomerOrderListResponse
 import com.irum.orderservice.domain.order.dto.response.CustomerOrderResponse;
 import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
 import com.irum.orderservice.domain.order.dto.response.OrderDetailStatusResponse;
+import com.irum.orderservice.domain.order.event.event.CouponAppliedEvent;
+import com.irum.orderservice.domain.order.event.event.CouponValidatedEvent;
 import com.irum.orderservice.domain.order.mapper.CustomerOrderMapper;
+import com.irum.orderservice.domain.order.mapper.ProductInternalRequestMapper;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderSummaryRow;
 import com.irum.orderservice.domain.refund.domain.entity.Refund;
 import com.irum.orderservice.domain.refund.domain.repository.RefundRepository;
+import com.irum.orderservice.global.exception.errorcode.AuthErrorCode;
 import com.irum.orderservice.global.exception.errorcode.DeliveryAddressErrorCode;
 import com.irum.orderservice.global.exception.errorcode.GlobalErrorCode;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
@@ -38,6 +40,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,11 +54,11 @@ public class CustomerOrderService {
     private final RefundRepository refundRepository;
     private final MemberUtil memberUtil;
     private final DeliveryAddressRepository deliveryAddressRepository;
-    private final CouponService couponService;
-    private final AppliedCouponService appliedCouponService;
 
     private final PaymentClient paymentClient;
     private final ProductClient productClient;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public OrderDetailStatusResponse getOrderDetailStatus(UUID orderDetailId) {
@@ -157,25 +160,12 @@ public class CustomerOrderService {
             currentMemberId = memberUtil.getCurrentMember().memberId();
         } catch (Exception e) {
             log.error("memberUtil.getCurrentMember: {} message : {}", e, e.getMessage());
-            throw new CommonException(GlobalErrorCode.MEMBER_SERVICE_ERROR);
+            throw new CommonException(AuthErrorCode.AUTHENTICATION_NOT_FOUND);
         }
+
         int discountAmount = 0;
-
-        DeliveryAddress deliveryAddress =
-                deliveryAddressRepository
-                        .findById(request.deliveryAddressId())
-                        .orElseThrow(
-                                () ->
-                                        new CommonException(
-                                                DeliveryAddressErrorCode
-                                                        .DELIVERY_ADDRESS_NOT_FOUND));
+        DeliveryAddress deliveryAddress = findDeliveryAddress(request.deliveryAddressId());
         log.info("[주문준비] 멤버 {} , 상점, 주소 검색", currentMemberId);
-
-        List<UUID> productIds =
-                request.productList().stream()
-                        .map(CustomerOrderRequest.ProductSummary::productId)
-                        .distinct()
-                        .toList();
 
         List<UUID> optionValueIds =
                 request.productList().stream()
@@ -184,23 +174,11 @@ public class CustomerOrderService {
                         .toList();
 
         // 조회, 재고 미리 차감
-        List<ProductInternalRequest.OptionValueRequest> optionValueRequestList =
-                request.productList().stream()
-                        .map(
-                                p ->
-                                        ProductInternalRequest.OptionValueRequest.builder()
-                                                .optionValueId(p.optionValueId())
-                                                .quantity(p.quantity())
-                                                .build())
-                        .toList();
-        ProductInternalRequest productInternalRequest =
-                ProductInternalRequest.builder()
-                        .storeId(request.storeId())
-                        .optionValueList(optionValueRequestList)
-                        .build();
         ProductInternalResponse response = null;
         try {
-            response = productClient.updateStock(productInternalRequest);
+            response =
+                    productClient.updateStock(
+                            ProductInternalRequestMapper.toProductInternalRequest(request));
         } catch (Exception e) {
             log.error("productClient.updateStock: {} message : {}", e, e.getMessage());
             throw new CommonException(GlobalErrorCode.PRODUCT_SERVICE_ERROR);
@@ -255,17 +233,30 @@ public class CustomerOrderService {
         }
         log.info("배송비 {}", deliveryFee);
 
+        // 주문 엔티티 생성 PENDING 상태
+        String orderNum = generateOrderNumber();
+        Order order =
+                Order.builder()
+                        .orderNum(orderNum)
+                        .memberId(currentMemberId)
+                        .storeId(request.storeId())
+                        .deliveryAddress(deliveryAddress)
+                        .deliveryRequest(request.deliveryRequest())
+                        .totalDiscountAmount(discountAmount)
+                        .totalPrice(calculatedTotalPrice)
+                        .deliveryFee(deliveryFee)
+                        .orderStatusAll(OrderStatus.PENDING)
+                        .build();
+        orderRepository.save(order);
+
         /** 할인 쿠폰 적용 */
-        discountAmount +=
-                couponService.validAndCalCoupon(
-                        request.couponIdList(), calculatedTotalPrice, currentMemberId);
-        int finalPaymentAmount = calculatedTotalPrice - discountAmount;
-        log.info("할인 {}, 할인 후 가격 {}", discountAmount, finalPaymentAmount);
+        eventPublisher.publishEvent(
+                new CouponValidatedEvent(order.getOrderId(), request.couponIdList()));
 
         /** 결재 생성 PENDING 상태* */
         CreatePaymentRequest paymentRequest =
                 CreatePaymentRequest.builder()
-                        .finalPaymentAmount(finalPaymentAmount)
+                        .finalPaymentAmount(order.getPayingAmount())
                         .discountAmount(discountAmount)
                         .paymentCorp(PaymentCorp.TOSS)
                         .build();
@@ -279,24 +270,7 @@ public class CustomerOrderService {
         }
 
         // 쿠폰 미리 차감
-        appliedCouponService.createAppliedCouponList(paymentId, request.couponIdList());
-
-        // 주문 엔티티 생성 PENDING 상태  8 자리 랜덤값
-        String orderNum = "ORD-" + (int) ((Math.random() * 100000000));
-
-        Order order =
-                Order.from(
-                        orderNum,
-                        calculatedTotalPrice,
-                        deliveryFee,
-                        request.deliveryRequest(),
-                        currentMemberId,
-                        request.storeId(),
-                        paymentId,
-                        deliveryAddress,
-                        discountAmount,
-                        finalPaymentAmount);
-        orderRepository.save(order);
+        eventPublisher.publishEvent(new CouponAppliedEvent(paymentId, request.couponIdList()));
 
         /** 주문 상세 저장* */
         for (OrderDetail orderDetail : orderDetails) {
@@ -305,6 +279,20 @@ public class CustomerOrderService {
         }
 
         return CustomerOrderMapper.toCustomerOrderResponse(
-                order, orderDetails, discountAmount, finalPaymentAmount);
+                order, orderDetails, discountAmount, order.getPayingAmount());
+    }
+
+    private DeliveryAddress findDeliveryAddress(UUID addressId) {
+        return deliveryAddressRepository
+                .findById(addressId)
+                .orElseThrow(
+                        () ->
+                                new CommonException(
+                                        DeliveryAddressErrorCode.DELIVERY_ADDRESS_NOT_FOUND));
+    }
+
+    /** 8 자리 랜덤값 */
+    private String generateOrderNumber() {
+        return "ORD-" + (int) (Math.random() * 100000000);
     }
 }
