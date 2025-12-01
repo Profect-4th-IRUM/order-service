@@ -138,6 +138,9 @@ dependencies {
 
     // Liquibase
     implementation 'org.liquibase:liquibase-core'
+
+    //kafka
+    implementation 'org.springframework.kafka:spring-kafka'
 }
 
 test {

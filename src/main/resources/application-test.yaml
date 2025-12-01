@@ -9,3 +9,13 @@ spring:
         ddl-auto: create-drop
     liquibase:
       enabled: false
+
+    kafka:
+      partition: ${NUM_OF_PARTITION:3}
+      replica: ${NUM_OF_REPLICA:1}
+      consumer:
+        group-id: ${ORDER_GROUP_ID:order-service-group}
+      topics:
+        payment-paid: ${PAYMENT_PAID_TOPIC_NAME:payment-paid}
+        payment-failed: ${PAYMENT_FAILED_TOPIC_NAME:payment-failed}
+        order-failed: ${ORDER_FAILED_TOPIC_NAME:order-failed}
