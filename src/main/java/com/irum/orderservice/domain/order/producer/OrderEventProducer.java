@@ -1,18 +1,15 @@
 package com.irum.orderservice.domain.order.producer;
 
-import com.irum.openfeign.order.enums.OrderStatus;
-import com.irum.openfeign.product.dto.request.RollbackStockRequest;
 import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.event.OrderFailedEvent;
 import com.irum.orderservice.global.infrastructure.properties.KafkaTopicProperties;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.UUID;
 
 @Component
 @Slf4j
@@ -25,9 +22,7 @@ public class OrderEventProducer {
     public void sendOrderFailedEvent(List<OrderDetail> orderDetailList, UUID orderId) {
         // create event
         List<OrderFailedEvent.OptionValueRequest> optionValueRequestList =
-                orderDetailList.stream()
-                        .map(OrderFailedEvent.OptionValueRequest::from)
-                        .toList();
+                orderDetailList.stream().map(OrderFailedEvent.OptionValueRequest::from).toList();
         OrderFailedEvent event = OrderFailedEvent.from(optionValueRequestList);
 
         // create key & record
@@ -55,5 +50,4 @@ public class OrderEventProducer {
             log.error("[Error] sending order failed event : {}", event, e);
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.irum.orderservice.global.infrastructure.config;
 
-
 import com.irum.orderservice.global.infrastructure.properties.KafkaProperties;
 import com.irum.orderservice.global.infrastructure.properties.KafkaTopicProperties;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +26,4 @@ public class KafkaTopicConfig {
                         )
                 .build();
     }
-
 }

@@ -25,8 +25,7 @@ public class OrderEventConsumer {
 
     @KafkaListener(
             topics = "${spring.kafka.topics.payment-failed}",
-            groupId = "${spring.kafka.consumer.group-id}"
-    )
+            groupId = "${spring.kafka.consumer.group-id}")
     public void handlePaymentFailed(PaymentFailedEvent event) {
         log.info("[외부] Payment Failed event 수신 완료 {}", event);
 

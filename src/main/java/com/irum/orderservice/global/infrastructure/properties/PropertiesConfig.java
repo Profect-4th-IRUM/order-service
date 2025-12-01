@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
     TossProperties.class,
     FileProperties.class,
     KafkaProperties.class,
-        KafkaTopicProperties.class
+    KafkaTopicProperties.class
 })
 public class PropertiesConfig {}
