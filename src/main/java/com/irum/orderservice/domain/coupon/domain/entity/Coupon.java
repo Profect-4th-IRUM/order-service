@@ -1,0 +1,66 @@
+package com.irum.orderservice.domain.coupon.domain.entity;
+
+import com.irum.global.domain.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.Where;
+
+// 1. 엔티티
+
+@Entity
+@Table(name = "p_coupon")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "deleted_at IS NULL")
+public class Coupon extends BaseEntity {
+
+    @Id // 쿠폰 아이디
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    @Column(name = "coupon_id", nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(name = "name", length = 20) // 쿠폰명
+    private String name;
+
+    @Column(name = "discount_amount") // 할인 금액
+    @Min(0)
+    private int discountAmount;
+
+    @Column(name = "expiration") // 유효기간
+    private LocalDateTime expiration;
+
+    // ManyToOne
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
+
+    // 2. 생성자
+    @Builder(access = AccessLevel.PRIVATE)
+    private Coupon(String name, Integer discountAmount, LocalDateTime expiration, Long memberId) {
+        this.name = name;
+        this.discountAmount = discountAmount;
+        this.expiration = expiration;
+        this.memberId = memberId;
+    }
+
+    // 3. 쿠폰 생성 정적 팩토리 메서드
+
+    public static Coupon createCoupon(
+            String name, Integer discountAmount, LocalDateTime expiration, Long memberId) {
+        return Coupon.builder()
+                .name(name)
+                .discountAmount(discountAmount)
+                .expiration(expiration)
+                .memberId(memberId)
+                .build();
+    }
+}

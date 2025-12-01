@@ -1,0 +1,38 @@
+package com.irum.orderservice.domain.coupon.domain.entity;
+
+import com.irum.global.domain.BaseEntity;
+import jakarta.persistence.*;
+import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.Where;
+
+// 1. 엔티티
+
+@Entity
+@Table(name = "p_applied_coupon")
+@Getter
+@Builder
+@AllArgsConstructor
+@Where(clause = "deleted_at IS NULL")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class AppliedCoupon extends BaseEntity {
+
+    @Id // 적용 쿠폰 아이디
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    @Column(name = "applied_coupon_id", nullable = false, updatable = false)
+    private UUID appliedCouponId;
+
+    // ManyToOne
+    private UUID paymentId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id", nullable = false)
+    private Coupon coupon;
+
+    // 2. 생성자
+    public AppliedCoupon(UUID paymentId, Coupon coupon) {
+        this.paymentId = paymentId;
+        this.coupon = coupon;
+    }
+}
