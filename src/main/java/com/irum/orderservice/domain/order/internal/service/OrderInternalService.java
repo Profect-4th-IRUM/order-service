@@ -42,6 +42,16 @@ public class OrderInternalService {
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
         log.info("[DB] order 조회 완료 {}", order.getOrderId());
 
+        //이미 처리된 주문 인지
+        if (order.getOrderStatusAll() == OrderStatus.PREPARING) {
+            log.info("[검증] 이미 결제완료 (PREPARING) 처리된 주문입니다. orderId = {}", order.getOrderId());
+            return;
+        }
+
+
+        // 유효하지 않은 요청
+        validateRequest(order);
+
         order.updateOrderStatus(OrderStatus.PREPARING);
         orderRepository.flush();
         log.info("[DB] order 업데이트 완료 {}", order.getOrderId());
@@ -56,6 +66,16 @@ public class OrderInternalService {
                 orderRepository
                         .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+
+        //이미 처리된 주문 인지
+        if (order.getOrderStatusAll() == OrderStatus.PREPARING) {
+            log.info("[검증] 이미 결제완료 (PREPARING) 처리된 주문입니다. orderId = {}", order.getOrderId());
+            return order.getOrderNum();
+        }
+
+        // 유효하지 않은 요청
+        validateRequest(order);
+
         order.updateOrderStatus(OrderStatus.PREPARING);
         orderRepository.flush();
         orderDetailRepository.updateStatusToPreparingByOrderId(request.orderId());
@@ -68,6 +88,17 @@ public class OrderInternalService {
                 orderRepository
                         .findByOrderId(event.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+
+        //이미 처리된 주문 인지
+        if (order.getOrderStatusAll() == OrderStatus.FAILED) {
+            log.info("[검증] 이미 실패 (FAILED) 처리된 주문입니다. orderId = {}", order.getOrderId());
+            return;
+        }
+
+        // 유효하지 않은 요청
+        validateRequest(order);
+
+
         order.updateOrderStatus(OrderStatus.FAILED);
         orderRepository.flush();
         orderDetailRepository.updateStatusToFailedByOrderId(event.orderId());
@@ -86,6 +117,16 @@ public class OrderInternalService {
                 orderRepository
                         .findByOrderId(request.orderId())
                         .orElseThrow(() -> new CommonException(OrderErrorCode.ORDER_NOT_FOUND));
+
+        //이미 처리된 주문 인지
+        if (order.getOrderStatusAll() == OrderStatus.FAILED) {
+            log.info("[검증] 이미 실패 (FAILED) 처리된 주문입니다. orderId = {}", order.getOrderId());
+            return;
+        }
+
+        // 유효하지 않은 요청
+        validateRequest(order);
+
         order.updateOrderStatus(OrderStatus.FAILED);
         orderRepository.flush();
         orderDetailRepository.updateStatusToFailedByOrderId(request.orderId());
@@ -109,5 +150,14 @@ public class OrderInternalService {
         RollbackStockRequest rollbackStockRequest =
                 RollbackStockRequest.builder().optionValueList(optionValueRequestList).build();
         productClient.rollbackStock(rollbackStockRequest);
+    }
+
+
+    /** 유효한 요청인지 검증 */
+    private void validateRequest(Order order){
+        if (order.getOrderStatusAll() != OrderStatus.PENDING) {
+            log.error("[검증] PaymentFailed 이벤트를 수신했으나 주문 상태가 PENDING이 아닙니다. orderId = {} orderStatus = {}", order.getOrderId(), order.getOrderStatusAll());
+            throw new CommonException(OrderErrorCode.INVALID_ORDER_STATUS);
+        }
     }
 }
