@@ -23,7 +23,8 @@ public class PaymentFailedEventConsumer {
     @RetryableTopic(
             attempts = "3",
             backoff = @Backoff(delay = 1000, multiplier = 2),
-            dltStrategy = DltStrategy.FAIL_ON_ERROR)
+            dltStrategy = DltStrategy.FAIL_ON_ERROR,
+            dltTopicSuffix = "-dlt")
     @KafkaListener(
             topics = "${spring.kafka.topics.payment-failed}",
             groupId = "${spring.kafka.consumer.group-id}")
