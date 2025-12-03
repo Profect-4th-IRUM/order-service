@@ -19,8 +19,8 @@ import com.irum.orderservice.domain.order.dto.response.CustomerOrderListResponse
 import com.irum.orderservice.domain.order.dto.response.CustomerOrderResponse;
 import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
 import com.irum.orderservice.domain.order.dto.response.OrderDetailStatusResponse;
-import com.irum.orderservice.domain.order.event.event.CouponAppliedEvent;
-import com.irum.orderservice.domain.order.event.event.CouponValidatedEvent;
+import com.irum.orderservice.domain.order.event.CouponAppliedEvent;
+import com.irum.orderservice.domain.order.event.CouponValidatedEvent;
 import com.irum.orderservice.domain.order.mapper.CustomerOrderMapper;
 import com.irum.orderservice.domain.order.mapper.ProductInternalRequestMapper;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
