@@ -1,4 +1,4 @@
-package com.irum.orderservice.global.infrastructure.config;
+package com.irum.orderservice.global.infrastructure.config.kafka;
 
 import com.irum.orderservice.global.infrastructure.properties.KafkaProperties;
 import com.irum.orderservice.global.infrastructure.properties.KafkaTopicProperties;

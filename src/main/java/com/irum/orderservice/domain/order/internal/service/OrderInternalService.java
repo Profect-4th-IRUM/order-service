@@ -34,7 +34,7 @@ public class OrderInternalService {
 
     private final OrderEventProducer orderEventProducer;
 
-    /** EDA - 주문 및 주문 상세 상태 변경 - preparing */
+    /** 1. EDA - 주문 및 주문 상세 상태 변경 - preparing */
     public void updateOrderStatusPreparing(PaymentPaidEvent event) {
         Order order =
                 orderRepository
@@ -50,7 +50,7 @@ public class OrderInternalService {
         log.info("[DB] order detail 업데이트 완료");
     }
 
-    /** REST API - 주문 및 주문 상세 상태 변경 - preparing */
+    /** 2. REST API - 주문 및 주문 상세 상태 변경 - preparing */
     public String updateOrderStatusPreparing(UpdateOrderStatusPreparingRequest request) {
         Order order =
                 orderRepository
@@ -62,7 +62,7 @@ public class OrderInternalService {
         return order.getOrderNum();
     }
 
-    /** EDA - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
+    /** 1. EDA - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
     public void updateOrderStatusFailed(PaymentFailedEvent event) {
         Order order =
                 orderRepository
@@ -80,7 +80,7 @@ public class OrderInternalService {
         orderEventProducer.sendOrderFailedEvent(orderDetailList, order.getOrderId());
     }
 
-    /** REST API - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
+    /** 2. REST API - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
     public void updateOrderStatusFailed(UpdateOrderStatusFailedRequest request) {
         Order order =
                 orderRepository
