@@ -1,12 +1,12 @@
-package com.irum.orderservice.domain.order.eventListener;
+package com.irum.orderservice.domain.coupon.eventListener;
 
 import com.irum.global.advice.exception.CommonException;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
-import com.irum.orderservice.domain.order.event.CouponAppliedEvent;
-import com.irum.orderservice.domain.order.event.CouponValidatedEvent;
+import com.irum.orderservice.domain.coupon.event.CouponAppliedEvent;
+import com.irum.orderservice.domain.coupon.event.CouponValidatedEvent;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
