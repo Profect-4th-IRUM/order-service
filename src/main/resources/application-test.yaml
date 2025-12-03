@@ -19,3 +19,14 @@ spring:
         payment-paid: ${PAYMENT_PAID_TOPIC_NAME:payment-paid}
         payment-failed: ${PAYMENT_FAILED_TOPIC_NAME:payment-failed}
         order-failed: ${ORDER_FAILED_TOPIC_NAME:order-failed}
+service:
+  member:
+    base-url: ${MEMBER-SERVICE-URL:localhost}:${MEMBER_PORT:8081}
+  product:
+    base-url: ${PRODUCT-SERVICE-URL:localhost}:${PRODUCT_PORT:8082}
+  order:
+    base-url: ${ORDER-SERVICE-URL:localhost}:${ORDER_PORT:8083}
+  payment:
+    base-url: ${PAYMENT-SERVICE-URL:localhost}:${PAYMENT_PORT:8084}
+  ai:
+    base-url: ${AI-SERVICE-URL:localhost}:${AI_PORT:8085}

@@ -3,9 +3,9 @@ spring:
     name: order-service
   profiles:
     group:
-      "local": "local, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator, kafka"
-      "docker": "docker, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator, kafka"
-      "prod": "prod, prod-datasource, prod-db-management, prod-cache-redis, eureka, openfeign, actuator, kafka"
+      "local": "local, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator, kafka, base-url"
+      "docker": "docker, default-datasource, default-db-management, default-redis, eureka, openfeign, actuator, kafka, base-url"
+      "prod": "prod, prod-datasource, prod-db-management, prod-cache-redis, eureka, openfeign, actuator, kafka, base-url"
     active: ${PROFILE_ACTIVE:local}
 
   config:
