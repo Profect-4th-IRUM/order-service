@@ -1,13 +1,13 @@
 package com.irum.orderservice.domain.coupon.eventListener;
 
 import com.irum.global.advice.exception.CommonException;
+import com.irum.orderservice.domain.coupon.event.CouponAppliedEvent;
 import com.irum.orderservice.domain.coupon.event.CouponRollbackEvent;
+import com.irum.orderservice.domain.coupon.event.CouponValidatedEvent;
 import com.irum.orderservice.domain.coupon.service.AppliedCouponService;
 import com.irum.orderservice.domain.coupon.service.CouponService;
 import com.irum.orderservice.domain.order.domain.entity.Order;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
-import com.irum.orderservice.domain.coupon.event.CouponAppliedEvent;
-import com.irum.orderservice.domain.coupon.event.CouponValidatedEvent;
 import com.irum.orderservice.global.exception.errorcode.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,12 +83,12 @@ public class AppliedCouponEventListener {
 
     /** 쿠폰 롤백 이벤트 */
     @Async
-    @TransactionalEventListener(phase= TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCouponRollbackEvent(CouponRollbackEvent event) {
         log.info("쿠폰 롤백 시작 - paymentId: {}", event.paymentId());
-        try{
+        try {
             appliedCouponService.rollbackAppliedCouponList(event.paymentId());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("쿠폰 롤백 실패 - paymentId: {}", event.paymentId());
             log.error("[에러] 원인 : {}, {}", e.getClass(), e.getMessage());
         }
