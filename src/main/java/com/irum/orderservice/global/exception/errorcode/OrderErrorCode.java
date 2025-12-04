@@ -13,6 +13,7 @@ public enum OrderErrorCode implements BaseErrorCode {
     INVALID_ORDER(HttpStatus.BAD_REQUEST, "유효하지 않은 주문입니다."),
     ORDER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "주문에 잘못된 상품 정보가 포함되어있습니다."),
     ORDER_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "주문 상세를 찾을 수 없습니다."),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 상태 변경 요청입니다."),
     ;
 
     private final HttpStatus httpStatus;

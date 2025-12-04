@@ -272,6 +272,8 @@ public class CustomerOrderService {
         // 쿠폰 미리 차감
         eventPublisher.publishEvent(new CouponAppliedEvent(paymentId, request.couponIdList()));
 
+        order.updatePaymentId(paymentId);
+
         /** 주문 상세 저장* */
         for (OrderDetail orderDetail : orderDetails) {
             orderDetail.updateOrder(order);

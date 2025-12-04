@@ -67,6 +67,10 @@ public class Order extends BaseEntity {
         this.payingAmount = finalPaymentAmount;
     }
 
+    public void updatePaymentId(UUID paymentId) {
+        this.paymentId = paymentId;
+    }
+
     public static Order from(
             String orderNum,
             int calculatedTotalPrice,
