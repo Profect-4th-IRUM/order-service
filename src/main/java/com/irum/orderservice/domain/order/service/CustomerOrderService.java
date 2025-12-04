@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -299,7 +300,9 @@ public class CustomerOrderService {
             orderDetail.updateOrder(order);
             orderDetailRepository.save(orderDetail);
         }
-
+        MDC.put("orderId", order.getOrderId().toString());
+        log.info("[주문 준비 완료] orderId={} ", order.getOrderId());
+        MDC.clear();
         return CustomerOrderMapper.toCustomerOrderResponse(
                 order, orderDetails, discountAmount, finalPaymentAmount);
     }
