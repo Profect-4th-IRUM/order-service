@@ -7,6 +7,8 @@ import com.irum.openfeign.payment.dto.response.PaymentResponse;
 import com.irum.openfeign.payment.emuns.PaymentCorp;
 import com.irum.openfeign.product.client.ProductClient;
 import com.irum.openfeign.product.dto.response.ProductInternalResponse;
+import com.irum.orderservice.domain.coupon.event.CouponAppliedEvent;
+import com.irum.orderservice.domain.coupon.event.CouponValidatedEvent;
 import com.irum.orderservice.domain.deliveryaddress.domain.entity.DeliveryAddress;
 import com.irum.orderservice.domain.deliveryaddress.domain.repository.DeliveryAddressRepository;
 import com.irum.orderservice.domain.order.domain.entity.Order;
@@ -19,8 +21,6 @@ import com.irum.orderservice.domain.order.dto.response.CustomerOrderListResponse
 import com.irum.orderservice.domain.order.dto.response.CustomerOrderResponse;
 import com.irum.orderservice.domain.order.dto.response.OrderDetailResponse;
 import com.irum.orderservice.domain.order.dto.response.OrderDetailStatusResponse;
-import com.irum.orderservice.domain.order.event.event.CouponAppliedEvent;
-import com.irum.orderservice.domain.order.event.event.CouponValidatedEvent;
 import com.irum.orderservice.domain.order.mapper.CustomerOrderMapper;
 import com.irum.orderservice.domain.order.mapper.ProductInternalRequestMapper;
 import com.irum.orderservice.domain.order.repository.dto.CustomerOrderDetailRow;
