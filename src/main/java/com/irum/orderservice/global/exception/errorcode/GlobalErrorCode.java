@@ -12,6 +12,8 @@ public enum GlobalErrorCode implements BaseErrorCode {
     PAYMENT_SERVICE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "payment-service error"),
     PRODUCT_SERVICE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "product-service error"),
     MEMBER_SERVICE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "member-service error"),
+    JSON_PROCESSING_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "json processing exception"),
+
     ;
 
     private final HttpStatus httpStatus;

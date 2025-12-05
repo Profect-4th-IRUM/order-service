@@ -110,6 +110,7 @@ public class OrderInternalService {
         // 재고 롤백
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
         orderEventProducer.sendOrderFailedEvent(orderDetailList, order.getOrderId());
+        log.info("[완료] 주문 실패 처리 완료");
     }
 
     /** 2. REST API - 주문 및 주문 상세 상태 변경 - failed, 쿠폰 재고 롤백 */
