@@ -17,6 +17,9 @@ databaseChangeLog:
   - include:
       file: changes/ddl/006-create-table-refund.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changes/ddl/007-create-table-order-outbox.yaml
+      relativeToChangelogFile: true
 
   ### test data ###
   - include:
