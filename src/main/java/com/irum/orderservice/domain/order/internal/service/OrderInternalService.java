@@ -12,6 +12,8 @@ import com.irum.orderservice.domain.order.domain.entity.OrderDetail;
 import com.irum.orderservice.domain.order.domain.entity.enums.OrderStatus;
 import com.irum.orderservice.domain.order.domain.repository.OrderDetailRepository;
 import com.irum.orderservice.domain.order.domain.repository.OrderRepository;
+import com.irum.orderservice.domain.order.event.OrderFailedEvent;
+import com.irum.orderservice.domain.order.event.OrderFailedOutboxEvent;
 import com.irum.orderservice.domain.order.event.PaymentFailedEvent;
 import com.irum.orderservice.domain.order.event.PaymentPaidEvent;
 import com.irum.orderservice.domain.order.producer.OrderEventProducer;
@@ -107,9 +109,16 @@ public class OrderInternalService {
         // 쿠폰 롤백
         eventPublisher.publishEvent(new CouponRollbackEvent(event.paymentId()));
 
-        // 재고 롤백
+        // create event - 재고 롤백
         List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
-        orderEventProducer.sendOrderFailedEvent(orderDetailList, order.getOrderId());
+        List<OrderFailedEvent.OptionValueRequest> optionValueRequestList =
+                orderDetailList.stream().map(OrderFailedEvent.OptionValueRequest::from).toList();
+        OrderFailedEvent orderFailedEvent = OrderFailedEvent.from(optionValueRequestList);
+        // 재고 롤백
+        eventPublisher.publishEvent(new OrderFailedOutboxEvent(order.getOrderId(), orderFailedEvent));
+
+//        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrder(order);
+//        orderEventProducer.sendOrderFailedEvent(orderDetailList, order.getOrderId());
         log.info("[완료] 주문 실패 처리 완료");
     }
 
