@@ -32,6 +32,7 @@ public class OrderEventListener {
             OrderOutbox outbox = OrderOutbox.builder()
                     .aggregateId(orderId)
                     .aggregateType("p_order")
+                    .type("failed")
                     .payload(jsonPayload)
                     .build();
             orderOutboxRepository.save(outbox);

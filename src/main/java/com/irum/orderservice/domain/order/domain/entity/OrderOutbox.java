@@ -34,6 +34,9 @@ public class OrderOutbox {
     @Column(name = "aggregate_id", nullable = false) // Debezium 표준 컬럼명: aggregateid
     private String aggregateId; // table id
 
+    @Column(name = "type", nullable = false)
+    private String type;
+
     @Column(columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
     private String payload;
