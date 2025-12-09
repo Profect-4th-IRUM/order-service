@@ -40,7 +40,7 @@ public class PaymentFailedEventConsumer {
         try {
             // String -> DTO 클래스 수동 변환
             PaymentFailedEvent event = objectMapper.readValue(message, PaymentFailedEvent.class);
-            log.info(">>> 객체 변환 성공: orderId={}", event.orderId());
+            log.info("[변환] 객체 변환 성공: orderId={}", event.orderId());
 
             orderInternalService.updateOrderStatusFailed(event);
         } catch (JsonProcessingException e) {
@@ -67,9 +67,10 @@ public class PaymentFailedEventConsumer {
         try {
 
             event = objectMapper.readValue(rawMessage, PaymentFailedEvent.class);
-            log.error("DLT 파싱 성공 - 주문ID: {}", event.orderId());
-        } catch (Exception e) {
-            log.error("DLT 데이터 파싱 불가: 사람이 직접 확인 필요");
+            log.info("DLT 파싱 성공 - 주문ID: {}", event.orderId());
+        } catch (JsonProcessingException e) {
+            log.error("[변환] String -> DTO class 변환 실패 (JSON 형식이 안 맞음): message = {}, errorclass = {}, errormessage = {}", rawMessage, e.getClass(), e.getMessage());
+            throw new CommonException(GlobalErrorCode.JSON_PROCESSING_EXCEPTION);
         }
 
         log.error(
